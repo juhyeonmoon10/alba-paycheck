@@ -140,11 +140,37 @@
   }
 
   /* ── 계약서 진단 ── */
-  .drop{display:flex;flex-direction:column;gap:4px;align-items:center;text-align:center;
-    border:1.5px dashed var(--rule);border-radius:4px;padding:26px 20px;cursor:pointer;background:var(--sunk)}
-  .drop:hover{border-color:var(--brass)}
+  .drop{display:flex;flex-direction:column;gap:9px;align-items:center;text-align:center;
+    border:1.5px dashed var(--rule);border-radius:4px;padding:30px 20px;cursor:pointer;background:var(--sunk);transition:.12s}
+  .drop:hover,.drop.over{border-color:var(--brass);background:var(--brass-lift)}
+  .drop .ico{font-size:26px;line-height:1}
   .drop b{font-size:15px;font-weight:600;color:var(--ink)}
+  .drop .fake{display:inline-block;background:var(--ink);color:var(--ground);border-radius:3px;
+    padding:9px 20px;font-size:13.5px;font-weight:500}
   .drop span{font-size:12px;color:var(--ink-faint);line-height:1.5}
+
+  /* AI 자동 판독 (개발 예정 · 시연용) */
+  .aiwrap{margin-top:16px;border:1px solid var(--rule);border-radius:4px;background:var(--sunk);padding:16px}
+  .aihead{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:9px}
+  .aihead b{font-size:14px;font-weight:600}
+  .beta{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--brass-ink);background:var(--brass-lift);border:1px solid var(--brass);border-radius:2px;padding:2px 7px}
+  .aiwrap p{margin:0 0 12px;font-size:12px;color:var(--ink-faint);line-height:1.55}
+  .aibtn{width:100%;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;
+    background:var(--brass);color:var(--sheet);border:0;border-radius:3px;padding:12px 18px}
+  :root[data-theme="dark"] .aibtn,
+  :root:not([data-theme="light"]) .aibtn{color:#171F29}
+  @media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .aibtn{color:#FFFFFF}}
+  .aibtn:hover{opacity:.9}
+  .aibtn:disabled{opacity:.55;cursor:default}
+  .bar{height:4px;background:var(--rule);border-radius:100px;overflow:hidden;margin-top:12px}
+  .bar i{display:block;height:100%;width:0;background:var(--brass);transition:width .25s linear}
+  .scanlog{margin-top:9px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-soft);min-height:17px}
+  .airesult{margin-top:12px;border-top:1px solid var(--rule);padding-top:12px}
+  .airesult ul{margin:0;padding-left:17px}
+  .airesult li{font-size:12.5px;color:var(--ink-soft);line-height:1.75}
+  .airesult li b{color:var(--ink);font-weight:600}
+  .disclaim{margin-top:11px;font-size:11.5px;color:var(--short);line-height:1.5;font-weight:500}
   .pvtools{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
   .pvtools button{font-family:inherit;font-size:12.5px;cursor:pointer;color:var(--ink-soft);
     background:var(--sheet);border:1px solid var(--rule);border-radius:3px;padding:7px 13px}
@@ -383,11 +409,14 @@
     <section class="step">
       <header><span class="no">01</span><h2>계약서 사진 올리기</h2><span class="hint">선택 사항</span></header>
       <div class="body">
-        <label class="drop" for="file">
-          <b>사진 선택하거나 촬영하기</b>
-          <span>휴대폰이면 카메라가 바로 열립니다.<br>사진은 어디에도 전송되지 않고 이 화면에서만 열립니다.</span>
+        <label class="drop" for="file" id="drop">
+          <span class="ico">📄</span>
+          <b>근로계약서 사진 올리기</b>
+          <span class="fake">파일 선택 · 카메라로 촬영</span>
+          <span>여기로 파일을 끌어다 놓아도 됩니다.<br>사진은 어디에도 전송되지 않고 이 화면에서만 열립니다.</span>
         </label>
         <input id="file" type="file" accept="image/*" hidden>
+
         <div id="preview" hidden style="margin-top:14px">
           <div class="pvtools">
             <button type="button" id="rotate">↻ 90° 회전</button>
@@ -395,6 +424,27 @@
           </div>
           <div class="pvbox"><img id="pvimg" alt="올린 근로계약서 사진"></div>
           <p class="privacy">✓ 이 사진은 서버로 전송되지 않았습니다. 브라우저 안에서만 열려 있습니다.</p>
+        </div>
+
+        <div class="aiwrap">
+          <div class="aihead">
+            <b>AI 자동 판독</b>
+            <span class="beta">개발 예정</span>
+          </div>
+          <p>사진 속 글자를 읽어 아래 항목을 자동으로 채우는 기능입니다. 아직 개발 중이라, 아래 버튼은 <b>완성됐을 때 어떻게 동작하는지 보여 주는 시연</b>입니다.</p>
+          <button class="aibtn" id="aiscan" type="button">AI로 자동 판독하기 (시연)</button>
+          <div class="bar" id="aibar" hidden><i></i></div>
+          <div class="scanlog" id="ailog"></div>
+          <div class="airesult" id="airesult" hidden>
+            <ul>
+              <li>시급 <b>9,860원</b> 인식</li>
+              <li>근로시간 <b>1일 9시간 · 주 27시간</b> 인식</li>
+              <li>휴게시간 <b>30분</b> 인식</li>
+              <li>필수 기재사항 중 <b>휴일 · 연차유급휴가</b> 미기재로 판단</li>
+              <li>본문에서 <b>위약금 조항</b>으로 보이는 문구 발견</li>
+            </ul>
+            <p class="disclaim">※ 위 값은 실제 판독 결과가 아니라 미리 정해 둔 시연용 예시입니다. 실제 판독 기능은 아직 구현되지 않았습니다.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -1040,6 +1090,60 @@
     document.getElementById("preview").hidden=true;
     document.getElementById("file").value="";
   });
+
+  // 끌어다 놓기
+  var drop=document.getElementById("drop");
+  ["dragenter","dragover"].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add("over"); });
+  });
+  ["dragleave","drop"].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove("over"); });
+  });
+  drop.addEventListener("drop", function(e){
+    var f=e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if(!f || !/^image\//.test(f.type)) return;
+    var fr=new FileReader();
+    fr.onload=function(){ imgEl.src=fr.result; document.getElementById("preview").hidden=false; };
+    fr.readAsDataURL(f);
+  });
+
+  // AI 자동 판독 — 개발 예정 기능의 시연(mock). 실제 판독은 하지 않는다.
+  document.getElementById("aiscan").addEventListener("click", function(){
+    var btn=this, bar=document.getElementById("aibar"), fill=bar.querySelector("i");
+    var log=document.getElementById("ailog"), res=document.getElementById("airesult");
+    var steps=["이미지 전처리 중…","글자 영역 찾는 중…","항목 대조 중…","진단 항목에 반영 중…"];
+    btn.disabled=true; res.hidden=true; bar.hidden=false; fill.style.width="0%";
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var i=0;
+    var tick=function(){
+      if(i<steps.length){
+        log.textContent=steps[i];
+        fill.style.width=Math.round((i+1)/steps.length*100)+"%";
+        i++;
+        setTimeout(tick, reduce?60:380);
+      }else{
+        log.textContent="판독 완료 — 5개 항목을 아래에 반영했습니다.";
+        res.hidden=false;
+        applyMockRead();
+        btn.disabled=false;
+        btn.textContent="다시 판독하기 (시연)";
+      }
+    };
+    tick();
+  });
+
+  function applyMockRead(){
+    var set=function(id,v){ var e=document.getElementById(id); if(e) e.value=v; };
+    set("c-wage",9860); set("c-day",9); set("c-week",27); set("c-break",30);
+    var chk=function(sel,v){ var e=document.querySelector(sel); if(e) e.checked=v; };
+    chk('.c-req[data-k="wage"]',true);   chk('.c-req[data-k="hours"]',true);
+    chk('.c-req[data-k="place"]',true);  chk('.c-req[data-k="task"]',true);
+    chk('.c-req[data-k="holiday"]',false); chk('.c-req[data-k="annual"]',false);
+    chk('.c-cond[data-k="penalty"]',true);
+    renderChecker();
+    var v=document.getElementById("cverdict");
+    if(v) v.scrollIntoView({behavior:"smooth", block:"start"});
+  }
 
   function render(){
     var r=calc();

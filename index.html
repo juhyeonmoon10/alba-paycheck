@@ -596,14 +596,25 @@
       <header><span class="no">02</span><h2>근로 조건</h2></header>
       <div class="body">
         <div class="grid">
-          <div class="field"><label for="o-start">근로 개시일</label><input id="o-start" type="date" value="2026-08-03"></div>
+          <div class="field"><label for="o-start">근로계약 시작일</label><input id="o-start" type="date" value="2026-08-03"></div>
+          <div class="field">
+            <label for="o-end">근로계약 종료일</label>
+            <input id="o-end" type="date" value="">
+            <span class="note">비워 두면 “기간의 정함이 없음”으로 작성됩니다</span>
+          </div>
           <div class="field"><label for="o-place">근무 장소</label><input id="o-place" type="text" value="하늘편의점 ○○점 매장"></div>
           <div class="field"><label for="o-task">업무 내용</label><input id="o-task" type="text" value="상품 진열 및 계산 업무"></div>
           <div class="field"><label for="o-from">시업 시각</label><input id="o-from" type="time" value="17:00"></div>
           <div class="field"><label for="o-to">종업 시각</label><input id="o-to" type="time" value="21:00"></div>
-          <div class="field"><label for="o-break">휴게시간 (분)</label><input id="o-break" type="number" min="0" step="10" value="0"></div>
-          <div class="field"><label for="o-days">근무일</label><input id="o-days" type="text" value="월, 수, 토"></div>
-          <div class="field"><label for="o-holiday">주휴일</label><input id="o-holiday" type="text" value="일요일"></div>
+          <div class="field"><label for="o-bfrom">휴게 시작</label><input id="o-bfrom" type="time" value=""></div>
+          <div class="field"><label for="o-bto">휴게 종료</label><input id="o-bto" type="time" value=""></div>
+          <div class="field"><label for="o-dayn">주 근무일수 (일)</label><input id="o-dayn" type="number" min="1" max="7" value="3"></div>
+          <div class="field">
+            <label for="o-days">근무 요일</label>
+            <input id="o-days" type="text" value="월, 수, 토">
+            <span class="note">공식 양식에는 일수만 적으나, 요일을 함께 적어 두면 분쟁이 줍니다</span>
+          </div>
+          <div class="field"><label for="o-holiday">주휴일 (요일)</label><input id="o-holiday" type="text" value="일"></div>
           <div class="field"><label for="o-wage">시급 (원)</label><input id="o-wage" type="number" min="0" step="10" value="10320"></div>
           <div class="field"><label for="o-payday">임금 지급일 (매월)</label><input id="o-payday" type="number" min="1" max="31" value="10"></div>
         </div>
@@ -857,6 +868,24 @@
     var p=(iso||"").split("-");
     return p.length===3 ? p[0]+"년 "+(+p[1])+"월 "+(+p[2])+"일" : "____년 __월 __일";
   }
+  // 공식 양식 표기 보조
+  function hm(t){
+    var p=(t||"").split(":");
+    return p.length===2 ? (+p[0])+"시 "+(+p[1])+"분 " : "__시 __분 ";
+  }
+  function contractPeriod(){
+    var s=val("o-start"), e=val("o-end");
+    if(!s) return "____년 __월 __일부터";
+    return e ? kdate(s)+"부터 "+kdate(e)+"까지" : kdate(s)+"부터 (기간의 정함이 없음)";
+  }
+  function breakRange(){
+    var a=val("o-bfrom"), b=val("o-bto");
+    return (a&&b) ? hm(a)+"~ "+hm(b) : "__시 __분 ~ __시 __분";
+  }
+  function dayNames(){
+    var d=val("o-days");
+    return d ? "("+d+")" : "";
+  }
 
   function renderDoc(){
     var age = ageAt(val("o-birth"), val("o-start") || today());
@@ -931,43 +960,47 @@
     }
     else{
       why = minor
-        ? "만 18세 미만이므로 연소근로자용 표준근로계약서로 작성됩니다. 근로계약서는 반드시 2부를 작성해 1부를 근로자에게 교부해야 합니다."
-        : "표준근로계약서(기간의 정함이 없는 경우) 양식입니다. 2부를 작성해 1부를 근로자에게 교부해야 합니다.";
-      var brk = +val("o-break")||0;
+        ? "고용노동부 「연소근로자(18세 미만인 자) 표준근로계약서」 양식입니다. 2부를 작성해 1부를 근로자에게 교부해야 합니다."
+        : "고용노동부 「표준근로계약서」 양식입니다. 2부를 작성해 1부를 근로자에게 교부해야 합니다.";
       var no = 0;
       var line = function(txt){ no++; return no+". "+txt+"\n"; };
-      t = "표 준 근 로 계 약 서" + (minor ? " (연소근로자용)" : "") + "\n\n"+
-        biz+"(이하 “사업주”라 함)과(와) "+emp+"(이하 “근로자”라 함)는\n"+
+      t = (minor ? "연소근로자(18세 미만인 자) 표준근로계약서" : "표 준 근 로 계 약 서") + "\n\n"+
+        biz+"(이하 “사업주”라 함)과(와) "+emp+"(이하 “근로자”라 함)은\n"+
         "다음과 같이 근로계약을 체결한다.\n\n"+
-        line("근 로 개 시 일 : "+kdate(val("o-start"))+"부터")+
-        line("근  무  장  소 : "+pad(val("o-place")))+
-        line("업무의  내용 : "+pad(val("o-task")))+
-        line("소정근로시간 : "+(val("o-from")||"__:__")+" 부터 "+(val("o-to")||"__:__")+" 까지 (휴게시간 "+brk+"분)")+
-        line("근 무 일 / 휴 일 : 매주 "+pad(val("o-days"))+" 근무, 주휴일 매주 "+pad(val("o-holiday")))+
-        line("임            금\n"+
-             "   - 시간급 : "+wage.toLocaleString("ko-KR")+"원\n"+
-             "   - 상여금 : 없음\n"+
-             "   - 기타급여(제수당 등) : 주휴수당 등 법정수당 지급\n"+
-             "   - 임금지급일 : 매월 "+(val("o-payday")||"__")+"일 (휴일인 경우 전일 지급)\n"+
-             "   - 지급방법 : 근로자 명의 예금통장에 입금")+
-        line("연차유급휴가 : 근로기준법에서 정하는 바에 따라 부여함")+
+        line("근로계약기간 : "+contractPeriod()+"\n"+
+             "   ※ 근로계약기간을 정하지 않는 경우에는 “근로개시일”만 기재")+
+        line("근 무 장 소 : "+pad(val("o-place")))+
+        line("업무의 내용 : "+pad(val("o-task")))+
+        line("소정근로시간 : "+hm(val("o-from"))+"부터 "+hm(val("o-to"))+"까지 (휴게시간 : "+breakRange()+")")+
+        line("근무일/휴일 : 매주 "+pad(val("o-dayn"))+"일"+dayNames()+"근무, 주휴일 매주 "+pad(val("o-holiday"))+"요일")+
+        line("임  금\n"+
+             "   - 월(일, 시간)급 : "+wage.toLocaleString("ko-KR")+"원 (시간급)\n"+
+             "   - 상여금 : 있음 (    )                원,  없음 ( ∨ )\n"+
+             "   - 기타급여(제수당 등) : 있음 ( ∨ ),   없음 (    )\n"+
+             "     · 주휴수당 등 법정수당\n"+
+             "   - 임금지급일 : 매월 "+(val("o-payday")||"__")+"일 (휴일의 경우는 전일 지급)\n"+
+             "   - 지급방법 : 근로자에게 직접지급(    ),  근로자 명의 예금통장에 입금( ∨ )")+
+        line("연차유급휴가\n"+
+             "   - 연차유급휴가는 근로기준법에서 정하는 바에 따라 부여함")+
         (minor ? line("가족관계증명서 및 동의서\n"+
-             "   - 가족관계기록사항에 관한 증명서 제출 여부 : (   )\n"+
-             "   - 친권자 또는 후견인의 동의서 구비 여부 : (   )") : "")+
-        line("사회보험 적용여부\n"+
-             "   (  ) 고용보험    (  ) 산재보험    (  ) 국민연금    (  ) 건강보험")+
+             "   - 가족관계기록사항에 관한 증명서 제출 여부 : (    )\n"+
+             "   - 친권자 또는 후견인의 동의서 구비 여부 : (    )") : "")+
         line("근로계약서 교부\n"+
-             "   - 사업주는 근로계약을 체결함과 동시에 본 계약서를 사본하여\n"+
-             "     근로자의 교부요구와 관계없이 근로자에게 교부한다.")+
-        line("기            타\n"+
-             "   - 이 계약에 정함이 없는 사항은 근로기준법령에 의한다.")+
+             "   - 사업주는 근로계약을 체결함과 동시에 본 계약서를 사본하여 근로자의\n"+
+             "     교부요구와 관계없이 근로자에게 교부함"+
+             (minor ? "(근로기준법 제17조, 제67조 이행)" : "(근로기준법 제17조 이행)"))+
+        line("기  타\n"+
+             (minor
+               ? "   - 13세 이상 15세 미만인 자에 대해서는 고용노동부장관으로부터 취직인허증을\n"+
+                 "     교부받아야 하며, 이 계약에 정함이 없는 사항은 근로기준법령에 의함"
+               : "   - 이 계약에 정함이 없는 사항은 근로기준법령에 의함"))+
         "\n                    "+kdate(today())+"\n\n"+
-        "(사업주)  사업체명 : "+biz+"          전화 : "+pad(val("o-tel"))+"\n"+
-        "          주    소 : "+pad(val("o-addr"))+"\n"+
-        "          대 표 자 : "+ceo+"                    (서명)\n\n"+
-        "(근로자)  주    소 : "+pad(val("o-eaddr"))+"\n"+
-        "          연 락 처 : "+pad(val("o-etel"))+"\n"+
-        "          성    명 : "+emp+"                    (서명)\n";
+        "(사업주) 사업체명 : "+biz+"          (전화 : "+pad(val("o-tel"))+")\n"+
+        "         주    소 : "+pad(val("o-addr"))+"\n"+
+        "         대 표 자 : "+ceo+"                    (서명)\n\n"+
+        "(근로자) 주    소 : "+pad(val("o-eaddr"))+"\n"+
+        "         연 락 처 : "+pad(val("o-etel"))+"\n"+
+        "         성    명 : "+emp+"                    (서명)\n";
     }
     document.getElementById("doc").value=t;
     document.getElementById("doc-why").textContent=why;
@@ -1052,33 +1085,37 @@
       h += '<p class="note">※ 4대보험·소득세 공제액은 사업장 가입 여부와 근로자 조건에 따라 달라지므로 직접 기입하십시오. 위 지급액은 세전 기준입니다.</p>';
     }
     else{
-      var brk=+val("o-break")||0;
-      h += '<h3>표준근로계약서</h3>';
-      h += '<p class="psub">'+(minor?"연소근로자(만 18세 미만)용":"기간의 정함이 없는 경우")+'</p>';
+      h += '<h3>'+(minor?"연소근로자 표준근로계약서":"표준근로계약서")+'</h3>';
+      h += '<p class="psub">'+(minor?"18세 미만인 자 · 고용노동부 표준양식":"고용노동부 표준양식")+'</p>';
       h += '<p class="pre"><b>'+blank(biz,110)+'</b>(이하 “사업주”라 함)과(와) <b>'+blank(emp,80)+
-           '</b>(이하 “근로자”라 함)는 다음과 같이 근로계약을 체결한다.</p>';
+           '</b>(이하 “근로자”라 함)은 다음과 같이 근로계약을 체결한다.</p>';
       h += '<ol class="cl">';
-      h += clause("근로개시일", esc(kdate(val("o-start")))+"부터");
-      h += clause("근무 장소", blank(val("o-place"),200));
+      h += clause("근로계약기간", esc(contractPeriod())+
+             '<div style="font-size:10.5px;color:#6B7580;margin-top:2px">'+
+             '※ 근로계약기간을 정하지 않는 경우에는 “근로개시일”만 기재</div>');
+      h += clause("근 무 장 소", blank(val("o-place"),200));
       h += clause("업무의 내용", blank(val("o-task"),200));
-      h += clause("소정근로시간", blank(val("o-from"),60)+" 부터 "+blank(val("o-to"),60)+
-                  " 까지 (휴게시간 "+brk+"분)");
-      h += clause("근무일/휴일", "매주 "+blank(val("o-days"),110)+" 근무, 주휴일 매주 "+blank(val("o-holiday"),80));
-      h += clause("임금", '<ul class="sub">'+
-             '<li>시간급 : <b>'+wage.toLocaleString("ko-KR")+'원</b></li>'+
-             '<li>상여금 : 없음</li>'+
-             '<li>기타급여(제수당 등) : 주휴수당 등 법정수당 지급</li>'+
-             '<li>임금지급일 : 매월 '+blank(val("o-payday"),34)+'일 (휴일인 경우 전일 지급)</li>'+
-             '<li>지급방법 : 근로자 명의 예금통장에 입금</li></ul>');
-      h += clause("연차유급휴가", "근로기준법에서 정하는 바에 따라 부여함");
+      h += clause("소정근로시간", esc(hm(val("o-from")))+"부터 "+esc(hm(val("o-to")))+
+                  "까지 (휴게시간 : "+esc(breakRange())+")");
+      h += clause("근무일/휴일", "매주 "+blank(val("o-dayn"),30)+"일"+esc(dayNames())+
+                  " 근무, 주휴일 매주 "+blank(val("o-holiday"),40)+"요일");
+      h += clause("임　　금", '<ul class="sub">'+
+             '<li>월(일, 시간)급 : <b>'+wage.toLocaleString("ko-KR")+'원</b> (시간급)</li>'+
+             '<li>상여금 : 있음 (　　)　　　　원,　없음 ( ∨ )</li>'+
+             '<li>기타급여(제수당 등) : 있음 ( ∨ ),　없음 (　　)　· 주휴수당 등 법정수당</li>'+
+             '<li>임금지급일 : 매월 '+blank(val("o-payday"),34)+'일 (휴일의 경우는 전일 지급)</li>'+
+             '<li>지급방법 : 근로자에게 직접지급(　　),　근로자 명의 예금통장에 입금( ∨ )</li></ul>');
+      h += clause("연차유급휴가", "연차유급휴가는 근로기준법에서 정하는 바에 따라 부여함");
       if(minor)
         h += clause("가족관계증명서<br>및 동의서", '<ul class="sub">'+
              '<li>가족관계기록사항에 관한 증명서 제출 여부 : (　　)</li>'+
              '<li>친권자 또는 후견인의 동의서 구비 여부 : (　　)</li></ul>');
-      h += clause("사회보험 적용", "(　) 고용보험　　(　) 산재보험　　(　) 국민연금　　(　) 건강보험");
       h += clause("근로계약서 교부",
-             "사업주는 근로계약을 체결함과 동시에 본 계약서를 사본하여 근로자의 교부요구와 관계없이 근로자에게 교부한다.");
-      h += clause("기타", "이 계약에 정함이 없는 사항은 근로기준법령에 의한다.");
+             "사업주는 근로계약을 체결함과 동시에 본 계약서를 사본하여 근로자의 교부요구와 관계없이 근로자에게 교부함"+
+             (minor ? "(근로기준법 제17조, 제67조 이행)" : "(근로기준법 제17조 이행)"));
+      h += clause("기　　타", minor
+             ? "13세 이상 15세 미만인 자에 대해서는 고용노동부장관으로부터 취직인허증을 교부받아야 하며, 이 계약에 정함이 없는 사항은 근로기준법령에 의함"
+             : "이 계약에 정함이 없는 사항은 근로기준법령에 의함");
       h += '</ol>';
       h += '<div class="pdate">'+esc(kdate(today()))+'</div>';
       h += '<div class="signs">'+

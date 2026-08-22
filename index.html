@@ -67,6 +67,15 @@
     letter-spacing:.14em;text-transform:uppercase;color:var(--brass);
     border:1px solid var(--brass);border-radius:2px;padding:3px 9px}
 
+  /* ── 언어 선택 (개발 예정) ── */
+  .langbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:4px}
+  .lang-on{font-size:12.5px;font-weight:600;color:var(--brass-ink);background:var(--brass-lift);
+    border:1px solid var(--brass);border-radius:100px;padding:4px 12px}
+  .lang-off{font-family:inherit;font-size:12.5px;color:var(--ink-faint);background:transparent;
+    border:1px solid var(--rule);border-radius:100px;padding:4px 12px;cursor:not-allowed}
+  .langnote{margin:2px 0 0;font-size:11.5px;color:var(--ink-faint);line-height:1.55;max-width:60ch}
+  .langnote b{color:var(--ink-soft);font-weight:600}
+
   /* ── mode switch ── */
   .modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px}
   .modes input{position:absolute;opacity:0;pointer-events:none}
@@ -315,9 +324,17 @@
 <div class="wrap">
 
   <header class="mast">
-    <span class="stamp">청소년 알바 급여 검산</span>
-    <h1>알바정산</h1>
+    <span class="stamp">법을 몰라서 손해 보지 않도록</span>
+    <h1>내월급</h1>
     <p class="dek">시급은 들었는데 <b>이번 달에 얼마를 받아야 하는지</b>는 아무도 알려주지 않습니다. 근무 기록만 넣으면 주휴수당까지 계산하고, <b>사장님께 보낼 말</b>까지 만들어 드립니다.</p>
+    <div class="langbar">
+      <span class="lang-on">한국어</span>
+      <button type="button" class="lang-off" disabled>English</button>
+      <button type="button" class="lang-off" disabled>Tiếng Việt</button>
+      <button type="button" class="lang-off" disabled>ភាសាខ្មែរ</button>
+      <span class="beta">개발 예정</span>
+    </div>
+    <p class="langnote">외국인 노동자의 <b>62.2%</b>가 근로계약서를 “일부만 이해한 채” 서명합니다. 다국어 지원은 번역 검수를 마친 언어부터 순차적으로 엽니다.</p>
   </header>
 
   <div class="modes">
@@ -392,6 +409,11 @@
           <div class="field">
             <label for="paid">입금된 금액 (원)</label>
             <input id="paid" type="number" min="0" step="10" value="320000">
+          </div>
+          <div class="field">
+            <label for="deduct">숙식비 등 공제액 (원)</label>
+            <input id="deduct" type="number" min="0" step="1000" value="0">
+            <span class="note">기숙사비·식비를 급여에서 뗀 경우 그 금액</span>
           </div>
         </div>
       </div>
@@ -651,7 +673,7 @@
     <p><b>계산 기준</b> — 기본급은 실근로시간 × 시급, 주휴수당은 1주 소정근로시간이 15시간 이상일 때 (주 근로시간 ÷ 40) × 8 × 시급으로 계산합니다. 야간(22~06시)·연장 가산 50%는 상시 5인 이상 사업장에만 적용합니다.</p>
     <p><b>한계</b> — 공휴일 근로 가산, 4대보험·소득세 공제, 포괄임금 계약은 반영하지 않았습니다. 세전 기준 개략 검산 도구이며 법률 자문이 아닙니다. 작성된 서류는 표준 양식을 바탕으로 한 초안이므로 최종 확인 후 사용하십시오.</p>
     <p><b>개인정보</b> — 입력한 내용은 서버로 전송되거나 저장되지 않으며, 브라우저 안에서만 계산됩니다.</p>
-    <p>알바정산 · 고등학생 창업 프로젝트 프로토타입</p>
+    <p>내월급 · My Pay · 고등학생 창업 프로젝트 프로토타입</p>
   </footer>
 </div>
 
@@ -726,6 +748,7 @@
 
   function calc(){
     var wage=+val("wage")||0, minw=+val("minwage")||0, paid=+val("paid")||0;
+    var deduct=+val("deduct")||0;
     var big=document.getElementById("size-big").checked;
     var minor=document.getElementById("age-minor").checked;
     var capDay=minor?7:8, capWeek=minor?35:40;
@@ -754,10 +777,14 @@
     var otPay=big?ot*wage*0.5:0;
     var dates=collect().map(function(s){return s.date;}).sort();
 
-    return {wage:wage,minw:minw,paid:paid,big:big,minor:minor,
+    var due=base+holiday+nightPay+otPay;
+    // 숙식비를 뗀 뒤 실제로 손에 쥐는 시급 — 외국인 노동자 임금 분쟁의 핵심 쟁점
+    var netHourly = total>0 ? (due-deduct)/total : 0;
+
+    return {wage:wage,minw:minw,paid:paid,deduct:deduct,big:big,minor:minor,
       shifts:dates.length, weeks:Object.keys(weeks).length, weeksQualified:qual,
       total:total,night:night,ot:ot,base:base,holiday:holiday,nightPay:nightPay,otPay:otPay,
-      due:base+holiday+nightPay+otPay, gap:base+holiday+nightPay+otPay-paid,
+      due:due, gap:due-paid, netHourly:netHourly,
       longDay:longDay,longWeek:longWeek,capDay:capDay,capWeek:capWeek,dates:dates};
   }
 
@@ -781,6 +808,9 @@
       rows.push(['연장 가산 50%<small>'+(r.big?'법정시간 초과 '+hrs(r.ot):'5인 미만 사업장은 미적용')+'</small>',
         won(r.otPay), r.otPay?'':'muted']);
     rows.push(['<b>받아야 할 금액</b>','<b>'+won(r.due)+'</b>','total']);
+    if(r.deduct>0)
+      rows.push(['숙식비 등 공제<small>공제 후 실수령 시급 '+Math.round(r.netHourly).toLocaleString("ko-KR")+
+        '원</small>','− '+won(r.deduct),'muted']);
     rows.push(['실제 받은 금액','− '+won(r.paid),'muted']);
     document.getElementById("ledger").innerHTML = rows.map(function(x){
       return '<tr class="'+x[2]+'"><td class="lbl">'+x[0]+'</td><td>'+x[1]+'</td></tr>';
@@ -792,6 +822,11 @@
     if(r.wage<r.minw && r.wage>0)
       f.push(['warn','!','시급이 최저임금보다 낮습니다',
         '최저임금('+r.minw.toLocaleString("ko-KR")+'원)은 인원과 상관없이 모든 사업장에 적용됩니다. 최저임금 기준이면 기본급만 '+won(r.total*r.minw)+'입니다.']);
+    if(r.deduct>0 && r.total>0 && r.netHourly < r.minw)
+      f.push(['warn','!','숙식비를 떼고 나면 최저임금 아래입니다',
+        '공제 후 실수령 시급이 '+Math.round(r.netHourly).toLocaleString("ko-KR")+'원으로, 최저임금('+
+        r.minw.toLocaleString("ko-KR")+'원)보다 '+Math.round(r.minw-r.netHourly).toLocaleString("ko-KR")+
+        '원 낮습니다. 기숙사비·식비 공제는 정해진 범위 안에서만 가능하며, 근로자 동의 없이 임의로 뗄 수 없습니다.']);
     if(r.minor && r.night>0)
       f.push(['warn','!','18세 미만 야간근로가 포함되어 있습니다',
         '만 18세 미만은 밤 10시~오전 6시 근로가 원칙적으로 금지되며, 본인 동의와 고용노동부 인가가 있어야 합니다.']);

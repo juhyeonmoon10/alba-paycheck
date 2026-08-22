@@ -251,6 +251,39 @@
   details[open] summary::before{content:"− "}
   details p{font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin:8px 0 0}
 
+  /* ── 입금 내역 ── */
+  .deposits{display:flex;flex-direction:column;gap:9px}
+  .dep{display:grid;grid-template-columns:1.3fr 1fr 1.2fr 34px;gap:8px;align-items:end}
+  .dep label{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .dep label span{display:none;font-size:10.5px;font-weight:500;color:var(--ink-faint);letter-spacing:.03em}
+  .dep:first-child label span{display:block}
+  .dep .del{border:1px solid var(--rule);background:var(--sheet);color:var(--ink-faint);
+    height:36px;border-radius:3px;cursor:pointer;font-size:15px;line-height:1}
+  .dep .del:hover{border-color:var(--short);color:var(--short)}
+  @media (max-width:620px){
+    .dep{grid-template-columns:1fr 36px;gap:8px 10px;padding-bottom:9px;border-bottom:1px solid var(--rule-soft)}
+    .dep label span{display:block}
+    .dep label:nth-child(1),.dep label:nth-child(2),.dep label:nth-child(3){grid-column:1}
+    .dep .del{grid-column:2;grid-row:1}
+  }
+
+  /* ── 양식 판별 결과 ── */
+  .pickbox{border:1px solid var(--rule);border-left:3px solid var(--brass);border-radius:3px;
+    background:var(--sunk);padding:16px 18px}
+  .picklabel{display:block;font-size:11.5px;color:var(--ink-faint);letter-spacing:.03em}
+  .pickname{display:block;font-size:19px;font-weight:600;color:var(--brass-ink);line-height:1.35;margin:4px 0 10px}
+  .pickwhy{margin:0;padding-left:16px}
+  .pickwhy li{font-size:12.5px;color:var(--ink-soft);line-height:1.6}
+  .pickalso{margin-top:10px;font-size:12.5px;color:var(--ink-soft);line-height:1.6}
+  .pickalso b{color:var(--ink);font-weight:600}
+  .pickstate{margin-top:12px;padding-top:11px;border-top:1px solid var(--rule);font-size:12.5px;line-height:1.6}
+  .pickstate.ok{color:var(--ok)}
+  .pickstate.no{color:var(--short)}
+  .pickwarn{margin-top:10px;border-top:1px solid var(--rule);padding-top:10px}
+  .pickwarn p{margin:0 0 5px;font-size:12px;color:var(--short);line-height:1.55}
+  .pickwarn p:last-child{margin-bottom:0}
+  .pickwarn p::before{content:"⚠ ";font-weight:700}
+
   /* ── 서류 미리보기 (종이) ── */
   .paperwrap{background:var(--sunk);border:1px solid var(--rule);border-radius:4px;padding:16px;overflow-x:auto}
   .paper{background:#FFFFFF;color:#1A222C;width:100%;max-width:660px;margin:0 auto;padding:36px 38px;
@@ -403,19 +436,18 @@
     </section>
 
     <section class="step" style="margin-top:24px">
-      <header><span class="no">03</span><h2>실제로 받은 금액</h2><span class="hint">통장에 찍힌 금액</span></header>
+      <header><span class="no">03</span><h2>실제로 받은 금액</h2><span class="hint">통장 입금 내역과 대조합니다</span></header>
       <div class="body">
-        <div class="grid">
-          <div class="field">
-            <label for="paid">입금된 금액 (원)</label>
-            <input id="paid" type="number" min="0" step="10" value="320000">
-          </div>
+        <div class="deposits" id="deps"></div>
+        <button class="addrow" id="adddep" type="button">＋ 입금 건 추가 (나눠서 들어온 경우)</button>
+        <div class="grid" style="margin-top:16px">
           <div class="field">
             <label for="deduct">숙식비 등 공제액 (원)</label>
             <input id="deduct" type="number" min="0" step="1000" value="0">
             <span class="note">기숙사비·식비를 급여에서 뗀 경우 그 금액</span>
           </div>
         </div>
+        <input id="paid" type="hidden" value="320000">
       </div>
     </section>
 
@@ -645,10 +677,35 @@
     </section>
 
     <section class="step" style="margin-top:24px">
-      <header><span class="no">03</span><h2>서류 자동 작성</h2><span class="hint">복사해서 붙여넣으세요</span></header>
+      <header><span class="no">03</span><h2>어떤 양식을 써야 하나요?</h2><span class="hint">표준근로계약서는 7종입니다</span></header>
+      <div class="body">
+        <div class="grid">
+          <div class="field">
+            <span class="lbl">근로자 국적·체류자격</span>
+            <div class="choice">
+              <input type="radio" name="nat" id="nat-kr" value="kr" checked><label for="nat-kr">내국인</label>
+              <input type="radio" name="nat" id="nat-eps" value="eps"><label for="nat-eps">외국인 · 고용허가제</label>
+              <input type="radio" name="nat" id="nat-etc" value="etc"><label for="nat-etc">외국인 · 그 외</label>
+            </div>
+            <span class="note">고용허가제 = E-9(비전문취업) · H-2(방문취업)</span>
+          </div>
+          <div class="field">
+            <span class="lbl">건설 현장 일용직인가요?</span>
+            <div class="choice">
+              <input type="radio" name="con" id="con-no" value="no" checked><label for="con-no">아니오</label>
+              <input type="radio" name="con" id="con-yes" value="yes"><label for="con-yes">예</label>
+            </div>
+          </div>
+        </div>
+        <div id="wizresult" style="margin-top:18px"></div>
+      </div>
+    </section>
+
+    <section class="step" style="margin-top:24px">
+      <header><span class="no">04</span><h2>서류 자동 작성</h2><span class="hint">복사하거나 바로 인쇄하세요</span></header>
       <div class="body">
         <div class="tabs" role="tablist">
-          <button role="tab" data-doc="contract" aria-selected="true">표준 근로계약서</button>
+          <button role="tab" data-doc="contract" aria-selected="true">근로계약서</button>
           <button role="tab" data-doc="consent" aria-selected="false">친권자 동의서</button>
           <button role="tab" data-doc="payslip" aria-selected="false">급여명세서</button>
         </div>
@@ -696,7 +753,27 @@
   var PAID_HINT = {cvs:320000, cafe:227040, night:380000};
 
   var rowsEl = document.getElementById("rows");
+  var depsEl = document.getElementById("deps");
   var tpl = "ask", docTpl = "contract";
+
+  // ── 입금 내역 (여러 건 대조) ──────────────────────────────
+  function addDep(v){
+    var el=document.createElement("div");
+    el.className="dep";
+    el.innerHTML =
+      '<label><span>입금일</span><input type="date" class="d-d" value="'+(v.d||"")+'"></label>'+
+      '<label><span>입금액 (원)</span><input type="number" class="d-v" min="0" step="10" value="'+(v.v||0)+'"></label>'+
+      '<label><span>메모</span><input type="text" class="d-m" value="'+(v.m||"")+'" placeholder="예: 8월 급여"></label>'+
+      '<button class="del" type="button" aria-label="이 입금 삭제">&times;</button>';
+    el.querySelector(".del").addEventListener("click", function(){ el.remove(); render(); });
+    depsEl.appendChild(el);
+  }
+  function depTotal(){
+    var t=0;
+    depsEl.querySelectorAll(".d-v").forEach(function(i){ t += +i.value||0; });
+    return t;
+  }
+  function depCount(){ return depsEl.querySelectorAll(".dep").length; }
 
   function won(n){ return Math.round(n).toLocaleString("ko-KR") + "원"; }
   function hrs(n){ return (Math.round(n*100)/100).toLocaleString("ko-KR") + "시간"; }
@@ -747,7 +824,8 @@
   }
 
   function calc(){
-    var wage=+val("wage")||0, minw=+val("minwage")||0, paid=+val("paid")||0;
+    var wage=+val("wage")||0, minw=+val("minwage")||0;
+    var paid=depTotal();
     var deduct=+val("deduct")||0;
     var big=document.getElementById("size-big").checked;
     var minor=document.getElementById("age-minor").checked;
@@ -811,7 +889,8 @@
     if(r.deduct>0)
       rows.push(['숙식비 등 공제<small>공제 후 실수령 시급 '+Math.round(r.netHourly).toLocaleString("ko-KR")+
         '원</small>','− '+won(r.deduct),'muted']);
-    rows.push(['실제 받은 금액','− '+won(r.paid),'muted']);
+    rows.push(['실제 받은 금액'+(depCount()>1?'<small>입금 '+depCount()+'건 합계</small>':''),
+      '− '+won(r.paid),'muted']);
     document.getElementById("ledger").innerHTML = rows.map(function(x){
       return '<tr class="'+x[2]+'"><td class="lbl">'+x[0]+'</td><td>'+x[1]+'</td></tr>';
     }).join("");
@@ -922,9 +1001,99 @@
     return d ? "("+d+")" : "";
   }
 
+  // ── 표준근로계약서 7종 중 어떤 것을 써야 하는지 판별 ──────────
+  function weeklyHours(){
+    var a=toMin(val("o-from")), z=toMin(val("o-to"));
+    if(z<=a) z+=1440;
+    var b=0, ba=val("o-bfrom"), bz=val("o-bto");
+    if(ba&&bz){ var x=toMin(ba), y=toMin(bz); if(y<=x) y+=1440; b=y-x; }
+    var day=Math.max(0,(z-a)-b)/60;
+    return day * (+val("o-dayn")||0);
+  }
+
+  function pickForm(){
+    var age=ageAt(val("o-birth"), val("o-start")||today());
+    var minor=(age!==null && age<18);
+    var nat=document.querySelector('input[name="nat"]:checked').value;
+    var con=document.getElementById("con-yes").checked;
+    var wk=weeklyHours();
+    var part=(wk>0 && wk<40);
+    var fixed=!!val("o-end");
+
+    var f={minor:minor, age:age, nat:nat, con:con, wk:wk, part:part, fixed:fixed};
+    // 우선순위: 연소 > 건설일용 > 고용허가제 외국인 > 단시간 > 일반
+    if(minor){
+      f.form="연소근로자(18세 미만인 자) 표준근로계약서";
+      f.key="minor"; f.buildable=true;
+      f.why=["근로자가 만 "+age+"세로 18세 미만입니다"];
+      f.also=["친권자(후견인) 동의서", "가족관계기록사항에 관한 증명서"];
+    } else if(con){
+      f.form="건설일용근로자 표준근로계약서";
+      f.key="construct"; f.buildable=false;
+      f.why=["건설 현장 일용직입니다"];
+      f.also=[];
+    } else if(nat==="eps"){
+      f.form="외국인근로자 표준근로계약서 (Standard Labor Contract)";
+      f.key="eps"; f.buildable=false;
+      f.why=["고용허가제(E-9·H-2) 외국인 근로자입니다"];
+      f.also=[];
+    } else if(part){
+      f.form="단시간근로자 표준근로계약서";
+      f.key="part"; f.buildable=true;
+      f.why=["1주 소정근로시간이 "+(Math.round(wk*10)/10)+"시간으로 40시간 미만입니다"];
+      f.also=[];
+    } else {
+      f.form="표준근로계약서";
+      f.key="normal"; f.buildable=true;
+      f.why=["만 18세 이상 내국인, 1주 40시간 이상 근무입니다"];
+      f.also=[];
+    }
+    f.form += fixed ? " — 기간의 정함이 있는 경우" : " — 기간의 정함이 없는 경우";
+    if(f.fixed) f.why.push("근로계약 종료일이 정해져 있습니다");
+    else f.why.push("근로계약 종료일이 정해져 있지 않습니다");
+
+    // 주의사항
+    f.warn=[];
+    if(minor && nat!=="kr")
+      f.warn.push("만 18세 미만 외국인은 체류자격에 따라 취업이 제한될 수 있습니다. 출입국·외국인청에 먼저 확인하십시오.");
+    if(minor && age!==null && age<15)
+      f.warn.push("13세 이상 15세 미만은 고용노동부장관의 취직인허증을 먼저 받아야 합니다.");
+    if(part && !minor && !con && nat==="kr")
+      f.warn.push("단시간근로자는 연차유급휴가를 통상근로자의 근로시간에 비례해 부여하고, 초과근로 가산임금률을 계약서에 적어야 합니다.");
+    if(nat==="etc")
+      f.warn.push("고용허가제가 아닌 외국인은 체류자격에 취업활동이 허용되는지 먼저 확인해야 합니다. 유학생(D-2)은 시간제취업 허가가 별도로 필요합니다.");
+    return f;
+  }
+
+  function renderWizard(){
+    var f=pickForm();
+    var el=document.getElementById("wizresult");
+    if(!el) return f;
+    var h='<div class="pickbox">'+
+      '<span class="picklabel">이 근로자에게 필요한 양식</span>'+
+      '<b class="pickname">'+f.form+'</b>'+
+      '<ul class="pickwhy">'+f.why.map(function(w){ return '<li>'+w+'</li>'; }).join("")+'</ul>';
+    if(f.also.length)
+      h+='<div class="pickalso"><b>함께 갖춰야 할 서류</b> — '+f.also.join(" · ")+'</div>';
+    h+='<div class="pickstate '+(f.buildable?"ok":"no")+'">'+
+       (f.buildable
+         ? "아래에서 이 양식으로 바로 만들어 인쇄할 수 있습니다."
+         : "이 양식은 항목이 크게 달라 아래 자동 작성에서 다루지 않습니다. "+
+           (f.key==="eps"
+             ? "고용허가제 전용 양식이므로 EPS(www.eps.go.kr)에서 받으십시오."
+             : "고용노동부 표준근로계약서 모음에서 건설일용근로자용을 받으십시오."))+
+       '</div>';
+    if(f.warn.length)
+      h+='<div class="pickwarn">'+f.warn.map(function(w){ return '<p>'+w+'</p>'; }).join("")+'</div>';
+    h+='</div>';
+    el.innerHTML=h;
+    return f;
+  }
+
   function renderDoc(){
-    var age = ageAt(val("o-birth"), val("o-start") || today());
-    var minor = (age !== null && age < 18);
+    var f=renderWizard();
+    var age = f.age;
+    var minor = f.minor;
     var biz=pad(val("o-biz")), ceo=pad(val("o-ceo")), emp=pad(val("o-emp"));
     var wage=+val("o-wage")||0;
     var note=document.getElementById("minor-note");
@@ -1039,7 +1208,7 @@
     }
     document.getElementById("doc").value=t;
     document.getElementById("doc-why").textContent=why;
-    renderPaper(minor, age);
+    renderPaper(minor, age, f);
   }
 
   // ── 실제 서류 모양으로 렌더링 (인쇄·PDF 저장용) ──────────────
@@ -1055,7 +1224,7 @@
            (mark?'<span class="sigmark">'+mark+'</span>':'')+'</b></div>';
   }
 
-  function renderPaper(minor, age){
+  function renderPaper(minor, age, f){
     var P=document.getElementById("paper");
     var biz=val("o-biz"), ceo=val("o-ceo"), emp=val("o-emp"), wage=+val("o-wage")||0;
     var h="";
@@ -1119,9 +1288,36 @@
       h += '<div class="seal">'+blank(biz,150)+'  <span class="sigmark">직인</span><br>대표자 '+blank(ceo,110)+'</div>';
       h += '<p class="note">※ 4대보험·소득세 공제액은 사업장 가입 여부와 근로자 조건에 따라 달라지므로 직접 기입하십시오. 위 지급액은 세전 기준입니다.</p>';
     }
+    else if(!f.buildable){
+      var where = (f.key==="eps")
+        ? ['고용허가제 전용 양식이라 항목 구성이 완전히 다릅니다. 한국어와 영어가 나란히 적혀 있고, '+
+           '수습기간·입국일 기산·숙식 제공 여부 같은 항목이 따로 있습니다.',
+           'EPS 고용허가제 홈페이지 (www.eps.go.kr)에서 받으실 수 있습니다.']
+        : ['건설일용근로자용은 시간외·야간·휴일근로수당을 각각 나누어 적게 되어 있어 '+
+           '일반 양식으로 대체할 수 없습니다.',
+           '고용노동부 「표준근로계약서 모음」에서 건설일용근로자용을 받으십시오.'];
+      h += '<h3>'+esc(f.form.split(" — ")[0])+'</h3>';
+      h += '<p class="psub">이 양식은 여기서 만들어 드리지 않습니다</p>';
+      h += '<div style="margin-top:26px;padding:20px;background:#F5F7F9;border-left:3px solid #B23A2E;border-radius:3px">';
+      where.forEach(function(t){ h += '<p style="margin:0 0 10px;font-size:12.5px;line-height:1.7;color:#39434F">'+esc(t)+'</p>'; });
+      h += '<p style="margin:0;font-size:12px;color:#6B7580;line-height:1.7">'+
+           '위 03번에서 조건을 바꾸시면 만들 수 있는 양식으로 다시 안내해 드립니다.</p>';
+      h += '</div>';
+      P.innerHTML = h;
+      document.getElementById("doc").value =
+        f.form + "\n\n이 양식은 항목 구성이 달라 자동 작성 대상이 아닙니다.\n\n" + where.join("\n");
+      document.getElementById("doc-why").textContent =
+        "이 근로자에게는 " + f.form.split(" — ")[0] + "가 필요합니다. 항목 구성이 크게 달라 자동 작성 대상이 아닙니다.";
+      return;
+    }
     else{
-      h += '<h3>'+(minor?"연소근로자 표준근로계약서":"표준근로계약서")+'</h3>';
-      h += '<p class="psub">'+(minor?"18세 미만인 자 · 고용노동부 표준양식":"고용노동부 표준양식")+'</p>';
+      var ttl = minor ? "연소근로자 표준근로계약서"
+              : (f.key==="part" ? "단시간근로자 표준근로계약서" : "표준근로계약서");
+      var tsub = (minor ? "18세 미만인 자 · " : (f.key==="part" ? "1주 40시간 미만 · " : ""))
+               + (f.fixed ? "기간의 정함이 있는 경우" : "기간의 정함이 없는 경우")
+               + " · 고용노동부 표준양식";
+      h += '<h3>'+ttl+'</h3>';
+      h += '<p class="psub">'+tsub+'</p>';
       h += '<p class="pre"><b>'+blank(biz,110)+'</b>(이하 “사업주”라 함)과(와) <b>'+blank(emp,80)+
            '</b>(이하 “근로자”라 함)은 다음과 같이 근로계약을 체결한다.</p>';
       h += '<ol class="cl">';
@@ -1135,12 +1331,17 @@
       h += clause("근무일/휴일", "매주 "+blank(val("o-dayn"),30)+"일"+esc(dayNames())+
                   " 근무, 주휴일 매주 "+blank(val("o-holiday"),40)+"요일");
       h += clause("임　　금", '<ul class="sub">'+
-             '<li>월(일, 시간)급 : <b>'+wage.toLocaleString("ko-KR")+'원</b> (시간급)</li>'+
+             '<li>'+(f.key==="part" ? "시간(일, 월)급" : "월(일, 시간)급")+
+                ' : <b>'+wage.toLocaleString("ko-KR")+'원</b> (시간급)</li>'+
              '<li>상여금 : 있음 (　　)　　　　원,　없음 ( ∨ )</li>'+
              '<li>기타급여(제수당 등) : 있음 ( ∨ ),　없음 (　　)　· 주휴수당 등 법정수당</li>'+
+             (f.key==="part" ? '<li>초과근로에 대한 가산임금률 : '+blank("",44)+'%</li>' : '')+
              '<li>임금지급일 : 매월 '+blank(val("o-payday"),34)+'일 (휴일의 경우는 전일 지급)</li>'+
              '<li>지급방법 : 근로자에게 직접지급(　　),　근로자 명의 예금통장에 입금( ∨ )</li></ul>');
-      h += clause("연차유급휴가", "연차유급휴가는 근로기준법에서 정하는 바에 따라 부여함");
+      if(f.key === "part")
+        h += clause("연차유급휴가", "통상근로자의 근로시간에 비례하여 연차유급휴가 부여");
+      else
+        h += clause("연차유급휴가", "연차유급휴가는 근로기준법에서 정하는 바에 따라 부여함");
       if(minor)
         h += clause("가족관계증명서<br>및 동의서", '<ul class="sub">'+
              '<li>가족관계기록사항에 관한 증명서 제출 여부 : (　　)</li>'+
@@ -1398,6 +1599,9 @@
   document.getElementById("add").addEventListener("click", function(){
     addRow({d:"",s:"17:00",e:"21:00",b:0}); render();
   });
+  document.getElementById("adddep").addEventListener("click", function(){
+    addDep({d:"",v:0,m:""}); render();
+  });
   document.addEventListener("input", render);
   document.addEventListener("change", render);
 
@@ -1470,6 +1674,7 @@
 
   buildChecks();
   PRESETS.cvs.forEach(addRow);
+  addDep({d:"2026-08-10", v:320000, m:"8월 급여"});
   render();
 })();
 </script>

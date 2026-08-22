@@ -83,11 +83,17 @@
   .langsoon{font-size:13px;color:var(--ink-faint);padding-left:4px}
 
   /* ── 기능 선택 ── */
-  .primary{background:var(--sheet);border:2px solid var(--brass);border-radius:6px;
-    box-shadow:var(--shadow);padding:20px 22px;display:flex;flex-direction:column;gap:6px}
-  .primary .tag{font-size:12.5px;font-weight:600;color:var(--brass);letter-spacing:.04em}
-  .primary h2{margin:0;font-size:23px;font-weight:600;letter-spacing:-.01em}
-  .primary p{margin:0;font-size:14.5px;color:var(--ink-soft);line-height:1.6}
+  .primary{width:100%;text-align:left;font-family:inherit;cursor:pointer;
+    background:var(--sunk);border:1px solid var(--rule);border-radius:6px;
+    padding:20px 22px;display:flex;flex-direction:column;gap:6px;min-height:var(--tap)}
+  .primary[aria-pressed="true"]{background:var(--sheet);border:2px solid var(--brass);
+    padding:19px 21px;box-shadow:var(--shadow)}
+  .primary .tag{font-size:12.5px;font-weight:600;color:var(--ink-faint);letter-spacing:.04em}
+  .primary[aria-pressed="true"] .tag{color:var(--brass)}
+  .primary .ttl{font-size:23px;font-weight:600;letter-spacing:-.01em;color:var(--ink-soft)}
+  .primary[aria-pressed="true"] .ttl{color:var(--ink)}
+  .primary .dsc{font-size:14.5px;color:var(--ink-faint);line-height:1.6}
+  .primary[aria-pressed="true"] .dsc{color:var(--ink-soft)}
   .secondary{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .secondary button{font-family:inherit;text-align:left;cursor:pointer;background:var(--sheet);
     border:1px solid var(--rule);border-radius:5px;padding:13px 15px;display:flex;
@@ -266,11 +272,11 @@
     </div>
   </header>
 
-  <div class="primary">
+  <button class="primary" type="button" data-mode="calc" aria-pressed="true">
     <span class="tag" data-i18n="coretag">핵심 기능</span>
-    <h2 data-i18n="coretitle">급여 계산</h2>
-    <p data-i18n="coredesc">근무 기록을 넣으면 예상 급여를 계산하고, 실제 입금액과 비교해 차이를 확인합니다.</p>
-  </div>
+    <span class="ttl" data-i18n="coretitle">급여 계산</span>
+    <span class="dsc" data-i18n="coredesc">근무 기록을 넣으면 예상 급여를 계산하고, 실제 입금액과 비교해 차이를 확인합니다.</span>
+  </button>
 
   <div class="secondary">
     <button type="button" data-mode="checker" aria-pressed="false">
@@ -789,7 +795,7 @@
 
   /* ══════════════ 공통 ══════════════ */
   var rowsEl=document.getElementById("rows"), depsEl=document.getElementById("deps");
-  var tpl="ask", docTpl="contract";
+  var tpl="ask", docTpl="contract", mode="calc";
 
   function won(n){ return Math.round(n).toLocaleString("ko-KR") + (lang==="en" ? " KRW" : "원"); }
   function hrs(n){ var v=Math.round(n*100)/100; return lang==="en" ? v+" h" : v.toLocaleString("ko-KR")+"시간"; }
@@ -1032,7 +1038,7 @@
 
   function renderSticky(r){
     var el=document.getElementById("sticky");
-    if(r.state==="empty"){ el.hidden=true; return; }
+    if(mode!=="calc" || r.state==="empty"){ el.hidden=true; return; }
     el.hidden=false;
     document.getElementById("sk-due").textContent=won(r.due);
     document.getElementById("sk-paid").textContent=won(r.paid);
@@ -1453,20 +1459,19 @@
     });
   });
 
-  document.querySelectorAll(".secondary [data-mode]").forEach(function(b){
-    b.addEventListener("click", function(){
-      var on = b.getAttribute("aria-pressed")==="true";
-      document.querySelectorAll(".secondary [data-mode]").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
-      document.getElementById("checker").hidden=true;
-      document.getElementById("owner").hidden=true;
-      document.getElementById("calc").hidden=false;
-      if(!on){
-        b.setAttribute("aria-pressed","true");
-        document.getElementById(b.dataset.mode).hidden=false;
-        document.getElementById("calc").hidden=true;
-      }
-      window.scrollTo({top:0,behavior:"smooth"});
+  function setMode(m){
+    mode = m;
+    ["calc","checker","owner"].forEach(function(id){
+      document.getElementById(id).hidden = (id !== m);
     });
+    document.querySelectorAll("[data-mode]").forEach(function(x){
+      x.setAttribute("aria-pressed", x.dataset.mode===m ? "true" : "false");
+    });
+    render();
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+  document.querySelectorAll("[data-mode]").forEach(function(b){
+    b.addEventListener("click", function(){ setMode(b.dataset.mode); });
   });
 
   document.querySelectorAll("[data-lang]").forEach(function(b){

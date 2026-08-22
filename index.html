@@ -242,6 +242,55 @@
   details[open] summary::before{content:"− "}
   details p{font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin:8px 0 0}
 
+  /* ── 서류 미리보기 (종이) ── */
+  .paperwrap{background:var(--sunk);border:1px solid var(--rule);border-radius:4px;padding:16px;overflow-x:auto}
+  .paper{background:#FFFFFF;color:#1A222C;width:100%;max-width:660px;margin:0 auto;padding:36px 38px;
+    box-shadow:0 1px 4px rgba(0,0,0,.16);font-size:12.5px;line-height:1.75}
+  .paper h3{font-family:"Gowun Batang","Batang",serif;text-align:center;font-size:19px;font-weight:700;
+    letter-spacing:.3em;margin:0 0 4px;text-indent:.3em}
+  .paper .psub{text-align:center;font-size:11.5px;color:#5A6470;margin:0 0 24px}
+  .paper .pre{margin:0 0 18px;font-size:12.5px}
+  .paper ol.cl{margin:0;padding:0;list-style:none;counter-reset:cl}
+  .paper ol.cl > li{counter-increment:cl;display:grid;grid-template-columns:20px 108px 1fr;gap:0 6px;
+    margin-bottom:8px;align-items:start}
+  .paper ol.cl > li::before{content:counter(cl) ".";font-weight:600;color:#1A222C}
+  .paper .k{font-weight:600}
+  .paper .v{min-width:0;word-break:break-word}
+  .paper .v .fill{border-bottom:1px solid #B9C0C8;display:inline-block;min-width:120px}
+  .paper ul.sub{margin:2px 0 0;padding-left:0;list-style:none}
+  .paper ul.sub li{margin-bottom:1px}
+  .paper ul.sub li::before{content:"- ";color:#5A6470}
+  .paper .pdate{text-align:center;margin:26px 0 22px;font-size:13px;letter-spacing:.02em}
+  .paper .signs{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .paper .sign h4{margin:0 0 7px;font-size:12.5px;font-weight:700}
+  .paper .sign .row{display:grid;grid-template-columns:74px 1fr;gap:6px;margin-bottom:3px}
+  .paper .sign .row span{color:#5A6470}
+  .paper .sign .row b{font-weight:500;border-bottom:1px solid #DCE1E6;min-height:19px}
+  .paper .sigmark{display:inline-block;border:1px dashed #B9C0C8;border-radius:2px;padding:1px 9px;
+    font-size:10.5px;color:#8A939C;margin-left:6px}
+  .paper table.pt{width:100%;border-collapse:collapse;margin:6px 0 14px}
+  .paper table.pt th,.paper table.pt td{border:1px solid #C9D0D7;padding:6px 9px;font-size:12px;text-align:left}
+  .paper table.pt th{background:#F1F4F7;font-weight:600;color:#39434F}
+  .paper table.pt td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .paper table.pt td small{display:block;color:#6B7580;font-size:10.5px;line-height:1.5}
+  .paper table.pt tr.sum td{background:#F7F9FB;font-weight:700}
+  .paper .note{margin:16px 0 0;font-size:10.5px;color:#6B7580;line-height:1.6}
+  .paper .seal{text-align:right;margin-top:24px;font-size:12.5px;line-height:2}
+  @media (max-width:560px){
+    .paper{padding:24px 20px;font-size:12px}
+    .paper ol.cl > li{grid-template-columns:18px 1fr;gap:0 5px}
+    .paper ol.cl > li .k{grid-column:2}
+    .paper ol.cl > li .v{grid-column:2}
+    .paper .signs{grid-template-columns:1fr}
+  }
+  @media print{
+    @page{size:A4;margin:16mm 14mm}
+    body{background:#FFFFFF !important}
+    body *{visibility:hidden !important}
+    #paper,#paper *{visibility:visible !important}
+    #paper{position:absolute;left:0;top:0;width:100%;max-width:none;margin:0;padding:0;box-shadow:none}
+  }
+
   .callout{background:var(--sheet);border:1px solid var(--rule);border-left:3px solid var(--brass);
     border-radius:3px;padding:13px 16px;font-size:13px;color:var(--ink-soft);line-height:1.6}
   .callout b{color:var(--ink);font-weight:600}
@@ -570,11 +619,14 @@
           <button role="tab" data-doc="consent" aria-selected="false">친권자 동의서</button>
           <button role="tab" data-doc="payslip" aria-selected="false">급여명세서</button>
         </div>
-        <textarea id="doc" class="doc" spellcheck="false" aria-label="자동 작성된 서류"></textarea>
-        <div class="msgfoot">
-          <button class="copy" data-copy="doc" type="button">서류 복사</button>
-          <span class="copied" hidden>복사했습니다</span>
+        <div class="pvtools">
+          <button type="button" id="printdoc" style="background:var(--ink);color:var(--ground);border-color:var(--ink);font-weight:500;padding:7px 16px">인쇄 · PDF로 저장</button>
+          <button type="button" class="copy-plain" data-copy="doc">텍스트 복사</button>
+          <button type="button" id="toggleraw">텍스트로 보기</button>
+          <span class="copied" hidden style="align-self:center">복사했습니다</span>
         </div>
+        <div class="paperwrap" id="paperwrap"><div class="paper" id="paper"></div></div>
+        <textarea id="doc" class="doc" spellcheck="false" aria-label="자동 작성된 서류" hidden></textarea>
         <p class="why" id="doc-why"></p>
       </div>
     </section>
@@ -919,6 +971,126 @@
     }
     document.getElementById("doc").value=t;
     document.getElementById("doc-why").textContent=why;
+    renderPaper(minor, age);
+  }
+
+  // ── 실제 서류 모양으로 렌더링 (인쇄·PDF 저장용) ──────────────
+  function esc(s){ return String(s).replace(/[&<>]/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
+  function blank(v, w){
+    v=(v||"").trim();
+    return v ? esc(v) : '<span class="fill" style="min-width:'+(w||120)+'px">&nbsp;</span>';
+  }
+  function clause(k, v){ return '<li><span class="k">'+k+'</span><span class="v">'+v+'</span></li>'; }
+  function sigrow(label, value, mark){
+    return '<div class="row"><span>'+label+'</span><b>'+blank(value, 90)+
+           (mark?'<span class="sigmark">'+mark+'</span>':'')+'</b></div>';
+  }
+
+  function renderPaper(minor, age){
+    var P=document.getElementById("paper");
+    var biz=val("o-biz"), ceo=val("o-ceo"), emp=val("o-emp"), wage=+val("o-wage")||0;
+    var h="";
+
+    if(docTpl==="consent"){
+      h += '<h3>친권자 동의서</h3>';
+      h += '<p class="psub">근로기준법 제66조 · 만 18세 미만 근로자 고용 시 사업장 비치 서류</p>';
+      h += '<table class="pt"><tr><th colspan="2">친권자(후견인) 인적사항</th></tr>'+
+           '<tr><td style="width:110px">성명</td><td>'+blank("",200)+'</td></tr>'+
+           '<tr><td>생년월일</td><td>'+blank("",200)+'</td></tr>'+
+           '<tr><td>주소</td><td>'+blank("",260)+'</td></tr>'+
+           '<tr><td>연락처</td><td>'+blank("",200)+'</td></tr>'+
+           '<tr><td>근로자와의 관계</td><td>'+blank("",200)+'</td></tr></table>';
+      h += '<table class="pt"><tr><th colspan="2">연소근로자 인적사항</th></tr>'+
+           '<tr><td style="width:110px">성명</td><td>'+blank(emp,200)+
+             (age!==null?' <span style="color:#6B7580">(만 '+age+'세)</span>':'')+'</td></tr>'+
+           '<tr><td>생년월일</td><td>'+esc(kdate(val("o-birth")))+'</td></tr>'+
+           '<tr><td>주소</td><td>'+blank(val("o-eaddr"),260)+'</td></tr>'+
+           '<tr><td>연락처</td><td>'+blank(val("o-etel"),200)+'</td></tr></table>';
+      h += '<table class="pt"><tr><th colspan="2">사업장 개요</th></tr>'+
+           '<tr><td style="width:110px">사업체명</td><td>'+blank(biz,200)+'</td></tr>'+
+           '<tr><td>사업장 주소</td><td>'+blank(val("o-addr"),260)+'</td></tr>'+
+           '<tr><td>대표자</td><td>'+blank(ceo,200)+'</td></tr>'+
+           '<tr><td>전화</td><td>'+blank(val("o-tel"),200)+'</td></tr></table>';
+      h += '<p class="pre" style="margin-top:16px">본인은 위 연소근로자 <b>'+blank(emp,70)+
+           '</b>이(가) 위 사업장에서 근로하는 것에 대하여 동의합니다.</p>';
+      h += '<div class="pdate">'+esc(kdate(today()))+'</div>';
+      h += '<div class="signs"><div class="sign">'+
+           sigrow("친권자","","서명 또는 인")+'</div><div class="sign"></div></div>';
+      h += '<p class="note">첨부 : 가족관계기록사항에 관한 증명서 1부</p>';
+    }
+    else if(docTpl==="payslip"){
+      var r=calc();
+      h += '<h3>임 금 명 세 서</h3>';
+      h += '<p class="psub">근로기준법 제48조 제2항</p>';
+      h += '<table class="pt">'+
+           '<tr><th style="width:110px">성명</th><td>'+blank(emp,160)+'</td>'+
+           '<th style="width:110px">임금 지급일</th><td>매월 '+blank(val("o-payday"),40)+'일</td></tr>'+
+           '<tr><th>산정 기간</th><td>'+blank(period(r),160)+'</td>'+
+           '<th>총 근로시간</th><td>'+esc(hrs(r.total))+'</td></tr></table>';
+
+      var pay='<table class="pt"><tr><th style="width:34%">지급 항목</th><th>계산 방법</th><th style="width:24%">금액</th></tr>';
+      pay+='<tr><td>기본급</td><td><small>실근로시간 '+esc(hrs(r.total))+' × 시급 '+
+           (r.wage||wage).toLocaleString("ko-KR")+'원</small></td><td class="num">'+esc(won(r.base))+'</td></tr>';
+      pay+='<tr><td>주휴수당</td><td><small>(1주 소정근로시간 ÷ 40) × 8 × 시급 · '+r.weeksQualified+
+           '주치</small></td><td class="num">'+esc(won(r.holiday))+'</td></tr>';
+      if(r.nightPay>0) pay+='<tr><td>야간근로 가산</td><td><small>야간근로 '+esc(hrs(r.night))+
+           ' × 시급 × 0.5</small></td><td class="num">'+esc(won(r.nightPay))+'</td></tr>';
+      if(r.otPay>0) pay+='<tr><td>연장근로 가산</td><td><small>연장근로 '+esc(hrs(r.ot))+
+           ' × 시급 × 0.5</small></td><td class="num">'+esc(won(r.otPay))+'</td></tr>';
+      pay+='<tr class="sum"><td colspan="2">지급액 계</td><td class="num">'+esc(won(r.due))+'</td></tr></table>';
+      h += pay;
+
+      h += '<table class="pt"><tr><th style="width:34%">공제 항목</th><th>계산 방법</th><th style="width:24%">금액</th></tr>'+
+           '<tr><td>국민연금</td><td><small>사업장 가입 시 기재</small></td><td class="num">'+blank("",70)+'</td></tr>'+
+           '<tr><td>건강보험</td><td><small>사업장 가입 시 기재</small></td><td class="num">'+blank("",70)+'</td></tr>'+
+           '<tr><td>고용보험</td><td><small>사업장 가입 시 기재</small></td><td class="num">'+blank("",70)+'</td></tr>'+
+           '<tr><td>소득세 · 지방소득세</td><td><small>간이세액표에 따름</small></td><td class="num">'+blank("",70)+'</td></tr>'+
+           '<tr class="sum"><td colspan="2">공제액 계</td><td class="num">'+blank("",70)+'</td></tr></table>';
+      h += '<table class="pt"><tr class="sum"><td>실 지급액</td><td class="num" style="width:24%">'+blank("",70)+'</td></tr></table>';
+      h += '<div class="seal">'+blank(biz,150)+'  <span class="sigmark">직인</span><br>대표자 '+blank(ceo,110)+'</div>';
+      h += '<p class="note">※ 4대보험·소득세 공제액은 사업장 가입 여부와 근로자 조건에 따라 달라지므로 직접 기입하십시오. 위 지급액은 세전 기준입니다.</p>';
+    }
+    else{
+      var brk=+val("o-break")||0;
+      h += '<h3>표준근로계약서</h3>';
+      h += '<p class="psub">'+(minor?"연소근로자(만 18세 미만)용":"기간의 정함이 없는 경우")+'</p>';
+      h += '<p class="pre"><b>'+blank(biz,110)+'</b>(이하 “사업주”라 함)과(와) <b>'+blank(emp,80)+
+           '</b>(이하 “근로자”라 함)는 다음과 같이 근로계약을 체결한다.</p>';
+      h += '<ol class="cl">';
+      h += clause("근로개시일", esc(kdate(val("o-start")))+"부터");
+      h += clause("근무 장소", blank(val("o-place"),200));
+      h += clause("업무의 내용", blank(val("o-task"),200));
+      h += clause("소정근로시간", blank(val("o-from"),60)+" 부터 "+blank(val("o-to"),60)+
+                  " 까지 (휴게시간 "+brk+"분)");
+      h += clause("근무일/휴일", "매주 "+blank(val("o-days"),110)+" 근무, 주휴일 매주 "+blank(val("o-holiday"),80));
+      h += clause("임금", '<ul class="sub">'+
+             '<li>시간급 : <b>'+wage.toLocaleString("ko-KR")+'원</b></li>'+
+             '<li>상여금 : 없음</li>'+
+             '<li>기타급여(제수당 등) : 주휴수당 등 법정수당 지급</li>'+
+             '<li>임금지급일 : 매월 '+blank(val("o-payday"),34)+'일 (휴일인 경우 전일 지급)</li>'+
+             '<li>지급방법 : 근로자 명의 예금통장에 입금</li></ul>');
+      h += clause("연차유급휴가", "근로기준법에서 정하는 바에 따라 부여함");
+      if(minor)
+        h += clause("가족관계증명서<br>및 동의서", '<ul class="sub">'+
+             '<li>가족관계기록사항에 관한 증명서 제출 여부 : (　　)</li>'+
+             '<li>친권자 또는 후견인의 동의서 구비 여부 : (　　)</li></ul>');
+      h += clause("사회보험 적용", "(　) 고용보험　　(　) 산재보험　　(　) 국민연금　　(　) 건강보험");
+      h += clause("근로계약서 교부",
+             "사업주는 근로계약을 체결함과 동시에 본 계약서를 사본하여 근로자의 교부요구와 관계없이 근로자에게 교부한다.");
+      h += clause("기타", "이 계약에 정함이 없는 사항은 근로기준법령에 의한다.");
+      h += '</ol>';
+      h += '<div class="pdate">'+esc(kdate(today()))+'</div>';
+      h += '<div class="signs">'+
+           '<div class="sign"><h4>(사업주)</h4>'+
+             sigrow("사업체명", biz)+sigrow("주소", val("o-addr"))+
+             sigrow("전화", val("o-tel"))+sigrow("대표자", ceo, "서명")+'</div>'+
+           '<div class="sign"><h4>(근로자)</h4>'+
+             sigrow("주소", val("o-eaddr"))+sigrow("연락처", val("o-etel"))+
+             sigrow("성명", emp, "서명")+'</div></div>';
+      h += '<p class="note">※ 본 계약서는 2부를 작성하여 사업주와 근로자가 각 1부씩 보관합니다.</p>';
+    }
+    P.innerHTML=h;
   }
 
   // ── 계약서 진단 ────────────────────────────────
@@ -1184,7 +1356,24 @@
     });
   });
 
-  document.querySelectorAll(".copy").forEach(function(btn){
+  document.getElementById("printdoc").addEventListener("click", function(){
+    var raw=document.getElementById("doc");
+    if(!raw.hidden){                       // 텍스트 보기 상태면 서류 보기로 되돌리고 인쇄
+      raw.hidden=true;
+      document.getElementById("paperwrap").hidden=false;
+      document.getElementById("toggleraw").textContent="텍스트로 보기";
+    }
+    window.print();
+  });
+
+  document.getElementById("toggleraw").addEventListener("click", function(){
+    var raw=document.getElementById("doc"), pw=document.getElementById("paperwrap");
+    var showRaw=raw.hidden;
+    raw.hidden=!showRaw; pw.hidden=showRaw;
+    this.textContent = showRaw ? "서류로 보기" : "텍스트로 보기";
+  });
+
+  document.querySelectorAll(".copy, .copy-plain").forEach(function(btn){
     btn.addEventListener("click", function(){
       var ta=document.getElementById(btn.dataset.copy);
       var tag=btn.parentNode.querySelector(".copied");

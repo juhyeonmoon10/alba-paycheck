@@ -68,7 +68,7 @@
     border:1px solid var(--brass);border-radius:2px;padding:3px 9px}
 
   /* ── mode switch ── */
-  .modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px}
   .modes input{position:absolute;opacity:0;pointer-events:none}
   .modes label{
     cursor:pointer;border:1px solid var(--rule);border-radius:4px;background:var(--sheet);
@@ -138,6 +138,28 @@
     .shift label:nth-child(4){grid-column:1}
     .shift .del{grid-column:3;grid-row:3}
   }
+
+  /* ── 계약서 진단 ── */
+  .drop{display:flex;flex-direction:column;gap:4px;align-items:center;text-align:center;
+    border:1.5px dashed var(--rule);border-radius:4px;padding:26px 20px;cursor:pointer;background:var(--sunk)}
+  .drop:hover{border-color:var(--brass)}
+  .drop b{font-size:15px;font-weight:600;color:var(--ink)}
+  .drop span{font-size:12px;color:var(--ink-faint);line-height:1.5}
+  .pvtools{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .pvtools button{font-family:inherit;font-size:12.5px;cursor:pointer;color:var(--ink-soft);
+    background:var(--sheet);border:1px solid var(--rule);border-radius:3px;padding:7px 13px}
+  .pvtools button:hover{border-color:var(--brass);color:var(--brass-ink)}
+  .pvbox{border:1px solid var(--rule);border-radius:4px;overflow:auto;max-height:440px;
+    background:var(--sunk);display:grid;place-items:center;padding:10px}
+  .pvbox img{max-width:100%;display:block;border-radius:2px}
+  .privacy{margin:10px 0 0;font-size:11.5px;color:var(--ok);line-height:1.5}
+
+  .check{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--rule-soft)}
+  .check:last-child{border-bottom:0}
+  .check input{margin:3px 0 0;width:17px;height:17px;accent-color:var(--brass);flex:none;cursor:pointer}
+  .check b{font-size:14px;font-weight:500;display:block;color:var(--ink)}
+  .check span{font-size:12px;color:var(--ink-faint);line-height:1.45}
+  .check.flagcheck b{color:var(--short)}
 
   /* ── verdict ── */
   .verdict{border:1px solid var(--rule);border-radius:4px;box-shadow:var(--shadow);overflow:hidden;background:var(--sheet)}
@@ -226,6 +248,8 @@
   <div class="modes">
     <input type="radio" name="mode" id="m-worker" value="worker" checked>
     <label for="m-worker"><b>알바생</b><span>내 급여가 맞는지 검산하고 문의 메시지 만들기 · 무료</span></label>
+    <input type="radio" name="mode" id="m-checker" value="checker">
+    <label for="m-checker"><b>계약서 진단</b><span>받은 근로계약서에 빠지거나 잘못된 부분 찾기 · 무료</span></label>
     <input type="radio" name="mode" id="m-owner" value="owner">
     <label for="m-owner"><b>사장님</b><span>근로계약서·급여명세서 자동 작성 · 월 9,900원</span></label>
   </div>
@@ -344,6 +368,101 @@
           <summary>계산해보니 덜 받았는데, 말을 못 꺼내겠어요</summary>
           <p>부당한 대우를 겪은 청소년의 상당수가 아무 말도 못 하고 넘어갑니다. 그래서 이 서비스는 계산보다 <b>보낼 문장</b>에 더 공을 들였습니다. 위 04번 메시지를 그대로 복사해서 보내세요. 잘 풀리지 않으면 고용노동부 상담 <b>1350</b>(무료)에 전화할 수 있습니다.</p>
         </details>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══════════════ 계약서 진단 ══════════════ -->
+  <div id="checker" hidden>
+
+    <div class="callout" style="margin-bottom:24px">
+      <b>근로계약서를 받긴 했는데, 뭐가 적혀 있는지 모르겠다면.</b><br>
+      사진을 올려 화면에 띄워 놓고 아래 항목을 하나씩 대조하세요. 법에 어긋나거나 빠진 부분을 근거 조문과 함께 찾아 드립니다.
+    </div>
+
+    <section class="step">
+      <header><span class="no">01</span><h2>계약서 사진 올리기</h2><span class="hint">선택 사항</span></header>
+      <div class="body">
+        <label class="drop" for="file">
+          <b>사진 선택하거나 촬영하기</b>
+          <span>휴대폰이면 카메라가 바로 열립니다.<br>사진은 어디에도 전송되지 않고 이 화면에서만 열립니다.</span>
+        </label>
+        <input id="file" type="file" accept="image/*" hidden>
+        <div id="preview" hidden style="margin-top:14px">
+          <div class="pvtools">
+            <button type="button" id="rotate">↻ 90° 회전</button>
+            <button type="button" id="clearimg">사진 지우기</button>
+          </div>
+          <div class="pvbox"><img id="pvimg" alt="올린 근로계약서 사진"></div>
+          <p class="privacy">✓ 이 사진은 서버로 전송되지 않았습니다. 브라우저 안에서만 열려 있습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" style="margin-top:24px">
+      <header><span class="no">02</span><h2>이 여섯 가지가 적혀 있나요</h2><span class="hint">법이 정한 필수 항목</span></header>
+      <div class="body">
+        <div id="req"></div>
+        <p class="why" style="margin-top:14px">근로계약서에 반드시 적어야 하는 항목입니다. 하나라도 빠지면 사업주에게 과태료가 부과될 수 있습니다.</p>
+      </div>
+    </section>
+
+    <section class="step" style="margin-top:24px">
+      <header><span class="no">03</span><h2>계약서에 적힌 조건</h2><span class="hint">사진을 보면서 옮겨 적으세요</span></header>
+      <div class="body">
+        <div class="grid">
+          <div class="field">
+            <label for="c-wage">계약서에 적힌 시급 (원)</label>
+            <input id="c-wage" type="number" min="0" step="10" value="9800">
+          </div>
+          <div class="field">
+            <label for="c-min">적용 최저임금 (원)</label>
+            <input id="c-min" type="number" min="0" step="10" value="10320">
+          </div>
+          <div class="field">
+            <label for="c-day">하루 근로시간 (시간)</label>
+            <input id="c-day" type="number" min="0" step="0.5" value="8">
+          </div>
+          <div class="field">
+            <label for="c-week">한 주 근로시간 (시간)</label>
+            <input id="c-week" type="number" min="0" step="0.5" value="24">
+          </div>
+          <div class="field">
+            <label for="c-break">휴게시간 (분)</label>
+            <input id="c-break" type="number" min="0" step="10" value="30">
+          </div>
+          <div class="field">
+            <span class="lbl">내 나이</span>
+            <div class="choice">
+              <input type="radio" name="cage" id="cage-minor" value="minor" checked><label for="cage-minor">만 18세 미만</label>
+              <input type="radio" name="cage" id="cage-adult" value="adult"><label for="cage-adult">만 18세 이상</label>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px">
+          <div id="conds"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="verdict" id="cverdict" data-state="ok" style="margin-top:24px">
+      <div class="head">
+        <span class="kicker" id="c-kicker">진단 결과</span>
+        <span class="amount" id="c-amount">—</span>
+        <span class="sub" id="c-sub"></span>
+      </div>
+      <div id="cflags"></div>
+    </section>
+
+    <section class="step" style="margin-top:24px">
+      <header><span class="no">04</span><h2>사장님께 보낼 말</h2><span class="hint">복사해서 그대로 보내세요</span></header>
+      <div class="body">
+        <textarea id="cmsg" spellcheck="false" aria-label="계약서 관련 문의 메시지"></textarea>
+        <div class="msgfoot">
+          <button class="copy" data-copy="cmsg" type="button">메시지 복사</button>
+          <span class="copied" hidden>복사했습니다</span>
+        </div>
+        <p class="why">계약서를 고쳐 달라는 말은 꺼내기가 특히 어렵습니다. 그래서 <b>“제가 잘못 봤을 수도 있다”</b>로 시작하도록 만들었습니다.</p>
       </div>
     </section>
   </div>
@@ -752,9 +871,179 @@
     document.getElementById("doc-why").textContent=why;
   }
 
+  // ── 계약서 진단 ────────────────────────────────
+  var REQ = [
+    ["wage","임금","시급 또는 월급 액수와 계산·지급 방법",true],
+    ["hours","소정근로시간","몇 시부터 몇 시까지 일하는지",true],
+    ["holiday","휴일","주휴일이 무슨 요일인지",false],
+    ["annual","연차유급휴가","연차휴가에 관한 내용",false],
+    ["place","취업 장소","어디에서 일하는지",true],
+    ["task","업무 내용","무슨 일을 하는지",true]
+  ];
+  var CONDS = [
+    ["night","계약서에 밤 10시 이후 근무가 적혀 있다","예: 22:00~02:00, 마감조, 야간조",false,true],
+    ["penalty","지각·결근 시 벌금이나 중도 퇴사 시 위약금 조항이 있다","예: 지각 1회 5,000원, 3개월 못 채우면 ○○원",false,true],
+    ["copy","계약서를 한 부 받아서 가지고 있다","사본을 받지 못했다면 체크하지 마세요",false,false],
+    ["signed","사업주와 내가 모두 서명했다","한쪽만 서명된 계약서는 효력을 다투기 어렵습니다",true,false]
+  ];
+
+  function buildChecks(){
+    document.getElementById("req").innerHTML = REQ.map(function(x){
+      return '<label class="check"><input type="checkbox" class="c-req" data-k="'+x[0]+'"'+(x[3]?" checked":"")+
+             '><span><b>'+x[1]+'</b><span>'+x[2]+'</span></span></label>';
+    }).join("");
+    document.getElementById("conds").innerHTML = CONDS.map(function(x){
+      return '<label class="check'+(x[4]?" flagcheck":"")+'"><input type="checkbox" class="c-cond" data-k="'+x[0]+'"'+
+             (x[3]?" checked":"")+'><span><b>'+x[1]+'</b><span>'+x[2]+'</span></span></label>';
+    }).join("");
+  }
+  function req(k){ var e=document.querySelector('.c-req[data-k="'+k+'"]'); return e && e.checked; }
+  function cond(k){ var e=document.querySelector('.c-cond[data-k="'+k+'"]'); return e && e.checked; }
+
+  function diagnose(){
+    var wage=+val("c-wage")||0, minw=+val("c-min")||0;
+    var day=+val("c-day")||0, week=+val("c-week")||0, brk=+val("c-break")||0;
+    var minor=document.getElementById("cage-minor").checked;
+    var capDay=minor?7:8, capWeek=minor?35:40;
+    var out=[], missing=[];
+
+    REQ.forEach(function(x){ if(!req(x[0])) missing.push(x[1]); });
+    if(missing.length)
+      out.push(["warn","!","필수 기재사항 "+missing.length+"개가 빠졌습니다",
+        "빠진 항목: "+missing.join(", ")+". 근로계약서에는 임금·소정근로시간·휴일·연차유급휴가·취업 장소·업무 내용을 반드시 적어야 합니다.",
+        "근로기준법 제17조"]);
+
+    if(wage>0 && minw>0 && wage<minw)
+      out.push(["warn","!","시급이 최저임금보다 "+(minw-wage).toLocaleString("ko-KR")+"원 낮습니다",
+        "최저임금보다 낮게 정한 부분은 무효이고, 최저임금액으로 정한 것으로 봅니다. 즉 계약서에 "+
+        wage.toLocaleString("ko-KR")+"원이라고 적혀 있어도 "+minw.toLocaleString("ko-KR")+"원을 받아야 합니다.",
+        "최저임금법 제6조"]);
+
+    if(cond("penalty"))
+      out.push(["warn","!","위약금·손해배상 예정 조항은 법으로 금지되어 있습니다",
+        "지각 시 벌금, 중도 퇴사 시 위약금 같은 조항은 근로계약에 넣을 수 없습니다. 적혀 있어도 그 조항은 효력이 없습니다.",
+        "근로기준법 제20조"]);
+
+    if(minor && cond("night"))
+      out.push(["warn","!","만 18세 미만은 밤 10시 이후 근무를 계약서에 넣을 수 없습니다",
+        "오후 10시부터 오전 6시 사이의 근로와 휴일근로는 원칙적으로 금지되며, 본인 동의와 고용노동부 인가가 모두 있어야 가능합니다.",
+        "근로기준법 제70조"]);
+
+    if(day>capDay)
+      out.push(["warn","!","하루 근로시간이 법정 한도를 "+(Math.round((day-capDay)*10)/10)+"시간 넘습니다",
+        (minor?"만 18세 미만은 1일 7시간":"성인은 1일 8시간")+"이 한도입니다."+
+        (minor?" 당사자 합의가 있어도 1시간까지만 연장할 수 있습니다.":" 초과분은 당사자 합의가 필요합니다."),
+        minor?"근로기준법 제69조":"근로기준법 제50조"]);
+    if(week>capWeek)
+      out.push(["warn","!","주 근로시간이 법정 한도를 "+(Math.round((week-capWeek)*10)/10)+"시간 넘습니다",
+        (minor?"만 18세 미만은 주 35시간":"성인은 주 40시간")+"이 한도입니다.",
+        minor?"근로기준법 제69조":"근로기준법 제50조"]);
+
+    if(day>=8 && brk<60)
+      out.push(["warn","!","휴게시간이 부족합니다",
+        "8시간 이상 일하면 1시간 이상의 휴게시간을 근무 중에 주어야 합니다. 계약서에는 "+brk+"분으로 적혀 있습니다.",
+        "근로기준법 제54조"]);
+    else if(day>=4 && brk<30)
+      out.push(["warn","!","휴게시간이 부족합니다",
+        "4시간 이상 일하면 30분 이상의 휴게시간을 주어야 합니다. 계약서에는 "+brk+"분으로 적혀 있습니다.",
+        "근로기준법 제54조"]);
+
+    if(!cond("copy"))
+      out.push(["info","i","계약서를 한 부 받아 두세요",
+        "사업주는 근로자가 요구하지 않아도 계약서 사본을 교부해야 합니다. 나중에 급여를 확인할 때 가장 중요한 근거가 됩니다.",
+        "근로기준법 제17조 제2항"]);
+    if(!cond("signed"))
+      out.push(["info","i","양쪽 서명을 확인하세요",
+        "사업주와 근로자가 모두 서명 또는 날인해야 합니다. 한쪽만 서명된 계약서는 나중에 다투기 어렵습니다.", ""]);
+
+    if(minor)
+      out.push(["info","i","만 18세 미만이면 서류 두 가지가 더 필요합니다",
+        "가족관계기록사항 증명서와 친권자(후견인) 동의서를 사업장에 갖춰 두어야 합니다. 아직 내지 않았다면 사장님께 알려 주세요.",
+        "근로기준법 제66조"]);
+
+    if(week>=15 && !req("holiday"))
+      out.push(["info","i","주 15시간 이상이면 주휴수당이 발생합니다",
+        "그런데 계약서에 주휴일이 적혀 있지 않습니다. 주휴일을 명시해 두면 주휴수당을 놓칠 일이 없습니다.",
+        "근로기준법 제55조"]);
+
+    var danger = out.filter(function(x){ return x[0]==="warn"; }).length;
+    if(!danger)
+      out.unshift(["good","✓","법 위반으로 보이는 부분은 없습니다",
+        "필수 기재사항이 모두 들어 있고, 근로시간·휴게·임금 조건도 기준을 충족합니다.",""]);
+
+    return {items:out, danger:danger, missing:missing, wage:wage, minw:minw, minor:minor};
+  }
+
+  function renderChecker(){
+    var d=diagnose();
+    var v=document.getElementById("cverdict");
+    var k=document.getElementById("c-kicker"), a=document.getElementById("c-amount"), s=document.getElementById("c-sub");
+    if(d.danger>0){
+      v.dataset.state="short"; k.textContent="법에 어긋나는 부분이 있습니다";
+      a.textContent=d.danger+"건"; s.textContent="아래 빨간 항목을 확인하고, 04번 메시지로 사장님께 알려 주세요.";
+    }else{
+      v.dataset.state="ok"; k.textContent="진단 결과"; a.textContent="이상 없음";
+      s.textContent="확인이 필요한 안내 항목만 남아 있습니다.";
+    }
+    document.getElementById("cflags").innerHTML = d.items.map(function(x){
+      return '<div class="flag '+x[0]+'"><span class="mark">'+x[1]+'</span><div><b>'+x[2]+'</b><p>'+x[3]+
+             (x[4]?' <span style="color:var(--ink-faint)">— '+x[4]+'</span>':'')+'</p></div></div>';
+    }).join("");
+
+    // 메시지
+    var name=val("name")||"○○○", L=[];
+    if(d.missing.length) L.push("· 계약서에 "+d.missing.join(", ")+" 항목이 빠져 있는 것 같습니다");
+    if(d.wage>0 && d.minw>0 && d.wage<d.minw)
+      L.push("· 시급이 올해 최저임금("+d.minw.toLocaleString("ko-KR")+"원)보다 낮게 적혀 있는 것 같습니다");
+    if(cond("penalty")) L.push("· 지각·퇴사 관련 위약금 조항은 근로기준법상 넣을 수 없다고 합니다");
+    if(d.minor && cond("night")) L.push("· 제가 만 18세 미만이라 밤 10시 이후 근무는 별도 절차가 필요하다고 합니다");
+    if(!cond("copy")) L.push("· 계약서 사본을 한 부 받을 수 있을까요");
+
+    var t;
+    if(!L.length){
+      t="안녕하세요 사장님, "+name+"입니다.\n\n근로계약서 잘 받았습니다. 확인해 보니 내용에 문제가 없는 것 같습니다.\n"+
+        "앞으로 잘 부탁드리겠습니다. 감사합니다.";
+    }else{
+      t="안녕하세요 사장님, "+name+"입니다.\n\n"+
+        "근로계약서를 다시 살펴보다가 몇 가지 여쭤보고 싶은 게 생겨 조심스럽게 연락드립니다.\n"+
+        "제가 잘못 봤을 수도 있어서 확인만 부탁드리려고 합니다.\n\n"+
+        L.join("\n")+"\n\n"+
+        "혹시 제가 잘못 이해한 부분이 있다면 알려 주시면 감사하겠습니다.\n\n감사합니다.";
+    }
+    document.getElementById("cmsg").value=t;
+  }
+
+  // 사진 미리보기 (전송 없음)
+  var imgEl=document.getElementById("pvimg");
+  document.getElementById("file").addEventListener("change", function(e){
+    var f=e.target.files && e.target.files[0];
+    if(!f) return;
+    var fr=new FileReader();
+    fr.onload=function(){ imgEl.src=fr.result; document.getElementById("preview").hidden=false; };
+    fr.readAsDataURL(f);
+  });
+  document.getElementById("rotate").addEventListener("click", function(){
+    if(!imgEl.src) return;
+    var im=new Image();
+    im.onload=function(){
+      var c=document.createElement("canvas");
+      c.width=im.height; c.height=im.width;
+      var x=c.getContext("2d");
+      x.translate(c.width/2, c.height/2); x.rotate(Math.PI/2);
+      x.drawImage(im, -im.width/2, -im.height/2);
+      imgEl.src=c.toDataURL("image/jpeg", 0.9);
+    };
+    im.src=imgEl.src;
+  });
+  document.getElementById("clearimg").addEventListener("click", function(){
+    imgEl.removeAttribute("src");
+    document.getElementById("preview").hidden=true;
+    document.getElementById("file").value="";
+  });
+
   function render(){
     var r=calc();
-    renderVerdict(r); renderLedger(r); renderFlags(r); renderMsg(r); renderDoc();
+    renderVerdict(r); renderLedger(r); renderFlags(r); renderMsg(r); renderDoc(); renderChecker();
   }
 
   // ── 이벤트 ────────────────────────────────
@@ -807,13 +1096,14 @@
 
   document.querySelectorAll('input[name="mode"]').forEach(function(el){
     el.addEventListener("change", function(){
-      var w=(el.value==="worker");
-      document.getElementById("worker").hidden=!w;
-      document.getElementById("owner").hidden=w;
+      ["worker","checker","owner"].forEach(function(id){
+        document.getElementById(id).hidden = (el.value !== id);
+      });
       window.scrollTo({top:0, behavior:"smooth"});
     });
   });
 
+  buildChecks();
   PRESETS.cvs.forEach(addRow);
   render();
 })();

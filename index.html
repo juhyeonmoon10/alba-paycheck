@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>내월급 — 내 월급, 제대로 받고 있나요?</title>
+<title>알바정산 — 내 근무 기록과 월급을 간편하게 비교하세요</title>
 <meta name="description" content="근무 기록만 넣으면 주휴수당까지 계산해 드립니다. 만 18세 미만 연소근로자 기준(1일 7시간·주 35시간), 야간근로 제한, 숙식비 공제 후 실수령 시급까지 확인하고, 사장님께 보낼 문의 메시지와 표준 근로계약서·급여명세서까지 자동으로 만들어 줍니다.">
 <meta name="theme-color" content="#F3F5F7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0F151C" media="(prefers-color-scheme: dark)">
@@ -11,344 +11,243 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%239C6415'/%3E%3Cpath d='M28 24h44v52l-11-7-11 7-11-7-11 7z' fill='%23fff'/%3E%3Crect x='37' y='38' width='26' height='5' rx='2.5' fill='%239C6415'/%3E%3Crect x='37' y='51' width='18' height='5' rx='2.5' fill='%239C6415'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%239C6415'/%3E%3Cpath d='M28 24h44v52l-11-7-11 7-11-7-11 7z' fill='%23fff'/%3E%3Crect x='37' y='38' width='26' height='5' rx='2.5' fill='%239C6415'/%3E%3Crect x='37' y='51' width='18' height='5' rx='2.5' fill='%239C6415'/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
-<meta property="og:title" content="내월급 (My Pay)">
+<meta property="og:title" content="알바정산 (Alba Paycheck)">
 <meta property="og:description" content="근무 기록만 넣으면 주휴수당까지 계산해 드립니다. 만 18세 미만 연소근로자 기준(1일 7시간·주 35시간), 야간근로 제한, 숙식비 공제 후 실수령 시급까지 확인하고, 사장님께 보낼 문의 메시지와 표준 근로계약서·급여명세서까지 자동으로 만들어 줍니다.">
 <meta property="og:locale" content="ko_KR">
 <meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
 
 <style>
   :root{
     --ground:#F3F5F7; --sheet:#FFFFFF; --sunk:#EBEEF2;
-    --ink:#171F29; --ink-soft:#4E5A68; --ink-faint:#7C8794;
-    --rule:#DEE3E9; --rule-soft:#EAEDF1;
-    --brass:#9C6415; --brass-ink:#7A4E10; --brass-lift:#F5EAD8;
-    --short:#AE372B; --short-lift:#F9E7E4;
-    --ok:#2A6949; --ok-lift:#E3F0E9;
-    --shadow:0 1px 2px rgba(23,31,41,.05), 0 10px 28px -18px rgba(23,31,41,.35);
+    --ink:#141B24; --ink-soft:#414C59; --ink-faint:#616D7B;
+    --rule:#D8DEE5; --rule-soft:#E7EBEF;
+    --brass:#8A5711; --brass-ink:#6E450C; --brass-lift:#F5EAD8;
+    --short:#9C2F24; --short-lift:#F9E5E2;
+    --ok:#20604070; --ok-solid:#1F5E3F; --ok-lift:#E1EFE7;
+    --info:#1B4F72; --info-lift:#E6EEF5;
+    --shadow:0 1px 2px rgba(20,27,36,.05), 0 10px 28px -18px rgba(20,27,36,.35);
+    --tap:46px;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
       --ground:#0F151C; --sheet:#19212A; --sunk:#131A22;
-      --ink:#E8ECF0; --ink-soft:#A2ADB9; --ink-faint:#78838F;
-      --rule:#2A3441; --rule-soft:#212A34;
-      --brass:#E0A94F; --brass-ink:#F0C77E; --brass-lift:#2E2517;
-      --short:#E88274; --short-lift:#33201D;
-      --ok:#74C79C; --ok-lift:#17281F;
+      --ink:#EDF0F3; --ink-soft:#B2BCC7; --ink-faint:#8C97A3;
+      --rule:#2C3644; --rule-soft:#222C37;
+      --brass:#E8B461; --brass-ink:#F2CD8B; --brass-lift:#2E2517;
+      --short:#EE9083; --short-lift:#331F1C;
+      --ok-solid:#7FD0A5; --ok-lift:#16281F;
+      --info:#8FBEE4; --info-lift:#16232E;
       --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px -18px rgba(0,0,0,.7);
     }
   }
   :root[data-theme="dark"]{
     --ground:#0F151C; --sheet:#19212A; --sunk:#131A22;
-    --ink:#E8ECF0; --ink-soft:#A2ADB9; --ink-faint:#78838F;
-    --rule:#2A3441; --rule-soft:#212A34;
-    --brass:#E0A94F; --brass-ink:#F0C77E; --brass-lift:#2E2517;
-    --short:#E88274; --short-lift:#33201D;
-    --ok:#74C79C; --ok-lift:#17281F;
+    --ink:#EDF0F3; --ink-soft:#B2BCC7; --ink-faint:#8C97A3;
+    --rule:#2C3644; --rule-soft:#222C37;
+    --brass:#E8B461; --brass-ink:#F2CD8B; --brass-lift:#2E2517;
+    --short:#EE9083; --short-lift:#331F1C;
+    --ok-solid:#7FD0A5; --ok-lift:#16281F;
+    --info:#8FBEE4; --info-lift:#16232E;
     --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px -18px rgba(0,0,0,.7);
   }
 
   *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
   body{
     margin:0;background:var(--ground);color:var(--ink);
     font-family:"IBM Plex Sans KR","Malgun Gothic",system-ui,sans-serif;
-    font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased;
+    font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;
   }
-  .wrap{max-width:780px;margin:0 auto;padding:36px 20px 72px;display:flex;flex-direction:column;gap:24px}
+  .wrap{max-width:760px;margin:0 auto;padding:30px 18px 132px;display:flex;flex-direction:column;gap:22px}
 
-  /* ── masthead ── */
-  .mast{display:flex;flex-direction:column;gap:10px;padding-bottom:20px;border-bottom:2px solid var(--ink)}
-  .mast h1{font-family:"Gowun Batang","Batang",serif;font-weight:700;font-size:38px;line-height:1.1;margin:0;letter-spacing:-.01em}
-  .mast .dek{margin:0;color:var(--ink-soft);font-size:14.5px;max-width:54ch}
+  /* ── 머리말 ── */
+  .mast{display:flex;flex-direction:column;gap:9px;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+  .mast h1{font-family:"Gowun Batang","Batang",serif;font-weight:700;font-size:38px;line-height:1.1;margin:0}
+  .mast h1 em{font-style:normal;font-size:17px;font-weight:400;color:var(--ink-faint);
+    font-family:"IBM Plex Sans KR",sans-serif;margin-left:10px;letter-spacing:.02em}
+  .mast .dek{margin:0;color:var(--ink-soft);font-size:16px;max-width:56ch}
   .mast .dek b{color:var(--ink);font-weight:600}
-  .stamp{align-self:flex-start;font-family:"IBM Plex Mono",monospace;font-size:11px;
+  .stamp{align-self:flex-start;font-family:"IBM Plex Mono",monospace;font-size:11.5px;
     letter-spacing:.14em;text-transform:uppercase;color:var(--brass);
     border:1px solid var(--brass);border-radius:2px;padding:3px 9px}
 
-  /* ── 언어 선택 (개발 예정) ── */
-  .langbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:4px}
-  .lang-on{font-size:12.5px;font-weight:600;color:var(--brass-ink);background:var(--brass-lift);
-    border:1px solid var(--brass);border-radius:100px;padding:4px 12px}
-  .lang-off{font-family:inherit;font-size:12.5px;color:var(--ink-faint);background:transparent;
-    border:1px solid var(--rule);border-radius:100px;padding:4px 12px;cursor:not-allowed}
-  .langnote{margin:2px 0 0;font-size:11.5px;color:var(--ink-faint);line-height:1.55;max-width:60ch}
-  .langnote b{color:var(--ink-soft);font-weight:600}
+  /* ── 언어 ── */
+  .langbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:5px}
+  .langbar button{font-family:inherit;font-size:14px;cursor:pointer;color:var(--ink-soft);
+    background:var(--sheet);border:1px solid var(--rule);border-radius:100px;padding:7px 15px;min-height:38px}
+  .langbar button[aria-pressed="true"]{border-color:var(--brass);color:var(--brass-ink);
+    background:var(--brass-lift);font-weight:600}
+  .langsoon{font-size:13px;color:var(--ink-faint);padding-left:4px}
 
-  /* ── mode switch ── */
-  .modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px}
-  .modes input{position:absolute;opacity:0;pointer-events:none}
-  .modes label{
-    cursor:pointer;border:1px solid var(--rule);border-radius:4px;background:var(--sheet);
-    padding:13px 16px;display:flex;flex-direction:column;gap:2px;transition:.12s;
-  }
-  .modes label b{font-size:15px;font-weight:600;color:var(--ink-soft)}
-  .modes label span{font-size:11.5px;color:var(--ink-faint);line-height:1.4}
-  .modes input:checked + label{border-color:var(--brass);background:var(--brass-lift);box-shadow:var(--shadow)}
-  .modes input:checked + label b{color:var(--brass-ink)}
-  .modes input:checked + label span{color:var(--ink-soft)}
-  .modes input:focus-visible + label{outline:2px solid var(--brass);outline-offset:1px}
+  /* ── 기능 선택 ── */
+  .primary{background:var(--sheet);border:2px solid var(--brass);border-radius:6px;
+    box-shadow:var(--shadow);padding:20px 22px;display:flex;flex-direction:column;gap:6px}
+  .primary .tag{font-size:12.5px;font-weight:600;color:var(--brass);letter-spacing:.04em}
+  .primary h2{margin:0;font-size:23px;font-weight:600;letter-spacing:-.01em}
+  .primary p{margin:0;font-size:14.5px;color:var(--ink-soft);line-height:1.6}
+  .secondary{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .secondary button{font-family:inherit;text-align:left;cursor:pointer;background:var(--sheet);
+    border:1px solid var(--rule);border-radius:5px;padding:13px 15px;display:flex;
+    flex-direction:column;gap:3px;min-height:var(--tap)}
+  .secondary button b{font-size:15px;font-weight:600;color:var(--ink-soft)}
+  .secondary button span{font-size:12.5px;color:var(--ink-faint);line-height:1.45}
+  .secondary button[aria-pressed="true"]{border-color:var(--brass);background:var(--brass-lift)}
+  .secondary button[aria-pressed="true"] b{color:var(--brass-ink)}
+  .ext{display:inline-block;font-size:11px;font-weight:600;color:var(--brass-ink);
+    background:var(--brass-lift);border:1px solid var(--brass);border-radius:2px;padding:1px 6px;margin-left:6px}
   [hidden]{display:none !important}
 
-  /* ── step cards ── */
-  .step{background:var(--sheet);border:1px solid var(--rule);border-radius:4px;box-shadow:var(--shadow);overflow:hidden}
-  .step > header{display:flex;align-items:baseline;gap:12px;padding:15px 22px;
+  /* ── 카드 ── */
+  .step{background:var(--sheet);border:1px solid var(--rule);border-radius:5px;box-shadow:var(--shadow);overflow:hidden}
+  .step > header{display:flex;align-items:baseline;gap:11px;padding:15px 20px;
     border-bottom:1px solid var(--rule-soft);background:var(--sunk)}
-  .step > header .no{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;color:var(--brass);letter-spacing:.1em}
-  .step > header h2{font-size:15.5px;font-weight:600;margin:0}
-  .step > header .hint{margin-left:auto;font-size:12px;color:var(--ink-faint)}
-  .body{padding:20px 22px}
+  .step > header .no{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;color:var(--brass)}
+  .step > header h3{font-size:17px;font-weight:600;margin:0}
+  .step > header .hint{margin-left:auto;font-size:13px;color:var(--ink-faint)}
+  .body{padding:18px 20px}
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:15px}
-  .field{display:flex;flex-direction:column;gap:5px}
-  .field > label,.lbl{font-size:11.5px;font-weight:500;color:var(--ink-soft);letter-spacing:.02em}
-  .field .note{font-size:11px;color:var(--ink-faint);line-height:1.45}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:15px}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field > label,.lbl{font-size:13.5px;font-weight:500;color:var(--ink-soft)}
+  .field .note{font-size:12.5px;color:var(--ink-faint);line-height:1.5}
+  .opt{font-size:12px;color:var(--ink-faint);font-weight:400}
   .full{grid-column:1/-1}
 
   input[type=text],input[type=number],input[type=date],input[type=time],select,textarea{
-    font-family:inherit;font-size:14px;color:var(--ink);background:var(--sheet);
-    border:1px solid var(--rule);border-radius:3px;padding:9px 10px;width:100%;
-    font-variant-numeric:tabular-nums;
+    font-family:inherit;font-size:16px;color:var(--ink);background:var(--sheet);
+    border:1px solid var(--rule);border-radius:4px;padding:11px 12px;width:100%;
+    min-height:var(--tap);font-variant-numeric:tabular-nums;
   }
   input[type=number],input[type=time],input[type=date]{font-family:"IBM Plex Mono","IBM Plex Sans KR",monospace}
-  input:focus-visible,select:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px solid var(--brass);outline-offset:1px}
+  input:focus-visible,select:focus-visible,button:focus-visible,textarea:focus-visible{
+    outline:2px solid var(--brass);outline-offset:2px}
 
   .choice{display:flex;gap:8px;flex-wrap:wrap}
   .choice input{position:absolute;opacity:0;pointer-events:none}
-  .choice label{flex:1;min-width:100px;text-align:center;cursor:pointer;border:1px solid var(--rule);
-    border-radius:3px;padding:9px 8px;font-size:13px;color:var(--ink-soft);background:var(--sheet);transition:.12s}
-  .choice input:checked + label{border-color:var(--brass);color:var(--brass-ink);background:var(--brass-lift);font-weight:500}
-  .choice input:focus-visible + label{outline:2px solid var(--brass);outline-offset:1px}
+  .choice label{flex:1;min-width:96px;text-align:center;cursor:pointer;border:1px solid var(--rule);
+    border-radius:4px;padding:12px 8px;font-size:14.5px;color:var(--ink-soft);background:var(--sheet);
+    min-height:var(--tap);display:flex;align-items:center;justify-content:center}
+  .choice input:checked + label{border-color:var(--brass);color:var(--brass-ink);
+    background:var(--brass-lift);font-weight:600}
+  .choice input:focus-visible + label{outline:2px solid var(--brass);outline-offset:2px}
 
-  /* ── presets ── */
-  .presets{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
-  .presets button{font-family:inherit;font-size:12.5px;cursor:pointer;color:var(--ink-soft);
-    background:var(--sunk);border:1px solid var(--rule);border-radius:100px;padding:6px 13px}
-  .presets button:hover{border-color:var(--brass);color:var(--brass-ink)}
+  .presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .presets button{font-family:inherit;font-size:13.5px;cursor:pointer;color:var(--ink-soft);
+    background:var(--sunk);border:1px solid var(--rule);border-radius:100px;padding:9px 15px;min-height:40px}
 
-  /* ── shift rows ── */
-  .shifts{display:flex;flex-direction:column;gap:9px}
-  .shift{display:grid;grid-template-columns:1.5fr 1fr 1fr .85fr 34px;gap:8px;align-items:end}
-  .shift label{display:flex;flex-direction:column;gap:4px;min-width:0}
-  .shift label span{display:none;font-size:10.5px;font-weight:500;color:var(--ink-faint);letter-spacing:.03em}
-  .shift:first-child label span{display:block}
-  .shift .del{border:1px solid var(--rule);background:var(--sheet);color:var(--ink-faint);
-    height:36px;border-radius:3px;cursor:pointer;font-size:15px;line-height:1}
-  .shift .del:hover{border-color:var(--short);color:var(--short)}
-  .addrow{margin-top:10px;border:1px dashed var(--rule);background:transparent;color:var(--ink-soft);
-    width:100%;padding:10px;border-radius:3px;cursor:pointer;font-family:inherit;font-size:13px}
-  .addrow:hover{border-color:var(--brass);color:var(--brass-ink)}
-  @media (max-width:620px){
-    .shift{grid-template-columns:1fr 1fr 36px;gap:8px 10px;
-      padding-bottom:9px;border-bottom:1px solid var(--rule-soft)}
-    .shift label span{display:block}
-    .shift label:nth-child(1){grid-column:1/-1}
-    .shift label:nth-child(4){grid-column:1}
-    .shift .del{grid-column:3;grid-row:3}
+  /* ── 행 입력 ── */
+  .rows{display:flex;flex-direction:column;gap:10px}
+  .row{display:grid;grid-template-columns:1.5fr 1fr 1fr .85fr 42px;gap:9px;align-items:end}
+  .row label{display:flex;flex-direction:column;gap:5px;min-width:0}
+  .row label span{display:none;font-size:12px;font-weight:500;color:var(--ink-faint)}
+  .row:first-child label span{display:block}
+  .row .del{border:1px solid var(--rule);background:var(--sheet);color:var(--ink-faint);
+    height:var(--tap);border-radius:4px;cursor:pointer;font-size:18px;line-height:1}
+  .addrow{margin-top:11px;border:1px dashed var(--rule);background:transparent;color:var(--ink-soft);
+    width:100%;padding:13px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:14.5px;min-height:var(--tap)}
+  @media (max-width:640px){
+    .row{grid-template-columns:1fr 1fr 44px;gap:9px 10px;padding-bottom:11px;border-bottom:1px solid var(--rule-soft)}
+    .row label span{display:block}
+    .row label:nth-child(1){grid-column:1/-1}
+    .row label:nth-child(4){grid-column:1}
+    .row .del{grid-column:3;grid-row:3}
   }
 
-  /* ── 계약서 진단 ── */
-  .drop{display:flex;flex-direction:column;gap:9px;align-items:center;text-align:center;
-    border:1.5px dashed var(--rule);border-radius:4px;padding:30px 20px;cursor:pointer;background:var(--sunk);transition:.12s}
-  .drop:hover,.drop.over{border-color:var(--brass);background:var(--brass-lift)}
-  .drop .ico{font-size:26px;line-height:1}
-  .drop b{font-size:15px;font-weight:600;color:var(--ink)}
-  .drop .fake{display:inline-block;background:var(--ink);color:var(--ground);border-radius:3px;
-    padding:9px 20px;font-size:13.5px;font-weight:500}
-  .drop span{font-size:12px;color:var(--ink-faint);line-height:1.5}
-
-  /* AI 자동 판독 (개발 예정 · 시연용) */
-  .aiwrap{margin-top:16px;border:1px solid var(--rule);border-radius:4px;background:var(--sunk);padding:16px}
-  .aihead{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:9px}
-  .aihead b{font-size:14px;font-weight:600}
-  .beta{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
-    color:var(--brass-ink);background:var(--brass-lift);border:1px solid var(--brass);border-radius:2px;padding:2px 7px}
-  .aiwrap p{margin:0 0 12px;font-size:12px;color:var(--ink-faint);line-height:1.55}
-  .aibtn{width:100%;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;
-    background:var(--brass);color:var(--sheet);border:0;border-radius:3px;padding:12px 18px}
-  :root[data-theme="dark"] .aibtn,
-  :root:not([data-theme="light"]) .aibtn{color:#171F29}
-  @media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .aibtn{color:#FFFFFF}}
-  .aibtn:hover{opacity:.9}
-  .aibtn:disabled{opacity:.55;cursor:default}
-  .bar{height:4px;background:var(--rule);border-radius:100px;overflow:hidden;margin-top:12px}
-  .bar i{display:block;height:100%;width:0;background:var(--brass);transition:width .25s linear}
-  .scanlog{margin-top:9px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-soft);min-height:17px}
-  .airesult{margin-top:12px;border-top:1px solid var(--rule);padding-top:12px}
-  .airesult ul{margin:0;padding-left:17px}
-  .airesult li{font-size:12.5px;color:var(--ink-soft);line-height:1.75}
-  .airesult li b{color:var(--ink);font-weight:600}
-  .disclaim{margin-top:11px;font-size:11.5px;color:var(--short);line-height:1.5;font-weight:500}
-  .pvtools{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-  .pvtools button{font-family:inherit;font-size:12.5px;cursor:pointer;color:var(--ink-soft);
-    background:var(--sheet);border:1px solid var(--rule);border-radius:3px;padding:7px 13px}
-  .pvtools button:hover{border-color:var(--brass);color:var(--brass-ink)}
-  .pvbox{border:1px solid var(--rule);border-radius:4px;overflow:auto;max-height:440px;
-    background:var(--sunk);display:grid;place-items:center;padding:10px}
-  .pvbox img{max-width:100%;display:block;border-radius:2px}
-  .privacy{margin:10px 0 0;font-size:11.5px;color:var(--ok);line-height:1.5}
-
-  .check{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--rule-soft)}
-  .check:last-child{border-bottom:0}
-  .check input{margin:3px 0 0;width:17px;height:17px;accent-color:var(--brass);flex:none;cursor:pointer}
-  .check b{font-size:14px;font-weight:500;display:block;color:var(--ink)}
-  .check span{font-size:12px;color:var(--ink-faint);line-height:1.45}
-  .check.flagcheck b{color:var(--short)}
-
-  /* ── verdict ── */
-  .verdict{border:1px solid var(--rule);border-radius:4px;box-shadow:var(--shadow);overflow:hidden;background:var(--sheet)}
-  .verdict .head{padding:24px 22px;display:flex;flex-direction:column;gap:4px;border-bottom:1px solid var(--rule-soft)}
-  .verdict .kicker{font-size:12px;letter-spacing:.06em;color:var(--ink-soft)}
-  .verdict .amount{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:42px;line-height:1.05;
+  /* ── 결과 ── */
+  .verdict{border:1px solid var(--rule);border-radius:5px;box-shadow:var(--shadow);overflow:hidden;background:var(--sheet)}
+  .verdict .head{padding:22px 20px;display:flex;flex-direction:column;gap:5px;border-bottom:1px solid var(--rule-soft)}
+  .verdict .kicker{font-size:13.5px;font-weight:600;letter-spacing:.02em}
+  .verdict .amount{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:40px;line-height:1.05;
     letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-  .verdict .sub{font-size:13px;color:var(--ink-soft)}
-  .verdict[data-state="short"] .head{background:var(--short-lift)}
-  .verdict[data-state="short"] .amount{color:var(--short)}
-  .verdict[data-state="ok"] .head{background:var(--ok-lift)}
-  .verdict[data-state="ok"] .amount{color:var(--ok)}
+  .verdict .sub{font-size:14px;color:var(--ink-soft);line-height:1.55}
+  .verdict[data-state="diff"] .head{background:var(--short-lift)}
+  .verdict[data-state="diff"] .amount,.verdict[data-state="diff"] .kicker{color:var(--short)}
+  .verdict[data-state="match"] .head{background:var(--ok-lift)}
+  .verdict[data-state="match"] .amount,.verdict[data-state="match"] .kicker{color:var(--ok-solid)}
+  .verdict[data-state="check"] .head{background:var(--info-lift)}
+  .verdict[data-state="check"] .amount,.verdict[data-state="check"] .kicker{color:var(--info)}
   .verdict[data-state="over"] .head{background:var(--brass-lift)}
-  .verdict[data-state="over"] .amount{color:var(--brass-ink)}
+  .verdict[data-state="over"] .amount,.verdict[data-state="over"] .kicker{color:var(--brass-ink)}
 
   table.ledger{border-collapse:collapse;width:100%}
-  table.ledger td{padding:9px 22px;border-bottom:1px solid var(--rule-soft);font-size:14px}
+  table.ledger td{padding:11px 20px;border-bottom:1px solid var(--rule-soft);font-size:15px}
   table.ledger tr:last-child td{border-bottom:0}
   table.ledger td:last-child{text-align:right;font-family:"IBM Plex Mono",monospace;
     font-variant-numeric:tabular-nums;white-space:nowrap}
-  table.ledger .lbl small{display:block;font-size:11px;color:var(--ink-faint);line-height:1.4;font-family:inherit;font-weight:400}
-  table.ledger tr.total td{font-weight:600;border-top:2px solid var(--ink);border-bottom:0;padding-top:12px;padding-bottom:12px}
+  table.ledger .lbl small{display:block;font-size:12.5px;color:var(--ink-faint);line-height:1.45;
+    font-family:inherit;font-weight:400}
+  table.ledger tr.total td{font-weight:600;border-top:2px solid var(--ink);border-bottom:0;padding-top:13px;padding-bottom:13px}
   table.ledger tr.muted td{color:var(--ink-faint)}
 
-  /* ── flags ── */
-  .flag{display:flex;gap:12px;padding:13px 22px;border-top:1px solid var(--rule-soft);font-size:13px;line-height:1.55}
-  .flag .mark{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;
-    font-size:12px;font-weight:700;margin-top:1px;font-family:"IBM Plex Mono",monospace}
+  .flag{display:flex;gap:12px;padding:14px 20px;border-top:1px solid var(--rule-soft);font-size:14px;line-height:1.55}
+  .flag .mark{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+    font-size:13px;font-weight:700;margin-top:1px;font-family:"IBM Plex Mono",monospace}
   .flag.warn .mark{background:var(--short-lift);color:var(--short)}
-  .flag.info .mark{background:var(--brass-lift);color:var(--brass-ink)}
-  .flag.good .mark{background:var(--ok-lift);color:var(--ok)}
+  .flag.info .mark{background:var(--info-lift);color:var(--info)}
+  .flag.good .mark{background:var(--ok-lift);color:var(--ok-solid)}
   .flag b{font-weight:600}
-  .flag p{margin:2px 0 0;color:var(--ink-soft)}
+  .flag p{margin:3px 0 0;color:var(--ink-soft);font-size:13.5px}
 
-  /* ── tabs + message ── */
+
+  /* ── 메시지 ── */
   .tabs{display:flex;border-bottom:1px solid var(--rule);margin-bottom:15px;overflow-x:auto}
-  .tabs button{font-family:inherit;font-size:13px;background:none;border:0;cursor:pointer;
-    padding:9px 14px;color:var(--ink-faint);border-bottom:2px solid transparent;white-space:nowrap}
-  .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brass);font-weight:500}
-  textarea{min-height:190px;resize:vertical;line-height:1.7;background:var(--sunk);padding:14px}
-  textarea.doc{min-height:420px;font-family:"IBM Plex Mono","IBM Plex Sans KR",monospace;font-size:12.5px;line-height:1.75}
-  .msgfoot{display:flex;gap:10px;align-items:center;margin-top:11px;flex-wrap:wrap}
-  .copy{font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;
-    background:var(--ink);color:var(--ground);border:0;border-radius:3px;padding:11px 20px}
-  .copy:hover{opacity:.88}
-  .copied{font-size:13px;color:var(--ok)}
-  .why{font-size:12px;color:var(--ink-faint);line-height:1.55;margin:13px 0 0}
+  .tabs button{font-family:inherit;font-size:14.5px;background:none;border:0;cursor:pointer;
+    padding:12px 15px;color:var(--ink-faint);border-bottom:2px solid transparent;white-space:nowrap;min-height:var(--tap)}
+  .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brass);font-weight:600}
+  textarea{min-height:210px;resize:vertical;line-height:1.75;background:var(--sunk);padding:15px}
+  textarea.doc{min-height:400px;font-family:"IBM Plex Mono","IBM Plex Sans KR",monospace;font-size:13px}
+  .msgfoot{display:flex;gap:11px;align-items:center;margin-top:13px;flex-wrap:wrap}
+  .copy{font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;background:var(--ink);
+    color:var(--ground);border:0;border-radius:4px;padding:14px 24px;min-height:var(--tap)}
+  .copied{font-size:14px;color:var(--ok-solid);font-weight:500}
+  .why{font-size:13.5px;color:var(--ink-faint);line-height:1.6;margin:14px 0 0}
+  .why b{color:var(--ink-soft);font-weight:600}
 
-  /* ── explainer ── */
-  details{border-top:1px solid var(--rule-soft);padding:11px 0 2px}
-  details summary{cursor:pointer;font-size:13px;color:var(--brass-ink);font-weight:500;list-style:none}
+  /* ── 안내 ── */
+  details{border-top:1px solid var(--rule-soft);padding:13px 0 3px}
+  details summary{cursor:pointer;font-size:14.5px;color:var(--brass-ink);font-weight:500;list-style:none;min-height:26px}
   details summary::-webkit-details-marker{display:none}
   details summary::before{content:"＋ ";font-family:"IBM Plex Mono",monospace}
   details[open] summary::before{content:"− "}
-  details p{font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin:8px 0 0}
-
-  /* ── 입금 내역 ── */
-  .deposits{display:flex;flex-direction:column;gap:9px}
-  .dep{display:grid;grid-template-columns:1.3fr 1fr 1.2fr 34px;gap:8px;align-items:end}
-  .dep label{display:flex;flex-direction:column;gap:4px;min-width:0}
-  .dep label span{display:none;font-size:10.5px;font-weight:500;color:var(--ink-faint);letter-spacing:.03em}
-  .dep:first-child label span{display:block}
-  .dep .del{border:1px solid var(--rule);background:var(--sheet);color:var(--ink-faint);
-    height:36px;border-radius:3px;cursor:pointer;font-size:15px;line-height:1}
-  .dep .del:hover{border-color:var(--short);color:var(--short)}
-  @media (max-width:620px){
-    .dep{grid-template-columns:1fr 36px;gap:8px 10px;padding-bottom:9px;border-bottom:1px solid var(--rule-soft)}
-    .dep label span{display:block}
-    .dep label:nth-child(1),.dep label:nth-child(2),.dep label:nth-child(3){grid-column:1}
-    .dep .del{grid-column:2;grid-row:1}
-  }
-
-  /* ── 양식 판별 결과 ── */
-  .pickbox{border:1px solid var(--rule);border-left:3px solid var(--brass);border-radius:3px;
-    background:var(--sunk);padding:16px 18px}
-  .picklabel{display:block;font-size:11.5px;color:var(--ink-faint);letter-spacing:.03em}
-  .pickname{display:block;font-size:19px;font-weight:600;color:var(--brass-ink);line-height:1.35;margin:4px 0 10px}
-  .pickwhy{margin:0;padding-left:16px}
-  .pickwhy li{font-size:12.5px;color:var(--ink-soft);line-height:1.6}
-  .pickalso{margin-top:10px;font-size:12.5px;color:var(--ink-soft);line-height:1.6}
-  .pickalso b{color:var(--ink);font-weight:600}
-  .pickstate{margin-top:12px;padding-top:11px;border-top:1px solid var(--rule);font-size:12.5px;line-height:1.6}
-  .pickstate.ok{color:var(--ok)}
-  .pickstate.no{color:var(--short)}
-  .pickwarn{margin-top:10px;border-top:1px solid var(--rule);padding-top:10px}
-  .pickwarn p{margin:0 0 5px;font-size:12px;color:var(--short);line-height:1.55}
-  .pickwarn p:last-child{margin-bottom:0}
-  .pickwarn p::before{content:"⚠ ";font-weight:700}
-
-  /* ── 서류 미리보기 (종이) ── */
-  .paperwrap{background:var(--sunk);border:1px solid var(--rule);border-radius:4px;padding:16px;overflow-x:auto}
-  .paper{background:#FFFFFF;color:#1A222C;width:100%;max-width:660px;margin:0 auto;padding:36px 38px;
-    box-shadow:0 1px 4px rgba(0,0,0,.16);font-size:12.5px;line-height:1.75}
-  .paper h3{font-family:"Gowun Batang","Batang",serif;text-align:center;font-size:19px;font-weight:700;
-    letter-spacing:.3em;margin:0 0 4px;text-indent:.3em}
-  .paper .psub{text-align:center;font-size:11.5px;color:#5A6470;margin:0 0 24px}
-  .paper .pre{margin:0 0 18px;font-size:12.5px}
-  .paper ol.cl{margin:0;padding:0;list-style:none;counter-reset:cl}
-  .paper ol.cl > li{counter-increment:cl;display:grid;grid-template-columns:20px 108px 1fr;gap:0 6px;
-    margin-bottom:8px;align-items:start}
-  .paper ol.cl > li::before{content:counter(cl) ".";font-weight:600;color:#1A222C}
-  .paper .k{font-weight:600}
-  .paper .v{min-width:0;word-break:break-word}
-  .paper .v .fill{border-bottom:1px solid #B9C0C8;display:inline-block;min-width:120px}
-  .paper ul.sub{margin:2px 0 0;padding-left:0;list-style:none}
-  .paper ul.sub li{margin-bottom:1px}
-  .paper ul.sub li::before{content:"- ";color:#5A6470}
-  .paper .pdate{text-align:center;margin:26px 0 22px;font-size:13px;letter-spacing:.02em}
-  .paper .signs{display:grid;grid-template-columns:1fr 1fr;gap:22px}
-  .paper .sign h4{margin:0 0 7px;font-size:12.5px;font-weight:700}
-  .paper .sign .row{display:grid;grid-template-columns:74px 1fr;gap:6px;margin-bottom:3px}
-  .paper .sign .row span{color:#5A6470}
-  .paper .sign .row b{font-weight:500;border-bottom:1px solid #DCE1E6;min-height:19px}
-  .paper .sigmark{display:inline-block;border:1px dashed #B9C0C8;border-radius:2px;padding:1px 9px;
-    font-size:10.5px;color:#8A939C;margin-left:6px}
-  .paper table.pt{width:100%;border-collapse:collapse;margin:6px 0 14px}
-  .paper table.pt th,.paper table.pt td{border:1px solid #C9D0D7;padding:6px 9px;font-size:12px;text-align:left}
-  .paper table.pt th{background:#F1F4F7;font-weight:600;color:#39434F}
-  .paper table.pt td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-  .paper table.pt td small{display:block;color:#6B7580;font-size:10.5px;line-height:1.5}
-  .paper table.pt tr.sum td{background:#F7F9FB;font-weight:700}
-  .paper .note{margin:16px 0 0;font-size:10.5px;color:#6B7580;line-height:1.6}
-  .paper .seal{text-align:right;margin-top:24px;font-size:12.5px;line-height:2}
-  @media (max-width:560px){
-    .paper{padding:24px 20px;font-size:12px}
-    .paper ol.cl > li{grid-template-columns:18px 1fr;gap:0 5px}
-    .paper ol.cl > li .k{grid-column:2}
-    .paper ol.cl > li .v{grid-column:2}
-    .paper .signs{grid-template-columns:1fr}
-  }
-  @media print{
-    @page{size:A4;margin:16mm 14mm}
-    body{background:#FFFFFF !important}
-    body *{visibility:hidden !important}
-    #paper,#paper *{visibility:visible !important}
-    #paper{position:absolute;left:0;top:0;width:100%;max-width:none;margin:0;padding:0;box-shadow:none}
-  }
+  details p,details li{font-size:13.5px;color:var(--ink-soft);line-height:1.65;margin:8px 0 0}
+  details ul{margin:8px 0 0;padding-left:20px}
 
   .callout{background:var(--sheet);border:1px solid var(--rule);border-left:3px solid var(--brass);
-    border-radius:3px;padding:13px 16px;font-size:13px;color:var(--ink-soft);line-height:1.6}
+    border-radius:4px;padding:14px 16px;font-size:14px;color:var(--ink-soft);line-height:1.65}
   .callout b{color:var(--ink);font-weight:600}
+  .limits{background:var(--sunk);border:1px solid var(--rule);border-radius:4px;padding:14px 16px;
+    font-size:13.5px;color:var(--ink-soft);line-height:1.65}
 
   footer{border-top:1px solid var(--rule);padding-top:18px;display:flex;flex-direction:column;gap:9px}
-  footer p{margin:0;font-size:12px;color:var(--ink-faint);line-height:1.6}
+  footer p{margin:0;font-size:13px;color:var(--ink-faint);line-height:1.65}
   footer b{color:var(--ink-soft);font-weight:600}
 
+  /* ── 하단 고정 요약 ── */
+  .sticky{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--sheet);
+    border-top:1px solid var(--rule);box-shadow:0 -6px 24px -14px rgba(20,27,36,.4);
+    padding:11px 16px calc(11px + env(safe-area-inset-bottom));
+    display:flex;align-items:center;gap:14px}
+  .sticky .nums{display:flex;gap:16px;flex:1;min-width:0;flex-wrap:wrap}
+  .sticky .n{display:flex;flex-direction:column;line-height:1.3}
+  .sticky .n span{font-size:11.5px;color:var(--ink-faint)}
+  .sticky .n b{font-size:15px;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+  .sticky .n.gap b{color:var(--short)}
+  .sticky button{font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:var(--ink);
+    color:var(--ground);border:0;border-radius:4px;padding:11px 16px;min-height:42px;white-space:nowrap}
+  @media (min-width:761px){ .sticky{display:none} }
+
   @media (max-width:560px){
-    .wrap{padding:24px 14px 52px}
-    .mast h1{font-size:30px}
+    .wrap{padding:22px 14px 128px}
+    .mast h1{font-size:31px}
+    .mast h1 em{display:block;margin:4px 0 0;font-size:15px}
     .verdict .amount{font-size:34px}
-    .body{padding:18px}
-    .modes{grid-template-columns:1fr}
-    table.ledger td{padding-left:18px;padding-right:18px}
-    .flag{padding-left:18px;padding-right:18px}
+    .body{padding:16px}
+    .secondary{grid-template-columns:1fr}
+    table.ledger td{padding-left:16px;padding-right:16px}
+    .flag{padding-left:16px;padding-right:16px}
   }
   @media (prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
@@ -357,103 +256,150 @@
 <div class="wrap">
 
   <header class="mast">
-    <span class="stamp">법을 몰라서 손해 보지 않도록</span>
-    <h1>내월급</h1>
-    <p class="dek">시급은 들었는데 <b>이번 달에 얼마를 받아야 하는지</b>는 아무도 알려주지 않습니다. 근무 기록만 넣으면 주휴수당까지 계산하고, <b>사장님께 보낼 말</b>까지 만들어 드립니다.</p>
+    <span class="stamp" data-i18n="stamp">근무 기록 · 급여 비교</span>
+    <h1><span data-i18n="brand">알바정산</span><em>Alba Paycheck</em></h1>
+    <p class="dek" data-i18n-html="dek">일한 시간을 기록하면 <b>예상 급여</b>를 계산하고, <b>실제 받은 금액</b>과 비교해 드립니다.</p>
     <div class="langbar">
-      <span class="lang-on">한국어</span>
-      <button type="button" class="lang-off" disabled>English</button>
-      <button type="button" class="lang-off" disabled>Tiếng Việt</button>
-      <button type="button" class="lang-off" disabled>ភាសាខ្មែរ</button>
-      <span class="beta">개발 예정</span>
+      <button type="button" data-lang="ko" aria-pressed="true">한국어</button>
+      <button type="button" data-lang="en" aria-pressed="false">English</button>
+      <span class="langsoon" data-i18n="langsoon">Tiếng Việt · ភាសាខ្មែរ 번역 준비 중</span>
     </div>
-    <p class="langnote">외국인 노동자의 <b>62.2%</b>가 근로계약서를 “일부만 이해한 채” 서명합니다. 다국어 지원은 번역 검수를 마친 언어부터 순차적으로 엽니다.</p>
   </header>
 
-  <div class="modes">
-    <input type="radio" name="mode" id="m-worker" value="worker" checked>
-    <label for="m-worker"><b>알바생</b><span>내 급여가 맞는지 검산하고 문의 메시지 만들기 · 무료</span></label>
-    <input type="radio" name="mode" id="m-checker" value="checker">
-    <label for="m-checker"><b>계약서 진단</b><span>받은 근로계약서에 빠지거나 잘못된 부분 찾기 · 무료</span></label>
-    <input type="radio" name="mode" id="m-owner" value="owner">
-    <label for="m-owner"><b>사장님</b><span>근로계약서·급여명세서 자동 작성 · 월 9,900원</span></label>
+  <div class="primary">
+    <span class="tag" data-i18n="coretag">핵심 기능</span>
+    <h2 data-i18n="coretitle">급여 계산</h2>
+    <p data-i18n="coredesc">근무 기록을 넣으면 예상 급여를 계산하고, 실제 입금액과 비교해 차이를 확인합니다.</p>
   </div>
 
-  <!-- ══════════════ 알바생 ══════════════ -->
-  <div id="worker">
+  <div class="secondary">
+    <button type="button" data-mode="checker" aria-pressed="false">
+      <b><span data-i18n="m2">계약서 확인</span><span class="ext" data-i18n="extlabel">확장</span></b>
+      <span data-i18n="m2d">받은 근로계약서에 빠진 항목이 있는지 확인</span>
+    </button>
+    <button type="button" data-mode="owner" aria-pressed="false">
+      <b><span data-i18n="m3">사장님용 문서 작성</span><span class="ext" data-i18n="extlabel">확장</span></b>
+      <span data-i18n="m3d">근로계약서·급여명세서 양식 자동 작성</span>
+    </button>
+  </div>
+
+  <!-- ═══════════ 급여 계산 ═══════════ -->
+  <div id="calc">
 
     <section class="step">
-      <header><span class="no">01</span><h2>기본 정보</h2><span class="hint">모르면 그대로 두세요</span></header>
+      <header><span class="no">1</span><h3 data-i18n="s1">기본 정보</h3><span class="hint" data-i18n="s1h">모르면 그대로 두세요</span></header>
       <div class="body">
         <div class="grid">
           <div class="field">
-            <label for="wage">내 시급 (원)</label>
-            <input id="wage" type="number" min="0" step="10" value="10320">
+            <label for="wage" data-i18n="f_wage">내 시급 (원)</label>
+            <input id="wage" type="number" inputmode="numeric" min="0" step="10" value="10320">
           </div>
           <div class="field">
-            <label for="minwage">적용 최저임금 (원)</label>
-            <input id="minwage" type="number" min="0" step="10" value="10320">
-            <span class="note">고용노동부 고시로 확인 후 수정</span>
+            <label for="minwage" data-i18n="f_min">적용 최저임금 (원)</label>
+            <input id="minwage" type="number" inputmode="numeric" min="0" step="10" value="10320">
+            <span class="note" data-i18n="f_min_n">고용노동부 고시로 확인 후 수정</span>
           </div>
           <div class="field">
-            <label for="name">내 이름</label>
-            <input id="name" type="text" value="김하늘" autocomplete="off">
+            <label for="name"><span data-i18n="f_name">내 이름</span> <span class="opt" data-i18n="optional">(선택)</span></label>
+            <input id="name" type="text" value="" autocomplete="off" placeholder="비워 두어도 됩니다">
           </div>
         </div>
-        <div class="grid" style="margin-top:16px">
+        <div class="grid" style="margin-top:15px">
           <div class="field">
-            <span class="lbl">가게 규모</span>
+            <span class="lbl" data-i18n="f_size">일하는 곳의 규모</span>
             <div class="choice">
-              <input type="radio" name="size" id="size-small" value="small" checked><label for="size-small">5인 미만</label>
-              <input type="radio" name="size" id="size-big" value="big"><label for="size-big">5인 이상</label>
+              <input type="radio" name="size" id="size-small" value="small" checked><label for="size-small" data-i18n="f_size_s">5인 미만</label>
+              <input type="radio" name="size" id="size-big" value="big"><label for="size-big" data-i18n="f_size_b">5인 이상</label>
             </div>
-            <span class="note">5인 미만은 야간·연장 가산수당이 적용되지 않습니다</span>
+            <span class="note" data-i18n="f_size_n">5인 미만은 야간·연장 가산수당이 적용되지 않습니다</span>
           </div>
           <div class="field">
-            <span class="lbl">내 나이</span>
+            <span class="lbl" data-i18n="f_age">내 나이</span>
             <div class="choice">
-              <input type="radio" name="age" id="age-minor" value="minor" checked><label for="age-minor">만 18세 미만</label>
-              <input type="radio" name="age" id="age-adult" value="adult"><label for="age-adult">만 18세 이상</label>
+              <input type="radio" name="age" id="age-minor" value="minor" checked><label for="age-minor" data-i18n="f_age_m">만 18세 미만</label>
+              <input type="radio" name="age" id="age-adult" value="adult"><label for="age-adult" data-i18n="f_age_a">만 18세 이상</label>
             </div>
-            <span class="note">18세 미만은 근로시간 상한이 더 짧습니다</span>
+            <span class="note" data-i18n="f_age_n">18세 미만은 근로시간 상한이 더 짧습니다</span>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="step" style="margin-top:24px">
-      <header><span class="no">02</span><h2>근무 기록</h2><span class="hint">일한 날만 적으면 됩니다</span></header>
+    <section class="step" style="margin-top:22px">
+      <header><span class="no">2</span><h3 data-i18n="s2">계약에서 정한 근무 조건</h3><span class="hint" data-i18n="s2h">주휴수당 판단에 필요합니다</span></header>
+      <div class="body">
+        <div class="mocknote" data-i18n="s2note">주휴수당은 실제 일한 시간만으로 확정할 수 없습니다. 계약에서 정한 근무일과 근무시간을 알려 주시면 예상 금액을 계산해 드립니다. 모르면 비워 두셔도 됩니다.</div>
+        <div class="grid">
+          <div class="field">
+            <label for="cdays"><span data-i18n="f_cdays">계약상 주당 근무일 (일)</span> <span class="opt" data-i18n="optional">(선택)</span></label>
+            <input id="cdays" type="number" inputmode="numeric" min="0" max="7" step="1" value="3">
+          </div>
+          <div class="field">
+            <label for="chours"><span data-i18n="f_chours">계약상 주당 근무시간</span> <span class="opt" data-i18n="optional">(선택)</span></label>
+            <input id="chours" type="number" inputmode="decimal" min="0" step="0.5" value="15">
+          </div>
+          <div class="field">
+            <label for="pfrom" data-i18n="f_pfrom">급여 계산 대상 기간 시작</label>
+            <input id="pfrom" type="date" value="2026-08-03">
+          </div>
+          <div class="field">
+            <label for="pto" data-i18n="f_pto">대상 기간 종료</label>
+            <input id="pto" type="date" value="2026-08-16">
+          </div>
+        </div>
+        <div class="grid" style="margin-top:15px">
+          <div class="field">
+            <span class="lbl" data-i18n="f_sched">근무 일정</span>
+            <div class="choice">
+              <input type="radio" name="sched" id="sch-fix" value="fixed" checked><label for="sch-fix" data-i18n="f_sched_f">매주 고정</label>
+              <input type="radio" name="sched" id="sch-var" value="variable"><label for="sch-var" data-i18n="f_sched_v">매주 다름</label>
+            </div>
+          </div>
+          <div class="field">
+            <span class="lbl" data-i18n="f_abs">이 기간에 결근한 날</span>
+            <div class="choice">
+              <input type="radio" name="abs" id="abs-no" value="none" checked><label for="abs-no" data-i18n="f_abs_n">없음</label>
+              <input type="radio" name="abs" id="abs-yes" value="some"><label for="abs-yes" data-i18n="f_abs_y">있음</label>
+              <input type="radio" name="abs" id="abs-unk" value="unknown"><label for="abs-unk" data-i18n="f_abs_u">모름</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" style="margin-top:22px">
+      <header><span class="no">3</span><h3 data-i18n="s3">실제 근무 기록</h3><span class="hint" data-i18n="s3h">일한 날만 적으면 됩니다</span></header>
       <div class="body">
         <div class="presets">
-          <button type="button" data-preset="cvs">편의점 주 3일</button>
-          <button type="button" data-preset="cafe">카페 주말만</button>
-          <button type="button" data-preset="night">PC방 야간</button>
-          <button type="button" data-preset="clear">비우기</button>
+          <button type="button" data-preset="cvs" data-i18n="p1">편의점 주 3일</button>
+          <button type="button" data-preset="cafe" data-i18n="p2">카페 주말만</button>
+          <button type="button" data-preset="night" data-i18n="p3">PC방 야간</button>
+          <button type="button" data-preset="clear" data-i18n="p4">비우기</button>
         </div>
-        <div class="shifts" id="rows"></div>
-        <button class="addrow" id="add" type="button">＋ 근무한 날 추가</button>
+        <div class="rows" id="rows"></div>
+        <button class="addrow" id="add" type="button" data-i18n="addshift">＋ 근무한 날 추가</button>
       </div>
     </section>
 
-    <section class="step" style="margin-top:24px">
-      <header><span class="no">03</span><h2>실제로 받은 금액</h2><span class="hint">통장 입금 내역과 대조합니다</span></header>
+    <section class="step" style="margin-top:22px">
+      <header><span class="no">4</span><h3 data-i18n="s4">실제 받은 금액</h3><span class="hint" data-i18n="s4h">통장에 들어온 금액</span></header>
       <div class="body">
-        <div class="deposits" id="deps"></div>
-        <button class="addrow" id="adddep" type="button">＋ 입금 건 추가 (나눠서 들어온 경우)</button>
+        <div class="rows" id="deps"></div>
+        <button class="addrow" id="adddep" type="button" data-i18n="adddep">＋ 입금 건 추가 (나눠서 들어온 경우)</button>
+
         <div class="grid" style="margin-top:16px">
           <div class="field">
-            <label for="deduct">숙식비 등 공제액 (원)</label>
-            <input id="deduct" type="number" min="0" step="1000" value="0">
-            <span class="note">기숙사비·식비를 급여에서 뗀 경우 그 금액</span>
+            <label for="deduct"><span data-i18n="f_deduct">숙식비 등 공제액 (원)</span> <span class="opt" data-i18n="optional">(선택)</span></label>
+            <input id="deduct" type="number" inputmode="numeric" min="0" step="1000" value="0">
+            <span class="note" data-i18n="f_deduct_n">기숙사비·식비를 급여에서 뗀 경우 그 금액</span>
           </div>
         </div>
-        <input id="paid" type="hidden" value="320000">
       </div>
     </section>
 
-    <section class="verdict" id="verdict" data-state="ok" style="margin-top:24px">
+    <section class="verdict" id="verdict" data-state="check" style="margin-top:22px">
       <div class="head">
-        <span class="kicker" id="v-kicker">계산 결과</span>
+        <span class="kicker" id="v-kicker"></span>
         <span class="amount" id="v-amount">—</span>
         <span class="sub" id="v-sub"></span>
       </div>
@@ -461,129 +407,79 @@
       <div id="flags"></div>
     </section>
 
-    <section class="step" style="margin-top:24px">
-      <header><span class="no">04</span><h2>사장님께 보낼 말</h2><span class="hint">복사해서 그대로 보내세요</span></header>
+    <div class="limits" id="limits" style="margin-top:14px"></div>
+
+    <section class="step" style="margin-top:22px">
+      <header><span class="no">5</span><h3 data-i18n="s5">사장님께 보낼 확인 메시지</h3><span class="hint" data-i18n="s5h">복사해서 보내세요</span></header>
       <div class="body">
         <div class="tabs" role="tablist">
-          <button role="tab" data-tpl="ask" aria-selected="true">급여 확인 요청</button>
-          <button role="tab" data-tpl="payslip" aria-selected="false">급여명세서 요청</button>
-          <button role="tab" data-tpl="contract" aria-selected="false">근로계약서 요청</button>
+          <button role="tab" data-tpl="ask" aria-selected="true" data-i18n="t1">급여 확인 요청</button>
+          <button role="tab" data-tpl="payslip" aria-selected="false" data-i18n="t2">급여명세서 요청</button>
+          <button role="tab" data-tpl="contract" aria-selected="false" data-i18n="t3">근로계약서 요청</button>
         </div>
-        <textarea id="msg" spellcheck="false" aria-label="사장님께 보낼 메시지"></textarea>
+        <textarea id="msg" spellcheck="false"></textarea>
         <div class="msgfoot">
-          <button class="copy" data-copy="msg" type="button">메시지 복사</button>
-          <span class="copied" hidden>복사했습니다</span>
+          <button class="copy" data-copy="msg" type="button" data-i18n="copymsg">메시지 복사</button>
+          <span class="copied" hidden data-i18n="copied">복사했습니다</span>
         </div>
-        <p class="why">따지는 말투로는 다음 달 근무가 불편해집니다. 이 문장들은 전부 <b>“제가 잘못 계산했을 수도 있다”</b>로 끝나도록 설계했습니다. 대부분의 사장님은 떼어먹는 게 아니라 몰라서 빠뜨립니다.</p>
+        <p class="why" data-i18n-html="why_msg">정확한 근무 기록과 계산 결과를 함께 전달하면 급여 차이를 더 쉽게 확인할 수 있습니다. 이 메시지는 <b>따지지도, 지나치게 사과하지도 않는</b> 톤으로 작성됩니다.</p>
       </div>
     </section>
 
-    <section class="step" style="margin-top:24px">
-      <header><span class="no">＋</span><h2>알아두면 좋은 것</h2></header>
-      <div class="body" style="padding-top:8px">
-        <details>
-          <summary>주휴수당이 뭔가요?</summary>
-          <p>한 주에 정해진 근무일을 다 나오고 소정근로시간이 15시간 이상이면, 일하지 않은 하루치 임금을 더 받습니다. 급여에서 가장 자주 통째로 빠지는 항목이고, 본인이 모르면 사장님도 모르는 채로 넘어갑니다.</p>
-        </details>
-        <details>
-          <summary>5인 미만 가게는 왜 야간수당이 없나요?</summary>
-          <p>연장·야간·휴일 근로 가산 50%는 상시 근로자 5인 이상 사업장에만 적용됩니다. 최저임금과 주휴수당은 인원과 상관없이 모든 사업장에 적용됩니다.</p>
-        </details>
-        <details>
-          <summary>만 18세 미만은 뭐가 다른가요?</summary>
-          <p>법정근로시간이 1일 7시간·주 35시간으로 더 짧고(합의 시 1일 1시간·주 5시간까지 연장 가능), 밤 10시부터 오전 6시까지의 야간근로와 휴일근로는 본인 동의와 고용노동부 인가가 있어야 합니다. 근로계약 시 친권자 동의서와 가족관계증명서를 사업장에 비치해야 합니다.</p>
-        </details>
-        <details>
-          <summary>계산해보니 덜 받았는데, 말을 못 꺼내겠어요</summary>
-          <p>부당한 대우를 겪은 청소년의 상당수가 아무 말도 못 하고 넘어갑니다. 그래서 이 서비스는 계산보다 <b>보낼 문장</b>에 더 공을 들였습니다. 위 04번 메시지를 그대로 복사해서 보내세요. 잘 풀리지 않으면 고용노동부 상담 <b>1350</b>(무료)에 전화할 수 있습니다.</p>
-        </details>
-      </div>
+    <section class="step" style="margin-top:22px">
+      <header><span class="no">＋</span><h3 data-i18n="s6">알아두면 좋은 것</h3></header>
+      <div class="body" style="padding-top:6px" id="faq"></div>
     </section>
   </div>
 
-  <!-- ══════════════ 계약서 진단 ══════════════ -->
+  <!-- ═══════════ 계약서 확인 ═══════════ -->
   <div id="checker" hidden>
-
-    <div class="callout" style="margin-bottom:24px">
-      <b>근로계약서를 받긴 했는데, 뭐가 적혀 있는지 모르겠다면.</b><br>
-      사진을 올려 화면에 띄워 놓고 아래 항목을 하나씩 대조하세요. 법에 어긋나거나 빠진 부분을 근거 조문과 함께 찾아 드립니다.
+    <div class="callout" style="margin-bottom:20px">
+      <b>계약서 확인은 확장 기능입니다.</b><br>
+      받은 근로계약서를 화면에 띄워 놓고 항목을 대조해, 빠진 내용이나 법에 어긋나는 조항을 근거 조문과 함께 알려 드립니다. 법률 자문이 아니며 신고를 대행하지 않습니다.
     </div>
 
     <section class="step">
-      <header><span class="no">01</span><h2>계약서 사진 올리기</h2><span class="hint">선택 사항</span></header>
+      <header><span class="no">1</span><h3>계약서 사진 올리기</h3><span class="hint">선택 사항</span></header>
       <div class="body">
-        <label class="drop" for="file" id="drop">
-          <span class="ico">📄</span>
-          <b>근로계약서 사진 올리기</b>
-          <span class="fake">파일 선택 · 카메라로 촬영</span>
-          <span>여기로 파일을 끌어다 놓아도 됩니다.<br>사진은 어디에도 전송되지 않고 이 화면에서만 열립니다.</span>
+        <label class="addrow" for="file" id="drop" style="border-style:dashed;padding:26px 18px;text-align:center">
+          <b style="display:block;font-size:16px;color:var(--ink)">계약서 사진 올리기</b>
+          <span style="display:block;font-size:13px;color:var(--ink-faint);margin-top:5px">
+            사진은 어디에도 전송되지 않고 이 화면에서만 열립니다.</span>
         </label>
         <input id="file" type="file" accept="image/*" hidden>
-
         <div id="preview" hidden style="margin-top:14px">
-          <div class="pvtools">
+          <div class="presets">
             <button type="button" id="rotate">↻ 90° 회전</button>
             <button type="button" id="clearimg">사진 지우기</button>
           </div>
-          <div class="pvbox"><img id="pvimg" alt="올린 근로계약서 사진"></div>
-          <p class="privacy">✓ 이 사진은 서버로 전송되지 않았습니다. 브라우저 안에서만 열려 있습니다.</p>
-        </div>
-
-        <div class="aiwrap">
-          <div class="aihead">
-            <b>AI 자동 판독</b>
-            <span class="beta">개발 예정</span>
-          </div>
-          <p>사진 속 글자를 읽어 아래 항목을 자동으로 채우는 기능입니다. 아직 개발 중이라, 아래 버튼은 <b>완성됐을 때 어떻게 동작하는지 보여 주는 시연</b>입니다.</p>
-          <button class="aibtn" id="aiscan" type="button">AI로 자동 판독하기 (시연)</button>
-          <div class="bar" id="aibar" hidden><i></i></div>
-          <div class="scanlog" id="ailog"></div>
-          <div class="airesult" id="airesult" hidden>
-            <ul>
-              <li>시급 <b>9,860원</b> 인식</li>
-              <li>근로시간 <b>1일 9시간 · 주 27시간</b> 인식</li>
-              <li>휴게시간 <b>30분</b> 인식</li>
-              <li>필수 기재사항 중 <b>휴일 · 연차유급휴가</b> 미기재로 판단</li>
-              <li>본문에서 <b>위약금 조항</b>으로 보이는 문구 발견</li>
-            </ul>
-            <p class="disclaim">※ 위 값은 실제 판독 결과가 아니라 미리 정해 둔 시연용 예시입니다. 실제 판독 기능은 아직 구현되지 않았습니다.</p>
+          <div style="border:1px solid var(--rule);border-radius:4px;overflow:auto;max-height:420px;
+                      background:var(--sunk);display:grid;place-items:center;padding:10px">
+            <img id="pvimg" alt="올린 근로계약서 사진" style="max-width:100%;display:block">
           </div>
         </div>
       </div>
     </section>
 
-    <section class="step" style="margin-top:24px">
-      <header><span class="no">02</span><h2>이 여섯 가지가 적혀 있나요</h2><span class="hint">법이 정한 필수 항목</span></header>
-      <div class="body">
-        <div id="req"></div>
-        <p class="why" style="margin-top:14px">근로계약서에 반드시 적어야 하는 항목입니다. 하나라도 빠지면 사업주에게 과태료가 부과될 수 있습니다.</p>
-      </div>
+    <section class="step" style="margin-top:22px">
+      <header><span class="no">2</span><h3>이 여섯 가지가 적혀 있나요</h3><span class="hint">법이 정한 필수 항목</span></header>
+      <div class="body"><div id="req"></div></div>
     </section>
 
-    <section class="step" style="margin-top:24px">
-      <header><span class="no">03</span><h2>계약서에 적힌 조건</h2><span class="hint">사진을 보면서 옮겨 적으세요</span></header>
+    <section class="step" style="margin-top:22px">
+      <header><span class="no">3</span><h3>계약서에 적힌 조건</h3></header>
       <div class="body">
         <div class="grid">
-          <div class="field">
-            <label for="c-wage">계약서에 적힌 시급 (원)</label>
-            <input id="c-wage" type="number" min="0" step="10" value="9800">
-          </div>
-          <div class="field">
-            <label for="c-min">적용 최저임금 (원)</label>
-            <input id="c-min" type="number" min="0" step="10" value="10320">
-          </div>
-          <div class="field">
-            <label for="c-day">하루 근로시간 (시간)</label>
-            <input id="c-day" type="number" min="0" step="0.5" value="8">
-          </div>
-          <div class="field">
-            <label for="c-week">한 주 근로시간 (시간)</label>
-            <input id="c-week" type="number" min="0" step="0.5" value="24">
-          </div>
-          <div class="field">
-            <label for="c-break">휴게시간 (분)</label>
-            <input id="c-break" type="number" min="0" step="10" value="30">
-          </div>
+          <div class="field"><label for="c-wage">계약서에 적힌 시급 (원)</label>
+            <input id="c-wage" type="number" inputmode="numeric" min="0" step="10" value="9800"></div>
+          <div class="field"><label for="c-min">적용 최저임금 (원)</label>
+            <input id="c-min" type="number" inputmode="numeric" min="0" step="10" value="10320"></div>
+          <div class="field"><label for="c-day">하루 근로시간 (시간)</label>
+            <input id="c-day" type="number" inputmode="decimal" min="0" step="0.5" value="8"></div>
+          <div class="field"><label for="c-week">한 주 근로시간 (시간)</label>
+            <input id="c-week" type="number" inputmode="decimal" min="0" step="0.5" value="24"></div>
+          <div class="field"><label for="c-break">휴게시간 (분)</label>
+            <input id="c-break" type="number" inputmode="numeric" min="0" step="10" value="30"></div>
           <div class="field">
             <span class="lbl">내 나이</span>
             <div class="choice">
@@ -592,44 +488,40 @@
             </div>
           </div>
         </div>
-        <div style="margin-top:16px">
-          <div id="conds"></div>
-        </div>
+        <div style="margin-top:15px"><div id="conds"></div></div>
       </div>
     </section>
 
-    <section class="verdict" id="cverdict" data-state="ok" style="margin-top:24px">
+    <section class="verdict" id="cverdict" data-state="check" style="margin-top:22px">
       <div class="head">
-        <span class="kicker" id="c-kicker">진단 결과</span>
+        <span class="kicker" id="c-kicker">확인 결과</span>
         <span class="amount" id="c-amount">—</span>
         <span class="sub" id="c-sub"></span>
       </div>
       <div id="cflags"></div>
     </section>
 
-    <section class="step" style="margin-top:24px">
-      <header><span class="no">04</span><h2>사장님께 보낼 말</h2><span class="hint">복사해서 그대로 보내세요</span></header>
+    <section class="step" style="margin-top:22px">
+      <header><span class="no">4</span><h3>사장님께 보낼 확인 메시지</h3></header>
       <div class="body">
-        <textarea id="cmsg" spellcheck="false" aria-label="계약서 관련 문의 메시지"></textarea>
+        <textarea id="cmsg" spellcheck="false"></textarea>
         <div class="msgfoot">
           <button class="copy" data-copy="cmsg" type="button">메시지 복사</button>
           <span class="copied" hidden>복사했습니다</span>
         </div>
-        <p class="why">계약서를 고쳐 달라는 말은 꺼내기가 특히 어렵습니다. 그래서 <b>“제가 잘못 봤을 수도 있다”</b>로 시작하도록 만들었습니다.</p>
       </div>
     </section>
   </div>
 
-  <!-- ══════════════ 사장님 ══════════════ -->
+  <!-- ═══════════ 사장님용 문서 ═══════════ -->
   <div id="owner" hidden>
-
-    <div class="callout" style="margin-bottom:24px">
-      <b>근로계약서를 쓰지 않은 이유 1위는 “작성해야 하는지 몰라서”(40.4%)였습니다.</b><br>
-      떼어먹으려는 게 아니라 방법을 몰라서 못 지키는 경우가 대부분입니다. 아래를 채우면 표준 양식이 그대로 만들어집니다.
+    <div class="callout" style="margin-bottom:20px">
+      <b>사장님용 문서 작성은 확장 기능입니다.</b><br>
+      고용노동부 표준근로계약서는 7종이고 근로자의 나이·국적·업종·근로시간에 따라 써야 할 양식이 다릅니다. 조건을 넣으면 필요한 양식을 알려 드리고, 만들 수 있는 양식은 채워서 인쇄해 드립니다.
     </div>
 
     <section class="step">
-      <header><span class="no">01</span><h2>사업장 · 근로자 정보</h2><span class="hint">한 번만 입력하면 됩니다</span></header>
+      <header><span class="no">1</span><h3>사업장 · 근로자 정보</h3></header>
       <div class="body">
         <div class="grid">
           <div class="field"><label for="o-biz">사업체명</label><input id="o-biz" type="text" value="하늘편의점 ○○점"></div>
@@ -646,38 +538,30 @@
       </div>
     </section>
 
-    <section class="step" style="margin-top:24px">
-      <header><span class="no">02</span><h2>근로 조건</h2></header>
+    <section class="step" style="margin-top:22px">
+      <header><span class="no">2</span><h3>근로 조건</h3></header>
       <div class="body">
         <div class="grid">
           <div class="field"><label for="o-start">근로계약 시작일</label><input id="o-start" type="date" value="2026-08-03"></div>
-          <div class="field">
-            <label for="o-end">근로계약 종료일</label>
-            <input id="o-end" type="date" value="">
-            <span class="note">비워 두면 “기간의 정함이 없음”으로 작성됩니다</span>
-          </div>
+          <div class="field"><label for="o-end">근로계약 종료일</label><input id="o-end" type="date" value="">
+            <span class="note">비워 두면 “기간의 정함이 없음”으로 작성됩니다</span></div>
           <div class="field"><label for="o-place">근무 장소</label><input id="o-place" type="text" value="하늘편의점 ○○점 매장"></div>
           <div class="field"><label for="o-task">업무 내용</label><input id="o-task" type="text" value="상품 진열 및 계산 업무"></div>
           <div class="field"><label for="o-from">시업 시각</label><input id="o-from" type="time" value="17:00"></div>
           <div class="field"><label for="o-to">종업 시각</label><input id="o-to" type="time" value="21:00"></div>
           <div class="field"><label for="o-bfrom">휴게 시작</label><input id="o-bfrom" type="time" value=""></div>
           <div class="field"><label for="o-bto">휴게 종료</label><input id="o-bto" type="time" value=""></div>
-          <div class="field"><label for="o-dayn">주 근무일수 (일)</label><input id="o-dayn" type="number" min="1" max="7" value="3"></div>
-          <div class="field">
-            <label for="o-days">근무 요일</label>
-            <input id="o-days" type="text" value="월, 수, 토">
-            <span class="note">공식 양식에는 일수만 적으나, 요일을 함께 적어 두면 분쟁이 줍니다</span>
-          </div>
+          <div class="field"><label for="o-dayn">주 근무일수 (일)</label><input id="o-dayn" type="number" inputmode="numeric" min="1" max="7" value="3"></div>
+          <div class="field"><label for="o-days">근무 요일</label><input id="o-days" type="text" value="월, 수, 토"></div>
           <div class="field"><label for="o-holiday">주휴일 (요일)</label><input id="o-holiday" type="text" value="일"></div>
-          <div class="field"><label for="o-wage">시급 (원)</label><input id="o-wage" type="number" min="0" step="10" value="10320"></div>
-          <div class="field"><label for="o-payday">임금 지급일 (매월)</label><input id="o-payday" type="number" min="1" max="31" value="10"></div>
+          <div class="field"><label for="o-wage">시급 (원)</label><input id="o-wage" type="number" inputmode="numeric" min="0" step="10" value="10320"></div>
+          <div class="field"><label for="o-payday">임금 지급일 (매월)</label><input id="o-payday" type="number" inputmode="numeric" min="1" max="31" value="10"></div>
         </div>
-        <div id="minor-note" class="callout" style="margin-top:16px" hidden></div>
       </div>
     </section>
 
-    <section class="step" style="margin-top:24px">
-      <header><span class="no">03</span><h2>어떤 양식을 써야 하나요?</h2><span class="hint">표준근로계약서는 7종입니다</span></header>
+    <section class="step" style="margin-top:22px">
+      <header><span class="no">3</span><h3>어떤 양식을 써야 하나요?</h3><span class="hint">표준근로계약서는 7종입니다</span></header>
       <div class="body">
         <div class="grid">
           <div class="field">
@@ -687,7 +571,6 @@
               <input type="radio" name="nat" id="nat-eps" value="eps"><label for="nat-eps">외국인 · 고용허가제</label>
               <input type="radio" name="nat" id="nat-etc" value="etc"><label for="nat-etc">외국인 · 그 외</label>
             </div>
-            <span class="note">고용허가제 = E-9(비전문취업) · H-2(방문취업)</span>
           </div>
           <div class="field">
             <span class="lbl">건설 현장 일용직인가요?</span>
@@ -697,200 +580,413 @@
             </div>
           </div>
         </div>
-        <div id="wizresult" style="margin-top:18px"></div>
+        <div id="wizresult" style="margin-top:16px"></div>
       </div>
     </section>
 
-    <section class="step" style="margin-top:24px">
-      <header><span class="no">04</span><h2>서류 자동 작성</h2><span class="hint">복사하거나 바로 인쇄하세요</span></header>
+    <section class="step" style="margin-top:22px">
+      <header><span class="no">4</span><h3>서류 자동 작성</h3></header>
       <div class="body">
         <div class="tabs" role="tablist">
           <button role="tab" data-doc="contract" aria-selected="true">근로계약서</button>
           <button role="tab" data-doc="consent" aria-selected="false">친권자 동의서</button>
           <button role="tab" data-doc="payslip" aria-selected="false">급여명세서</button>
         </div>
-        <div class="pvtools">
-          <button type="button" id="printdoc" style="background:var(--ink);color:var(--ground);border-color:var(--ink);font-weight:500;padding:7px 16px">인쇄 · PDF로 저장</button>
+        <div class="presets">
+          <button type="button" id="printdoc" style="background:var(--ink);color:var(--ground);border-color:var(--ink);font-weight:600">인쇄 · PDF로 저장</button>
           <button type="button" class="copy-plain" data-copy="doc">텍스트 복사</button>
           <button type="button" id="toggleraw">텍스트로 보기</button>
           <span class="copied" hidden style="align-self:center">복사했습니다</span>
         </div>
         <div class="paperwrap" id="paperwrap"><div class="paper" id="paper"></div></div>
-        <textarea id="doc" class="doc" spellcheck="false" aria-label="자동 작성된 서류" hidden></textarea>
+        <textarea id="doc" class="doc" spellcheck="false" hidden></textarea>
         <p class="why" id="doc-why"></p>
       </div>
     </section>
   </div>
 
-  <div class="callout">
-    <b>급여가 이상한데 이야기가 잘 안 풀린다면</b> — 고용노동부 고객상담센터 <b>국번없이 1350</b>(무료)에 전화하거나 노동포털에서 상담을 신청할 수 있습니다. 근무 기록과 입금 내역 화면을 미리 저장해 두세요.
-  </div>
+  <div class="callout" id="helpline"></div>
 
-  <footer>
-    <p><b>계산 기준</b> — 기본급은 실근로시간 × 시급, 주휴수당은 1주 소정근로시간이 15시간 이상일 때 (주 근로시간 ÷ 40) × 8 × 시급으로 계산합니다. 야간(22~06시)·연장 가산 50%는 상시 5인 이상 사업장에만 적용합니다.</p>
-    <p><b>한계</b> — 공휴일 근로 가산, 4대보험·소득세 공제, 포괄임금 계약은 반영하지 않았습니다. 세전 기준 개략 검산 도구이며 법률 자문이 아닙니다. 작성된 서류는 표준 양식을 바탕으로 한 초안이므로 최종 확인 후 사용하십시오.</p>
-    <p><b>개인정보</b> — 입력한 내용은 서버로 전송되거나 저장되지 않으며, 브라우저 안에서만 계산됩니다.</p>
-    <p>내월급 · My Pay · 고등학생 창업 프로젝트 프로토타입</p>
-  </footer>
+  <footer id="foot"></footer>
 </div>
+
+<div class="sticky" id="sticky" hidden>
+  <div class="nums">
+    <div class="n"><span data-i18n="sum_due">예상 급여</span><b id="sk-due">—</b></div>
+    <div class="n"><span data-i18n="sum_paid">실제 입금</span><b id="sk-paid">—</b></div>
+    <div class="n gap"><span data-i18n="sum_gap">차이</span><b id="sk-gap">—</b></div>
+  </div>
+  <button type="button" id="sk-go" data-i18n="sum_btn">계산 결과 자세히 보기</button>
+</div>
+
+<style>
+  /* 서류 미리보기 (사장님 확장 기능) */
+  .paperwrap{background:var(--sunk);border:1px solid var(--rule);border-radius:4px;padding:16px;overflow-x:auto}
+  .paper{background:#FFFFFF;color:#1A222C;width:100%;max-width:660px;margin:0 auto;padding:34px 36px;
+    box-shadow:0 1px 4px rgba(0,0,0,.16);font-size:12.5px;line-height:1.75}
+  .paper h4{font-family:"Gowun Batang",serif;text-align:center;font-size:19px;font-weight:700;
+    letter-spacing:.3em;margin:0 0 4px;text-indent:.3em}
+  .paper .psub{text-align:center;font-size:11.5px;color:#5A6470;margin:0 0 22px}
+  .paper .pre{margin:0 0 16px;font-size:12.5px}
+  .paper ol.cl{margin:0;padding:0;list-style:none;counter-reset:cl}
+  .paper ol.cl > li{counter-increment:cl;display:grid;grid-template-columns:20px 108px 1fr;gap:0 6px;
+    margin-bottom:8px;align-items:start}
+  .paper ol.cl > li::before{content:counter(cl) ".";font-weight:600}
+  .paper .k{font-weight:600}
+  .paper .v .fill{border-bottom:1px solid #B9C0C8;display:inline-block;min-width:120px}
+  .paper ul.sub{margin:2px 0 0;padding-left:0;list-style:none}
+  .paper ul.sub li::before{content:"- ";color:#5A6470}
+  .paper .pdate{text-align:center;margin:24px 0 20px;font-size:13px}
+  .paper .signs{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .paper .sign h5{margin:0 0 7px;font-size:12.5px;font-weight:700}
+  .paper .sign .row{display:grid;grid-template-columns:74px 1fr;gap:6px;margin-bottom:3px}
+  .paper .sign .row span{color:#5A6470}
+  .paper .sign .row b{font-weight:500;border-bottom:1px solid #DCE1E6;min-height:19px}
+  .paper .sigmark{display:inline-block;border:1px dashed #B9C0C8;border-radius:2px;padding:1px 9px;
+    font-size:10.5px;color:#8A939C;margin-left:6px}
+  .paper table.pt{width:100%;border-collapse:collapse;margin:6px 0 14px}
+  .paper table.pt th,.paper table.pt td{border:1px solid #C9D0D7;padding:6px 9px;font-size:12px;text-align:left}
+  .paper table.pt th{background:#F1F4F7;font-weight:600;color:#39434F}
+  .paper table.pt td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .paper table.pt td small{display:block;color:#6B7580;font-size:10.5px}
+  .paper table.pt tr.sum td{background:#F7F9FB;font-weight:700}
+  .paper .note2{margin:14px 0 0;font-size:10.5px;color:#6B7580;line-height:1.6}
+  .paper .seal{text-align:right;margin-top:22px;font-size:12.5px;line-height:2}
+  @media (max-width:560px){
+    .paper{padding:22px 18px;font-size:12px}
+    .paper ol.cl > li{grid-template-columns:18px 1fr}
+    .paper ol.cl > li .k,.paper ol.cl > li .v{grid-column:2}
+    .paper .signs{grid-template-columns:1fr}
+  }
+  @media print{
+    @page{size:A4;margin:16mm 14mm}
+    body{background:#FFF !important}
+    body *{visibility:hidden !important}
+    #paper,#paper *{visibility:visible !important}
+    #paper{position:absolute;left:0;top:0;width:100%;max-width:none;margin:0;padding:0;box-shadow:none}
+    .sticky{display:none !important}
+  }
+  .check{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--rule-soft)}
+  .check:last-child{border-bottom:0}
+  .check input{margin:4px 0 0;width:19px;height:19px;accent-color:var(--brass);flex:none;cursor:pointer}
+  .check b{font-size:15px;font-weight:500;display:block;color:var(--ink)}
+  .check span{font-size:13px;color:var(--ink-faint);line-height:1.5}
+  .check.flagcheck b{color:var(--short)}
+  .pickbox{border:1px solid var(--rule);border-left:3px solid var(--brass);border-radius:4px;
+    background:var(--sunk);padding:16px 18px}
+  .picklabel{display:block;font-size:12.5px;color:var(--ink-faint)}
+  .pickname{display:block;font-size:19px;font-weight:600;color:var(--brass-ink);line-height:1.35;margin:4px 0 10px}
+  .pickwhy{margin:0;padding-left:18px}
+  .pickwhy li{font-size:13.5px;color:var(--ink-soft);line-height:1.6}
+  .pickalso{margin-top:10px;font-size:13.5px;color:var(--ink-soft)}
+  .pickalso b{color:var(--ink)}
+  .pickstate{margin-top:12px;padding-top:11px;border-top:1px solid var(--rule);font-size:13.5px;line-height:1.6}
+  .pickstate.ok{color:var(--ok-solid)}
+  .pickstate.no{color:var(--short)}
+  .pickwarn{margin-top:10px;border-top:1px solid var(--rule);padding-top:10px}
+  .pickwarn p{margin:0 0 5px;font-size:13px;color:var(--short);line-height:1.55}
+  .pickwarn p::before{content:"⚠ ";font-weight:700}
+</style>
 
 <script>
 (function(){
   "use strict";
 
-  var PRESETS = {
-    cvs:[  // 편의점 주 3일 — 주휴수당 누락 사례
-      {d:"2026-08-03",s:"17:00",e:"21:00",b:0},{d:"2026-08-05",s:"17:00",e:"21:00",b:0},
-      {d:"2026-08-08",s:"10:00",e:"18:00",b:60},{d:"2026-08-10",s:"17:00",e:"21:00",b:0},
-      {d:"2026-08-12",s:"17:00",e:"21:00",b:0},{d:"2026-08-14",s:"10:00",e:"19:00",b:60}],
-    cafe:[ // 주말만 — 주 15시간 미만이라 주휴 미발생
-      {d:"2026-08-01",s:"12:00",e:"18:00",b:30},{d:"2026-08-02",s:"12:00",e:"18:00",b:30},
-      {d:"2026-08-08",s:"12:00",e:"18:00",b:30},{d:"2026-08-09",s:"12:00",e:"18:00",b:30}],
-    night:[// PC방 야간 — 연소자 야간근로 경고
-      {d:"2026-08-03",s:"18:00",e:"02:00",b:30},{d:"2026-08-05",s:"18:00",e:"02:00",b:30},
-      {d:"2026-08-07",s:"18:00",e:"02:00",b:30},{d:"2026-08-10",s:"18:00",e:"02:00",b:30}]
+  /* ══════════════ 문구 ══════════════ */
+  var STR = {
+    ko:{
+      stamp:"근무 기록 · 급여 비교", brand:"알바정산",
+      dek:'일한 시간을 기록하면 <b>예상 급여</b>를 계산하고, <b>실제 받은 금액</b>과 비교해 드립니다.',
+      langsoon:"Tiếng Việt · ភាសាខ្មែរ 번역 준비 중",
+      coretag:"핵심 기능", coretitle:"급여 계산",
+      coredesc:"근무 기록을 넣으면 예상 급여를 계산하고, 실제 입금액과 비교해 차이를 확인합니다.",
+      m2:"계약서 확인", extlabel:"확장", m2d:"받은 근로계약서에 빠진 항목이 있는지 확인",
+      m3:"사장님용 문서 작성", m3d:"근로계약서·급여명세서 양식 자동 작성",
+      s1:"기본 정보", s1h:"모르면 그대로 두세요",
+      f_wage:"내 시급 (원)", f_min:"적용 최저임금 (원)", f_min_n:"고용노동부 고시로 확인 후 수정",
+      f_name:"내 이름", optional:"(선택)",
+      f_size:"일하는 곳의 규모", f_size_s:"5인 미만", f_size_b:"5인 이상",
+      f_size_n:"5인 미만은 야간·연장 가산수당이 적용되지 않습니다",
+      f_age:"내 나이", f_age_m:"만 18세 미만", f_age_a:"만 18세 이상",
+      f_age_n:"18세 미만은 근로시간 상한이 더 짧습니다",
+      s2:"계약에서 정한 근무 조건", s2h:"주휴수당 판단에 필요합니다",
+      s2note:"주휴수당은 실제 일한 시간만으로 확정할 수 없습니다. 계약에서 정한 근무일과 근무시간을 알려 주시면 예상 금액을 계산해 드립니다. 모르면 비워 두셔도 됩니다.",
+      f_cdays:"계약상 주당 근무일 (일)", f_chours:"계약상 주당 근무시간",
+      f_pfrom:"급여 계산 대상 기간 시작", f_pto:"대상 기간 종료",
+      f_sched:"근무 일정", f_sched_f:"매주 고정", f_sched_v:"매주 다름",
+      f_abs:"이 기간에 결근한 날", f_abs_n:"없음", f_abs_y:"있음", f_abs_u:"모름",
+      s3:"실제 근무 기록", s3h:"일한 날만 적으면 됩니다",
+      p1:"편의점 주 3일", p2:"카페 주말만", p3:"PC방 야간", p4:"비우기", addshift:"＋ 근무한 날 추가",
+      s4:"실제 받은 금액", s4h:"통장에 들어온 금액",
+      adddep:"＋ 입금 건 추가 (나눠서 들어온 경우)",
+      f_deduct:"숙식비 등 공제액 (원)", f_deduct_n:"기숙사비·식비를 급여에서 뗀 경우 그 금액",
+      s5:"사장님께 보낼 확인 메시지", s5h:"복사해서 보내세요",
+      t1:"급여 확인 요청", t2:"급여명세서 요청", t3:"근로계약서 요청",
+      copymsg:"메시지 복사", copied:"복사했습니다",
+      why_msg:'정확한 근무 기록과 계산 결과를 함께 전달하면 급여 차이를 더 쉽게 확인할 수 있습니다. 이 메시지는 <b>따지지도, 지나치게 사과하지도 않는</b> 톤으로 작성됩니다.',
+      s6:"알아두면 좋은 것",
+      sum_due:"예상 급여", sum_paid:"실제 입금", sum_gap:"차이", sum_btn:"계산 결과 자세히 보기",
+      // 결과
+      st_match:"일치", st_diff:"차이 있음", st_check:"확인 필요", st_over:"확인 필요",
+      sub_match:"계산 결과와 입금액이 같습니다.",
+      sub_diff:"입금액이 예상 금액보다 적습니다. 근무시간과 급여명세서를 다시 확인해 보세요.",
+      sub_over:"입금액이 예상 금액보다 많습니다. 식대·상여 등이 포함됐을 수 있습니다.",
+      sub_check:"계약 내용이나 공제 정보가 부족해 예상 금액을 확정할 수 없습니다.",
+      sub_empty:"위에 근무한 날을 입력하면 계산해 드립니다.",
+      l_base:"기본급", l_holi:"주휴수당", l_holi_est:"예상 주휴수당",
+      l_night:"야간 가산 50%", l_ot:"연장 가산 50%",
+      l_due:"예상 급여", l_deduct:"숙식비 등 공제", l_paid:"실제 받은 금액",
+      lim:"이 결과는 입력한 정보를 바탕으로 계산한 예상 금액입니다. 근로계약, 공제 항목, 사업장 상황에 따라 실제 급여와 차이가 날 수 있습니다."
+    },
+    en:{
+      stamp:"Work log · Pay check", brand:"Alba Paycheck",
+      dek:'Log your hours and we will estimate your pay, then compare it with what you actually received.',
+      langsoon:"Tiếng Việt · ភាសាខ្មែរ translation in preparation",
+      coretag:"Main feature", coretitle:"Pay calculator",
+      coredesc:"Enter your work log to estimate your pay and compare it with the amount deposited.",
+      m2:"Check my contract", extlabel:"extra", m2d:"See whether anything is missing from your work contract",
+      m3:"Documents for employers", m3d:"Fill in standard contract and payslip forms",
+      s1:"Basic information", s1h:"Leave as is if unsure",
+      f_wage:"My hourly wage (KRW)", f_min:"Applicable minimum wage (KRW)",
+      f_min_n:"Check the official rate and update if different",
+      f_name:"My name", optional:"(optional)",
+      f_size:"Size of workplace", f_size_s:"Under 5 staff", f_size_b:"5 or more",
+      f_size_n:"Night and overtime premiums do not apply at workplaces with fewer than 5 staff",
+      f_age:"My age", f_age_m:"Under 18", f_age_a:"18 or older",
+      f_age_n:"Workers under 18 have shorter legal working-hour limits",
+      s2:"Working conditions in your contract", s2h:"Needed to judge weekly holiday pay",
+      s2note:"Weekly holiday pay cannot be confirmed from actual hours alone. Tell us the days and hours set in your contract and we will estimate it. You may leave this blank.",
+      f_cdays:"Contracted days per week", f_chours:"Contracted hours per week",
+      f_pfrom:"Pay period start", f_pto:"Pay period end",
+      f_sched:"Work schedule", f_sched_f:"Same every week", f_sched_v:"Varies weekly",
+      f_abs:"Days absent in this period", f_abs_n:"None", f_abs_y:"Some", f_abs_u:"Not sure",
+      s3:"Actual work log", s3h:"Enter only the days you worked",
+      p1:"Convenience store, 3 days", p2:"Cafe, weekends", p3:"PC cafe, night", p4:"Clear",
+      addshift:"＋ Add a day",
+      s4:"Amount actually received", s4h:"What arrived in your bank account",
+      adddep:"＋ Add a deposit (if paid in parts)",
+      f_deduct:"Housing / meal deductions (KRW)", f_deduct_n:"Amount taken from your pay for dormitory or meals",
+      s5:"Message to send your employer", s5h:"Copy and send",
+      t1:"Ask about pay", t2:"Ask for a payslip", t3:"Ask for a contract",
+      copymsg:"Copy message", copied:"Copied",
+      why_msg:'Sending your work log together with the calculation makes it easier to check a pay difference. This message is written to be neither accusatory nor overly apologetic.',
+      s6:"Good to know",
+      sum_due:"Estimated pay", sum_paid:"Received", sum_gap:"Difference", sum_btn:"See full result",
+      st_match:"Matches", st_diff:"Difference found", st_check:"Needs checking", st_over:"Needs checking",
+      sub_match:"The calculated amount and the deposit are the same.",
+      sub_diff:"The deposit is less than the estimate. Please re-check your hours and payslip.",
+      sub_over:"The deposit is more than the estimate. It may include meals or a bonus.",
+      sub_check:"Contract details or deduction information are missing, so the estimate cannot be confirmed.",
+      sub_empty:"Enter the days you worked above and we will calculate.",
+      l_base:"Base pay", l_holi:"Weekly holiday pay", l_holi_est:"Estimated weekly holiday pay",
+      l_night:"Night premium 50%", l_ot:"Overtime premium 50%",
+      l_due:"Estimated pay", l_deduct:"Housing / meal deductions", l_paid:"Amount received",
+      lim:"This result is an estimate based on the information you entered. The actual amount may differ depending on your contract, deductions and workplace circumstances."
+    }
   };
-  var PAID_HINT = {cvs:320000, cafe:227040, night:380000};
+  var lang = "ko";
+  function T(k){ return (STR[lang] && STR[lang][k]) || STR.ko[k] || k; }
 
-  var rowsEl = document.getElementById("rows");
-  var depsEl = document.getElementById("deps");
-  var tpl = "ask", docTpl = "contract";
+  /* ══════════════ 공통 ══════════════ */
+  var rowsEl=document.getElementById("rows"), depsEl=document.getElementById("deps");
+  var tpl="ask", docTpl="contract";
 
-  // ── 입금 내역 (여러 건 대조) ──────────────────────────────
-  function addDep(v){
-    var el=document.createElement("div");
-    el.className="dep";
-    el.innerHTML =
-      '<label><span>입금일</span><input type="date" class="d-d" value="'+(v.d||"")+'"></label>'+
-      '<label><span>입금액 (원)</span><input type="number" class="d-v" min="0" step="10" value="'+(v.v||0)+'"></label>'+
-      '<label><span>메모</span><input type="text" class="d-m" value="'+(v.m||"")+'" placeholder="예: 8월 급여"></label>'+
-      '<button class="del" type="button" aria-label="이 입금 삭제">&times;</button>';
-    el.querySelector(".del").addEventListener("click", function(){ el.remove(); render(); });
-    depsEl.appendChild(el);
-  }
-  function depTotal(){
-    var t=0;
-    depsEl.querySelectorAll(".d-v").forEach(function(i){ t += +i.value||0; });
-    return t;
-  }
-  function depCount(){ return depsEl.querySelectorAll(".dep").length; }
-
-  function won(n){ return Math.round(n).toLocaleString("ko-KR") + "원"; }
-  function hrs(n){ return (Math.round(n*100)/100).toLocaleString("ko-KR") + "시간"; }
+  function won(n){ return Math.round(n).toLocaleString("ko-KR") + (lang==="en" ? " KRW" : "원"); }
+  function hrs(n){ var v=Math.round(n*100)/100; return lang==="en" ? v+" h" : v.toLocaleString("ko-KR")+"시간"; }
   function toMin(t){ var p=(t||"").split(":"); return (+p[0]||0)*60 + (+p[1]||0); }
-  function val(id){ return (document.getElementById(id).value || "").trim(); }
-  function pad(v){ return v.length ? v : "________"; }
+  function val(id){ var e=document.getElementById(id); return e ? (e.value||"").trim() : ""; }
+  function num(id){ return +val(id)||0; }
+  function pad(v){ return v ? v : "________"; }
+  function esc(s){ return String(s).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];}); }
+
+  /* ══════════════ 근무 기록 ══════════════ */
+  var PRESETS={
+    cvs:[{d:"2026-08-03",s:"17:00",e:"21:00",b:0},{d:"2026-08-05",s:"17:00",e:"21:00",b:0},
+         {d:"2026-08-08",s:"10:00",e:"18:00",b:60},{d:"2026-08-10",s:"17:00",e:"21:00",b:0},
+         {d:"2026-08-12",s:"17:00",e:"21:00",b:0},{d:"2026-08-14",s:"10:00",e:"19:00",b:60}],
+    cafe:[{d:"2026-08-01",s:"12:00",e:"18:00",b:30},{d:"2026-08-02",s:"12:00",e:"18:00",b:30},
+          {d:"2026-08-08",s:"12:00",e:"18:00",b:30},{d:"2026-08-09",s:"12:00",e:"18:00",b:30}],
+    night:[{d:"2026-08-03",s:"18:00",e:"02:00",b:30},{d:"2026-08-05",s:"18:00",e:"02:00",b:30},
+           {d:"2026-08-07",s:"18:00",e:"02:00",b:30},{d:"2026-08-10",s:"18:00",e:"02:00",b:30}]
+  };
+  var PRESET_META={ cvs:{c:3,h:15,paid:320000}, cafe:{c:2,h:11,paid:227040}, night:{c:3,h:22.5,paid:380000} };
 
   function addRow(v){
-    var el = document.createElement("div");
-    el.className = "shift";
-    el.innerHTML =
-      '<label><span>날짜</span><input type="date" class="c-d" value="'+(v.d||"")+'"></label>' +
-      '<label><span>출근</span><input type="time" class="c-s" value="'+(v.s||"")+'"></label>' +
-      '<label><span>퇴근</span><input type="time" class="c-e" value="'+(v.e||"")+'"></label>' +
-      '<label><span>휴게(분)</span><input type="number" class="c-b" min="0" step="10" value="'+(v.b||0)+'"></label>' +
-      '<button class="del" type="button" aria-label="이 날 삭제">&times;</button>';
-    el.querySelector(".del").addEventListener("click", function(){ el.remove(); render(); });
+    var el=document.createElement("div"); el.className="row";
+    el.innerHTML=
+      '<label><span>'+(lang==="en"?"Date":"날짜")+'</span><input type="date" class="c-d" value="'+(v.d||"")+'"></label>'+
+      '<label><span>'+(lang==="en"?"Start":"출근")+'</span><input type="time" class="c-s" value="'+(v.s||"")+'"></label>'+
+      '<label><span>'+(lang==="en"?"End":"퇴근")+'</span><input type="time" class="c-e" value="'+(v.e||"")+'"></label>'+
+      '<label><span>'+(lang==="en"?"Break (min)":"휴게(분)")+'</span><input type="number" inputmode="numeric" class="c-b" min="0" step="10" value="'+(v.b||0)+'"></label>'+
+      '<button class="del" type="button" aria-label="delete">&times;</button>';
+    el.querySelector(".del").addEventListener("click",function(){ el.remove(); render(); });
     rowsEl.appendChild(el);
   }
+  function addDep(v){
+    var el=document.createElement("div"); el.className="row";
+    el.innerHTML=
+      '<label><span>'+(lang==="en"?"Date":"입금일")+'</span><input type="date" class="d-d" value="'+(v.d||"")+'"></label>'+
+      '<label><span>'+(lang==="en"?"Amount":"입금액")+'</span><input type="number" inputmode="numeric" class="d-v" min="0" step="10" value="'+(v.v||0)+'"></label>'+
+      '<label><span>'+(lang==="en"?"Memo":"메모")+'</span><input type="text" class="d-m" value="'+(v.m||"")+'"></label>'+
+      '<label></label><button class="del" type="button" aria-label="delete">&times;</button>';
+    el.querySelector(".del").addEventListener("click",function(){ el.remove(); render(); });
+    depsEl.appendChild(el);
+  }
 
-  var NIGHT = [[0,360],[1320,1800],[2760,2880]];   // 22:00~06:00 (익일 포함)
-  function nightMinutes(a,b){
-    var t=0;
-    for(var i=0;i<NIGHT.length;i++){
-      var lo=Math.max(a,NIGHT[i][0]), hi=Math.min(b,NIGHT[i][1]);
-      if(hi>lo) t+=hi-lo;
-    }
-    return t;
-  }
-  function mondayOf(iso){
-    var d=new Date(iso+"T00:00:00");
-    if(isNaN(d)) return "?";
-    d.setDate(d.getDate()-((d.getDay()+6)%7));
-    return d.toISOString().slice(0,10);
-  }
+  var NIGHT=[[0,360],[1320,1800],[2760,2880]];
+  function nightMinutes(a,b){ var t=0; for(var i=0;i<NIGHT.length;i++){
+    var lo=Math.max(a,NIGHT[i][0]), hi=Math.min(b,NIGHT[i][1]); if(hi>lo) t+=hi-lo; } return t; }
+  function mondayOf(iso){ var d=new Date(iso+"T00:00:00"); if(isNaN(d)) return "?";
+    d.setDate(d.getDate()-((d.getDay()+6)%7)); return d.toISOString().slice(0,10); }
 
   function collect(){
-    var out=[];
-    rowsEl.querySelectorAll(".shift").forEach(function(el){
+    var out=[], from=val("pfrom"), to=val("pto");
+    rowsEl.querySelectorAll(".row").forEach(function(el){
       var d=el.querySelector(".c-d").value, s=el.querySelector(".c-s").value,
           e=el.querySelector(".c-e").value, b=+el.querySelector(".c-b").value||0;
       if(!d||!s||!e) return;
-      var a=toMin(s), z=toMin(e);
-      if(z<=a) z+=1440;
-      out.push({date:d, work:Math.max(0,(z-a)-b)/60, night:Math.min(nightMinutes(a,z), z-a)/60});
+      if(from && d<from) return;
+      if(to && d>to) return;
+      var a=toMin(s), z=toMin(e); if(z<=a) z+=1440;
+      out.push({date:d, work:Math.max(0,(z-a)-b)/60, night:Math.min(nightMinutes(a,z),z-a)/60});
     });
     return out;
   }
 
+  /* ══════════════ 입금 ══════════════ */
+  function paidTotal(){
+    var s=0; depsEl.querySelectorAll(".d-v").forEach(function(i){ s += +i.value||0; }); return s;
+  }
+  function paidCount(){ return depsEl.querySelectorAll(".row").length; }
+
+  /* ══════════════ 계산 ══════════════ */
   function calc(){
-    var wage=+val("wage")||0, minw=+val("minwage")||0;
-    var paid=depTotal();
-    var deduct=+val("deduct")||0;
+    var wage=num("wage"), minw=num("minwage"), deduct=num("deduct");
     var big=document.getElementById("size-big").checked;
     var minor=document.getElementById("age-minor").checked;
     var capDay=minor?7:8, capWeek=minor?35:40;
+    var cDays=num("cdays"), cHours=num("chours");
+    var sched=document.querySelector('input[name="sched"]:checked').value;
+    var abs=document.querySelector('input[name="abs"]:checked').value;
 
-    var weeks={};
-    collect().forEach(function(s){
+    var shifts=collect(), weeks={};
+    shifts.forEach(function(s){
       var k=mondayOf(s.date);
       if(!weeks[k]) weeks[k]={hours:0,night:0,days:[]};
       weeks[k].hours+=s.work; weeks[k].night+=s.night; weeks[k].days.push(s.work);
     });
+    var wkeys=Object.keys(weeks);
 
-    var total=0,night=0,ot=0,holiday=0,qual=0,longDay=false,longWeek=false;
-    Object.keys(weeks).forEach(function(k){
+    var total=0,night=0,ot=0,longDay=false,longWeek=false;
+    wkeys.forEach(function(k){
       var w=weeks[k];
       total+=w.hours; night+=w.night;
       var dayOT=w.days.reduce(function(a,h){ return a+Math.max(0,h-capDay); },0);
-      var weekOT=Math.max(0, w.hours-dayOT-capWeek);
-      ot+=dayOT+weekOT;
+      ot += dayOT + Math.max(0, w.hours-dayOT-capWeek);
       if(dayOT>0) longDay=true;
       if(w.hours>capWeek) longWeek=true;
-      if(w.hours>=15){ qual++; holiday+=(Math.min(w.hours,40)/40)*8*wage; }
     });
+
+    // ── 주휴수당: 계약상 소정근로시간 + 개근 여부로 판단 ──
+    var hs, holiday=0, holidayWeeks=0;
+    if(!cHours){
+      hs="unknown";                                  // 계약 정보 없음 → 확정 불가
+    }else if(cHours < 15){
+      hs="none";                                     // 주 15시간 미만 → 발생하지 않음
+    }else if(abs==="unknown"){
+      hs="unknown";                                  // 개근 여부 모름 → 확정 불가
+    }else if(abs==="some"){
+      hs="none_absent";                              // 결근 있음 → 그 주는 발생하지 않음
+    }else{
+      holidayWeeks = wkeys.length;
+      holiday = (Math.min(cHours,40)/40) * 8 * wage * holidayWeeks;
+      hs = (sched==="fixed") ? "confirmed" : "estimated";
+    }
 
     var base=total*wage;
     var nightPay=big?night*wage*0.5:0;
     var otPay=big?ot*wage*0.5:0;
-    var dates=collect().map(function(s){return s.date;}).sort();
-
     var due=base+holiday+nightPay+otPay;
-    // 숙식비를 뗀 뒤 실제로 손에 쥐는 시급 — 외국인 노동자 임금 분쟁의 핵심 쟁점
+    var paid=paidTotal();
     var netHourly = total>0 ? (due-deduct)/total : 0;
 
-    return {wage:wage,minw:minw,paid:paid,deduct:deduct,big:big,minor:minor,
-      shifts:dates.length, weeks:Object.keys(weeks).length, weeksQualified:qual,
-      total:total,night:night,ot:ot,base:base,holiday:holiday,nightPay:nightPay,otPay:otPay,
-      due:due, gap:due-paid, netHourly:netHourly,
-      longDay:longDay,longWeek:longWeek,capDay:capDay,capWeek:capWeek,dates:dates};
+    var state;
+    if(!shifts.length) state="empty";
+    else if(hs==="unknown") state="check";
+    else if(due-paid > 500) state="diff";
+    else if(paid-due > 500) state="over";
+    else state="match";
+
+    return {wage:wage,minw:minw,deduct:deduct,paid:paid,big:big,minor:minor,
+      shifts:shifts.length, weeks:wkeys.length, cDays:cDays, cHours:cHours, sched:sched, abs:abs,
+      total:total,night:night,ot:ot,base:base,holiday:holiday,holidayWeeks:holidayWeeks,hs:hs,
+      nightPay:nightPay,otPay:otPay,due:due,gap:due-paid,netHourly:netHourly,
+      longDay:longDay,longWeek:longWeek,state:state,
+      dates:shifts.map(function(s){return s.date;}).sort()};
   }
 
   function period(r){
-    if(!r.dates.length) return "";
-    var a=r.dates[0].split("-"), b=r.dates[r.dates.length-1].split("-");
-    var f=(+a[1])+"월 "+(+a[2])+"일", t=(+b[1])+"월 "+(+b[2])+"일";
-    return f===t ? f : f+" ~ "+t;
+    var a=val("pfrom"), b=val("pto");
+    if(!a && r.dates.length) a=r.dates[0];
+    if(!b && r.dates.length) b=r.dates[r.dates.length-1];
+    if(!a) return "";
+    function f(s){ var p=s.split("-"); return lang==="en" ? (+p[1])+"/"+(+p[2]) : (+p[1])+"월 "+(+p[2])+"일"; }
+    return (a===b) ? f(a) : f(a)+(lang==="en"?" – ":" ~ ")+f(b);
+  }
+
+  /* ══════════════ 결과 표시 ══════════════ */
+  function renderVerdict(r){
+    var v=document.getElementById("verdict");
+    var k=document.getElementById("v-kicker"), a=document.getElementById("v-amount"), s=document.getElementById("v-sub");
+    if(r.state==="empty"){
+      v.dataset.state="check"; k.textContent=T("st_check"); a.textContent="—"; s.textContent=T("sub_empty"); return;
+    }
+    v.dataset.state = r.state;
+    if(r.state==="diff"){ k.textContent=T("st_diff"); a.textContent=won(r.gap); s.textContent=T("sub_diff"); }
+    else if(r.state==="over"){ k.textContent=T("st_over"); a.textContent=won(-r.gap); s.textContent=T("sub_over"); }
+    else if(r.state==="check"){ k.textContent=T("st_check"); a.textContent=won(r.due); s.textContent=T("sub_check"); }
+    else { k.textContent=T("st_match"); a.textContent=won(r.due); s.textContent=T("sub_match"); }
   }
 
   function renderLedger(r){
-    var rows=[
-      ['기본급<small>실근로 '+hrs(r.total)+' × '+r.wage.toLocaleString("ko-KR")+'원</small>', won(r.base), ''],
-      ['주휴수당<small>'+(r.weeksQualified? r.weeksQualified+'주치 발생 (주 15시간 이상)':'해당 없음 (주 15시간 미만)')+'</small>',
-        won(r.holiday), r.holiday?'':'muted']
-    ];
+    var rows=[];
+    rows.push(['<b>'+T("l_base")+'</b><small>'+hrs(r.total)+' × '+r.wage.toLocaleString("ko-KR")+'</small>', won(r.base), '']);
+
+    var hlabel, hnote;
+    if(r.hs==="unknown"){
+      hlabel=T("l_holi"); hnote = lang==="en"
+        ? "Cannot be determined without contracted hours or attendance"
+        : "계약상 근무시간이나 개근 여부를 알 수 없어 확정하지 못했습니다";
+      rows.push(['<b>'+hlabel+'</b><small>'+hnote+'</small>', lang==="en"?"Not determined":"확인 필요", 'muted']);
+    }else if(r.hs==="none"){
+      hnote = lang==="en" ? "Contracted hours are under 15 per week" : "계약상 주 15시간 미만이라 발생하지 않습니다";
+      rows.push(['<b>'+T("l_holi")+'</b><small>'+hnote+'</small>', won(0), 'muted']);
+    }else if(r.hs==="none_absent"){
+      hnote = lang==="en" ? "Not paid for a week with an absence" : "결근한 주에는 발생하지 않습니다";
+      rows.push(['<b>'+T("l_holi")+'</b><small>'+hnote+'</small>', won(0), 'muted']);
+    }else{
+      hlabel = (r.hs==="estimated") ? T("l_holi_est") : T("l_holi");
+      hnote = (lang==="en"
+        ? "(contracted "+r.cHours+"h ÷ 40) × 8 × wage · "+r.holidayWeeks+" week(s)"
+        : "(계약상 주 "+r.cHours+"시간 ÷ 40) × 8 × 시급 · "+r.holidayWeeks+"주치")
+        + (r.hs==="estimated" ? (lang==="en"?" · schedule varies, so this is an estimate":" · 일정이 매주 달라 예상 금액입니다") : "");
+      rows.push(['<b>'+hlabel+'</b><small>'+hnote+'</small>', won(r.holiday), '']);
+    }
+
     if(r.big || r.night>0)
-      rows.push(['야간 가산 50%<small>'+(r.big?'22시~06시 '+hrs(r.night):'5인 미만 사업장은 미적용')+'</small>',
+      rows.push(['<b>'+T("l_night")+'</b><small>'+(r.big?hrs(r.night):(lang==="en"?"Not applied under 5 staff":"5인 미만 사업장은 미적용"))+'</small>',
         won(r.nightPay), r.nightPay?'':'muted']);
     if(r.big || r.ot>0)
-      rows.push(['연장 가산 50%<small>'+(r.big?'법정시간 초과 '+hrs(r.ot):'5인 미만 사업장은 미적용')+'</small>',
+      rows.push(['<b>'+T("l_ot")+'</b><small>'+(r.big?hrs(r.ot):(lang==="en"?"Not applied under 5 staff":"5인 미만 사업장은 미적용"))+'</small>',
         won(r.otPay), r.otPay?'':'muted']);
-    rows.push(['<b>받아야 할 금액</b>','<b>'+won(r.due)+'</b>','total']);
+
+    rows.push(['<b>'+T("l_due")+'</b>','<b>'+won(r.due)+'</b>','total']);
     if(r.deduct>0)
-      rows.push(['숙식비 등 공제<small>공제 후 실수령 시급 '+Math.round(r.netHourly).toLocaleString("ko-KR")+
-        '원</small>','− '+won(r.deduct),'muted']);
-    rows.push(['실제 받은 금액'+(depCount()>1?'<small>입금 '+depCount()+'건 합계</small>':''),
+      rows.push(['<b>'+T("l_deduct")+'</b><small>'+(lang==="en"?"net hourly ":"공제 후 실수령 시급 ")+
+        Math.round(r.netHourly).toLocaleString("ko-KR")+'</small>','− '+won(r.deduct),'muted']);
+    rows.push(['<b>'+T("l_paid")+'</b>'+(paidCount()>1?'<small>'+(lang==="en"?paidCount()+" deposits":"입금 "+paidCount()+"건 합계")+'</small>':''),
       '− '+won(r.paid),'muted']);
+
     document.getElementById("ledger").innerHTML = rows.map(function(x){
       return '<tr class="'+x[2]+'"><td class="lbl">'+x[0]+'</td><td>'+x[1]+'</td></tr>';
     }).join("");
@@ -898,722 +994,435 @@
 
   function renderFlags(r){
     var f=[];
+    if(r.hs==="unknown" && r.shifts)
+      f.push(['info','?', lang==="en"?"Weekly holiday pay could not be confirmed":"주휴수당을 확정하지 못했습니다",
+        lang==="en"
+          ? "Weekly holiday pay cannot be determined from actual hours alone. Enter the days and hours set in your contract in step 2."
+          : "주휴수당은 실제 근무시간만으로 확정할 수 없습니다. 2번에서 계약상 근무일과 근무시간을 넣어 주세요."]);
     if(r.wage<r.minw && r.wage>0)
-      f.push(['warn','!','시급이 최저임금보다 낮습니다',
-        '최저임금('+r.minw.toLocaleString("ko-KR")+'원)은 인원과 상관없이 모든 사업장에 적용됩니다. 최저임금 기준이면 기본급만 '+won(r.total*r.minw)+'입니다.']);
-    if(r.deduct>0 && r.total>0 && r.netHourly < r.minw)
-      f.push(['warn','!','숙식비를 떼고 나면 최저임금 아래입니다',
-        '공제 후 실수령 시급이 '+Math.round(r.netHourly).toLocaleString("ko-KR")+'원으로, 최저임금('+
-        r.minw.toLocaleString("ko-KR")+'원)보다 '+Math.round(r.minw-r.netHourly).toLocaleString("ko-KR")+
-        '원 낮습니다. 기숙사비·식비 공제는 정해진 범위 안에서만 가능하며, 근로자 동의 없이 임의로 뗄 수 없습니다.']);
+      f.push(['warn','!', lang==="en"?"Your hourly wage is below minimum wage":"시급이 최저임금보다 낮습니다",
+        lang==="en" ? "Minimum wage applies to every workplace regardless of size."
+          : "최저임금("+r.minw.toLocaleString("ko-KR")+"원)은 사업장 규모와 상관없이 적용됩니다."]);
+    if(r.deduct>0 && r.total>0 && r.netHourly<r.minw)
+      f.push(['warn','!', lang==="en"?"After deductions the hourly rate falls below minimum wage":"숙식비를 빼면 실수령 시급이 최저임금보다 낮습니다",
+        lang==="en" ? "Housing and meal deductions are only allowed within set limits and with your agreement."
+          : "공제 후 실수령 시급이 "+Math.round(r.netHourly).toLocaleString("ko-KR")+"원입니다. 숙식비 공제는 정해진 범위 안에서, 동의를 받아야 가능합니다."]);
     if(r.minor && r.night>0)
-      f.push(['warn','!','18세 미만 야간근로가 포함되어 있습니다',
-        '만 18세 미만은 밤 10시~오전 6시 근로가 원칙적으로 금지되며, 본인 동의와 고용노동부 인가가 있어야 합니다.']);
+      f.push(['warn','!', lang==="en"?"Night work is recorded for a worker under 18":"만 18세 미만 야간근로가 있습니다",
+        lang==="en" ? "Work between 22:00 and 06:00 for under-18s requires consent and government approval."
+          : "밤 10시~오전 6시 근로는 본인 동의와 고용노동부 인가가 있어야 합니다."]);
     if(r.longDay||r.longWeek)
-      f.push(['warn','!','법정 근로시간을 넘긴 주가 있습니다',
-        (r.minor?'만 18세 미만은 1일 7시간·주 35시간':'성인은 1일 8시간·주 40시간')+'이 기준입니다. 초과분은 당사자 합의가 필요하고, 5인 이상 사업장이면 50% 가산 대상입니다.']);
+      f.push(['warn','!', lang==="en"?"Legal working-hour limits were exceeded in some week":"법정 근로시간을 넘긴 주가 있습니다",
+        (r.minor ? (lang==="en"?"Under 18: 7 hours a day, 35 a week.":"만 18세 미만은 1일 7시간·주 35시간이 기준입니다.")
+                 : (lang==="en"?"Adults: 8 hours a day, 40 a week.":"성인은 1일 8시간·주 40시간이 기준입니다."))]);
     if(!r.big && (r.night>0||r.ot>0))
-      f.push(['info','i','5인 미만이라 가산수당은 빠졌습니다',
-        '야간·연장 가산 50%는 상시 5인 이상 사업장에만 적용됩니다. 가게 인원이 5인 이상이라면 위에서 바꿔 보세요.']);
-    if(r.weeksQualified>0)
-      f.push(['good','✓','주휴수당 '+r.weeksQualified+'주치가 발생했습니다',
-        '주 15시간 이상 일하고 정해진 날을 다 나왔다면 하루치 임금을 더 받습니다. 급여에서 가장 자주 통째로 빠지는 항목입니다.']);
-    else if(r.shifts>0)
-      f.push(['info','i','주휴수당은 발생하지 않았습니다',
-        '한 주에 15시간 이상 일해야 주휴수당이 생깁니다. 근무 기록을 다시 확인해 보세요.']);
-    document.getElementById("flags").innerHTML = f.map(function(x){
+      f.push(['info','i', lang==="en"?"Premiums are excluded for workplaces under 5 staff":"5인 미만이라 가산수당이 빠졌습니다",
+        lang==="en" ? "Night and overtime premiums apply only at workplaces with 5 or more staff."
+          : "야간·연장 가산 50%는 상시 5인 이상 사업장에만 적용됩니다."]);
+    if(r.hs==="confirmed" || r.hs==="estimated")
+      f.push(['good','✓', (r.hs==="estimated"
+          ? (lang==="en"?"Weekly holiday pay estimated for "+r.holidayWeeks+" week(s)":"예상 주휴수당 "+r.holidayWeeks+"주치를 포함했습니다")
+          : (lang==="en"?"Weekly holiday pay included for "+r.holidayWeeks+" week(s)":"주휴수당 "+r.holidayWeeks+"주치를 포함했습니다")),
+        lang==="en" ? "Based on the contracted hours you entered."
+          : "계약에서 정한 주 "+r.cHours+"시간을 기준으로 계산했습니다."]);
+    document.getElementById("flags").innerHTML=f.map(function(x){
       return '<div class="flag '+x[0]+'"><span class="mark">'+x[1]+'</span><div><b>'+x[2]+'</b><p>'+x[3]+'</p></div></div>';
     }).join("");
   }
 
-  function renderVerdict(r){
-    var v=document.getElementById("verdict"), gap=Math.round(r.gap);
-    var k=document.getElementById("v-kicker"), a=document.getElementById("v-amount"), s=document.getElementById("v-sub");
-    if(!r.shifts){
-      v.dataset.state="ok"; k.textContent="계산 결과"; a.textContent="—";
-      s.textContent="위에 근무한 날을 입력하면 바로 계산됩니다."; return;
-    }
-    if(gap>500){
-      v.dataset.state="short"; k.textContent="덜 받은 것 같습니다"; a.textContent=won(gap);
-      s.textContent="받아야 할 "+won(r.due)+" 중 "+won(r.paid)+"만 들어왔습니다.";
-    }else if(gap<-500){
-      v.dataset.state="over"; k.textContent="계산보다 많이 들어왔습니다"; a.textContent=won(-gap);
-      s.textContent="식대·상여 등이 포함됐을 수 있습니다. 급여명세서를 받아 확인해 보세요.";
-    }else{
-      v.dataset.state="ok"; k.textContent="계산이 맞습니다"; a.textContent=won(r.due);
-      s.textContent="주휴수당까지 포함해 정상 지급된 것으로 보입니다.";
-    }
+  function renderSticky(r){
+    var el=document.getElementById("sticky");
+    if(r.state==="empty"){ el.hidden=true; return; }
+    el.hidden=false;
+    document.getElementById("sk-due").textContent=won(r.due);
+    document.getElementById("sk-paid").textContent=won(r.paid);
+    document.getElementById("sk-gap").textContent=(r.gap>=0?"":"+")+won(Math.abs(r.gap));
   }
 
   function renderMsg(r){
-    var name=val("name")||"○○○", p=period(r), t;
+    var nm=val("name"), p=period(r), t;
+    var greet = lang==="en"
+      ? ("Hello, " + (nm ? "this is "+nm+"." : "I am writing about my pay."))
+      : ("안녕하세요 사장님, " + (nm ? nm+"입니다." : "급여 관련해서 문의드립니다."));
     if(tpl==="payslip"){
-      t="안녕하세요 사장님, "+name+"입니다.\n\n"+p+" 급여 잘 받았습니다. 감사합니다.\n"+
-        "혹시 급여명세서를 한 부 받을 수 있을까요? 근무 기록을 정리해 두려고 합니다.\n\n감사합니다.";
+      t = lang==="en"
+        ? greet+"\n\nCould I receive a payslip for "+p+"? I would like to keep a record of my hours.\n\nThank you."
+        : greet+"\n\n"+p+" 급여명세서를 한 부 받을 수 있을까요? 근무 기록을 정리해 두려고 합니다.\n\n감사합니다.";
     }else if(tpl==="contract"){
-      t="안녕하세요 사장님, "+name+"입니다.\n\n"+
-        "다름이 아니라 근로계약서를 아직 작성하지 못한 것 같아 조심스럽게 여쭙습니다.\n"+
-        "시급과 근무 시간을 서로 정리해 두면 저도 헷갈리지 않을 것 같아서요.\n"+
-        "편하실 때 한 부 작성해 주시면 감사하겠습니다.\n\n감사합니다.";
+      t = lang==="en"
+        ? greet+"\n\nI do not have a copy of my work contract yet. Could we put the wage and working hours in writing? It would help me keep track.\n\nThank you."
+        : greet+"\n\n근로계약서를 아직 받지 못했습니다. 시급과 근무 시간을 서로 정리해 두면 저도 헷갈리지 않을 것 같습니다. 편하실 때 한 부 작성해 주시면 감사하겠습니다.\n\n감사합니다.";
     }else{
-      var L=["· 총 근무 "+hrs(r.total)+" — 기본급 "+won(r.base)];
-      if(r.holiday>0) L.push("· 주휴수당 "+won(r.holiday)+" ("+r.weeksQualified+"주치)");
-      if(r.nightPay>0) L.push("· 야간 가산 "+won(r.nightPay));
-      if(r.otPay>0) L.push("· 연장 가산 "+won(r.otPay));
-      t="안녕하세요 사장님, "+name+"입니다.\n\n"+p+" 급여 관련해서 하나만 여쭤보고 싶어 연락드렸습니다.\n\n"+
-        "제가 근무 기록을 정리해 보니\n"+L.join("\n")+"\n합계 "+won(r.due)+
-        "으로 계산이 되는데, 입금된 금액은 "+won(r.paid)+"이라 "+won(Math.abs(r.gap))+
-        " 정도 차이가 있는 것 같습니다.\n\n제가 잘못 계산했을 수도 있어서, 시간 되실 때 한 번만 확인해 주시면 감사하겠습니다.\n\n감사합니다.";
+      var L=[];
+      L.push((lang==="en"?"· Total hours worked: ":"· 제가 기록한 근무시간: ")+hrs(r.total));
+      L.push((lang==="en"?"· Estimated pay: ":"· 예상 급여: ")+won(r.due));
+      L.push((lang==="en"?"· Amount deposited: ":"· 실제 입금액: ")+won(r.paid));
+      L.push((lang==="en"?"· Difference: ":"· 차이: ")+won(Math.abs(r.gap)));
+      t = lang==="en"
+        ? greet+"\n\nI compared my pay for "+p+" with my work log and there is a difference of about "+
+          won(Math.abs(r.gap))+", so I wanted to ask you to check.\n\n"+L.join("\n")+
+          "\n\nCould you let me know the basis of the calculation, or whether anything is missing on my side?\n\nThank you."
+        : greet+"\n\n이번 "+p+" 급여를 근무 기록과 비교해 보니 예상 금액과 약 "+won(Math.abs(r.gap))+
+          "의 차이가 있어 확인을 부탁드리려고 연락드렸습니다.\n\n"+L.join("\n")+
+          "\n\n계산 기준이나 제가 빠뜨린 내용이 있는지 확인해 주시면 감사하겠습니다.\n\n감사합니다.";
     }
     document.getElementById("msg").value=t;
   }
 
-  // ── 사장님 모드 ────────────────────────────────
+  function renderLimits(){
+    var L = lang==="en"
+      ? ["Calculated before tax", "Tax and social insurance deductions are not applied",
+         "Public holiday premiums are not applied", "Comprehensive wage contracts are not reflected",
+         "Cash payments are not reflected", "This is not legal advice and does not confirm unpaid wages"]
+      : ["세전 기준으로 계산합니다", "세금과 4대보험 공제는 반영하지 않았습니다",
+         "공휴일 근무수당은 반영하지 않았습니다", "포괄임금 계약은 반영하지 않았습니다",
+         "현금으로 받은 금액은 반영하지 않았습니다", "법률 자문이 아니며 임금체불을 확정하는 결과가 아닙니다"];
+    document.getElementById("limits").innerHTML =
+      '<p style="margin:0 0 8px"><b style="color:var(--ink)">'+T("lim")+'</b></p>'+
+      '<details><summary>'+(lang==="en"?"What this calculation does not include":"이 계산에 포함되지 않은 것")+'</summary>'+
+      '<ul>'+L.map(function(x){return '<li>'+x+'</li>';}).join("")+'</ul></details>';
+  }
+
+  function renderFaq(){
+    var Q = lang==="en"
+      ? [["What is weekly holiday pay?","If your contract sets 15 or more hours a week and you work all the days agreed, you receive one extra day of pay. It cannot be confirmed from actual hours alone, which is why we ask for your contracted hours."],
+         ["Why is there no night premium at my workplace?","Night, overtime and holiday premiums of 50% apply only where 5 or more people work. Minimum wage and weekly holiday pay apply everywhere."],
+         ["What is different for workers under 18?","The legal limit is 7 hours a day and 35 a week. Night work between 22:00 and 06:00 needs consent and government approval."],
+         ["I found a difference but cannot bring it up","Send the message in step 5 as it is. It shares your record and asks for a check, without accusing anyone. If it does not get resolved, you can call the Ministry of Employment and Labour on 1350."]]
+      : [["주휴수당이 뭔가요?","계약에서 정한 주 근무시간이 15시간 이상이고 정해진 날을 모두 나왔다면 하루치 임금을 더 받습니다. 실제 근무시간만으로는 확정할 수 없어서 계약 조건을 함께 여쭤봅니다."],
+         ["5인 미만 가게는 왜 야간수당이 없나요?","연장·야간·휴일 가산 50%는 상시 5인 이상 사업장에만 적용됩니다. 최저임금과 주휴수당은 규모와 상관없이 적용됩니다."],
+         ["만 18세 미만은 뭐가 다른가요?","법정근로시간이 1일 7시간·주 35시간으로 더 짧고, 밤 10시~오전 6시 야간근로는 본인 동의와 고용노동부 인가가 있어야 합니다."],
+         ["차이가 있는데 말을 못 꺼내겠어요","5번 메시지를 그대로 복사해 보내세요. 따지는 말이 아니라 기록을 같이 보여 주며 확인을 부탁하는 문장입니다. 잘 풀리지 않으면 고용노동부 상담 1350(무료)에 전화할 수 있습니다."]];
+    document.getElementById("faq").innerHTML = Q.map(function(q){
+      return '<details><summary>'+q[0]+'</summary><p>'+q[1]+'</p></details>';
+    }).join("");
+  }
+
+  function renderStatic(){
+    document.querySelectorAll("[data-i18n]").forEach(function(el){
+      el.textContent = T(el.dataset.i18n);
+    });
+    document.querySelectorAll("[data-i18n-html]").forEach(function(el){
+      el.innerHTML = T(el.dataset.i18nHtml);
+    });
+    document.getElementById("helpline").innerHTML = lang==="en"
+      ? '<b>If a difference is not resolved</b> — you can call the Ministry of Employment and Labour counselling centre on <b>1350</b> (free). Keep your work log and deposit records. This service does not file reports on your behalf.'
+      : '<b>확인을 요청했는데 잘 풀리지 않는다면</b> — 고용노동부 고객상담센터 <b>국번없이 1350</b>(무료)에 전화해 상담받을 수 있습니다. 근무 기록과 입금 내역을 미리 저장해 두세요. 이 서비스는 신고나 진정을 대신 접수하지 않습니다.';
+    document.getElementById("foot").innerHTML = lang==="en"
+      ? '<p><b>How we calculate</b> — Base pay is hours worked × hourly wage. Weekly holiday pay uses (contracted weekly hours ÷ 40) × 8 × wage, only when contracted hours are 15 or more and all agreed days were worked. Night (22:00–06:00) and overtime premiums of 50% apply only at workplaces with 5 or more staff.</p>'+
+        '<p><b>Privacy</b> — What you enter is never sent to a server or stored. Everything is calculated inside your browser and disappears when you close the page. We never ask for an account number, banking password or verification code.</p>'+
+        '<p>Alba Paycheck · high school startup project prototype</p>'
+      : '<p><b>계산 기준</b> — 기본급은 실근로시간 × 시급입니다. 주휴수당은 계약상 주 소정근로시간이 15시간 이상이고 정해진 근무일을 모두 나온 경우에 한해 (주 소정근로시간 ÷ 40) × 8 × 시급으로 계산합니다. 야간(22~06시)·연장 가산 50%는 상시 5인 이상 사업장에만 적용합니다.</p>'+
+        '<p><b>개인정보</b> — 입력한 내용은 서버로 전송되거나 저장되지 않습니다. 모두 브라우저 안에서만 계산되고 페이지를 닫으면 사라집니다. 계좌번호, 은행 비밀번호, 인증번호는 어떤 경우에도 입력받지 않습니다.</p>'+
+        '<p>알바정산 · Alba Paycheck · 고등학생 창업 프로젝트 프로토타입</p>';
+    document.title = lang==="en"
+      ? "Alba Paycheck — compare your work log and your pay"
+      : "알바정산 — 내 근무 기록과 월급을 간편하게 비교하세요";
+  }
+
+  /* ══════════════ 계약서 확인 (확장) ══════════════ */
+  var REQ=[["wage","임금","시급 또는 월급 액수와 계산·지급 방법",true],
+           ["hours","소정근로시간","몇 시부터 몇 시까지 일하는지",true],
+           ["holiday","휴일","주휴일이 무슨 요일인지",false],
+           ["annual","연차유급휴가","연차휴가에 관한 내용",false],
+           ["place","취업 장소","어디에서 일하는지",true],
+           ["task","업무 내용","무슨 일을 하는지",true]];
+  var CONDS=[["night","계약서에 밤 10시 이후 근무가 적혀 있다","예: 22:00~02:00, 마감조",false,true],
+             ["penalty","지각·결근 시 벌금이나 중도 퇴사 시 위약금 조항이 있다","예: 지각 1회 5,000원",false,true],
+             ["copy","계약서를 한 부 받아서 가지고 있다","사본을 받지 못했다면 체크하지 마세요",false,false],
+             ["signed","사업주와 내가 모두 서명했다","한쪽만 서명된 계약서는 다투기 어렵습니다",true,false]];
+  function buildChecks(){
+    document.getElementById("req").innerHTML=REQ.map(function(x){
+      return '<label class="check"><input type="checkbox" class="c-req" data-k="'+x[0]+'"'+(x[3]?" checked":"")+
+             '><span><b>'+x[1]+'</b><span>'+x[2]+'</span></span></label>'; }).join("");
+    document.getElementById("conds").innerHTML=CONDS.map(function(x){
+      return '<label class="check'+(x[4]?" flagcheck":"")+'"><input type="checkbox" class="c-cond" data-k="'+x[0]+'"'+
+             (x[3]?" checked":"")+'><span><b>'+x[1]+'</b><span>'+x[2]+'</span></span></label>'; }).join("");
+  }
+  function req(k){ var e=document.querySelector('.c-req[data-k="'+k+'"]'); return e&&e.checked; }
+  function cond(k){ var e=document.querySelector('.c-cond[data-k="'+k+'"]'); return e&&e.checked; }
+
+  function renderChecker(){
+    var wage=num("c-wage"), minw=num("c-min"), day=num("c-day"), week=num("c-week"), brk=num("c-break");
+    var minor=document.getElementById("cage-minor").checked;
+    var capDay=minor?7:8, capWeek=minor?35:40, out=[], missing=[];
+    REQ.forEach(function(x){ if(!req(x[0])) missing.push(x[1]); });
+    if(missing.length)
+      out.push(["warn","!","필수 기재사항 "+missing.length+"개가 빠져 있는 것으로 보입니다",
+        "빠진 항목: "+missing.join(", ")+". 근로계약서에는 임금·소정근로시간·휴일·연차유급휴가·취업 장소·업무 내용을 적게 되어 있습니다.","근로기준법 제17조"]);
+    if(wage>0&&minw>0&&wage<minw)
+      out.push(["warn","!","시급이 최저임금보다 "+(minw-wage).toLocaleString("ko-KR")+"원 낮게 적혀 있습니다",
+        "최저임금보다 낮게 정한 부분은 효력이 없고 최저임금액으로 봅니다.","최저임금법 제6조"]);
+    if(cond("penalty"))
+      out.push(["warn","!","위약금·손해배상 예정 조항으로 보이는 내용이 있습니다",
+        "지각 시 벌금이나 중도 퇴사 위약금은 근로계약에 넣을 수 없습니다.","근로기준법 제20조"]);
+    if(minor&&cond("night"))
+      out.push(["warn","!","만 18세 미만인데 밤 10시 이후 근무가 적혀 있습니다",
+        "오후 10시~오전 6시 근로와 휴일근로는 본인 동의와 고용노동부 인가가 있어야 합니다.","근로기준법 제70조"]);
+    if(day>capDay)
+      out.push(["warn","!","하루 근로시간이 법정 한도를 "+(Math.round((day-capDay)*10)/10)+"시간 넘습니다",
+        (minor?"만 18세 미만은 1일 7시간":"성인은 1일 8시간")+"이 한도입니다.",minor?"근로기준법 제69조":"근로기준법 제50조"]);
+    if(week>capWeek)
+      out.push(["warn","!","주 근로시간이 법정 한도를 "+(Math.round((week-capWeek)*10)/10)+"시간 넘습니다",
+        (minor?"만 18세 미만은 주 35시간":"성인은 주 40시간")+"이 한도입니다.",minor?"근로기준법 제69조":"근로기준법 제50조"]);
+    if(day>=8&&brk<60)
+      out.push(["warn","!","휴게시간이 부족해 보입니다","8시간 이상 일하면 1시간 이상 주어야 합니다. 계약서에는 "+brk+"분으로 적혀 있습니다.","근로기준법 제54조"]);
+    else if(day>=4&&brk<30)
+      out.push(["warn","!","휴게시간이 부족해 보입니다","4시간 이상 일하면 30분 이상 주어야 합니다. 계약서에는 "+brk+"분으로 적혀 있습니다.","근로기준법 제54조"]);
+    if(!cond("copy"))
+      out.push(["info","i","계약서를 한 부 받아 두세요","사업주는 요구하지 않아도 사본을 교부하게 되어 있습니다.","근로기준법 제17조 제2항"]);
+    if(!cond("signed"))
+      out.push(["info","i","양쪽 서명을 확인하세요","사업주와 근로자가 모두 서명 또는 날인해야 합니다.",""]);
+    if(minor)
+      out.push(["info","i","만 18세 미만이면 서류 두 가지가 더 필요합니다",
+        "가족관계기록사항 증명서와 친권자 동의서를 사업장에 갖춰 두게 되어 있습니다.","근로기준법 제66조"]);
+
+    var danger=out.filter(function(x){return x[0]==="warn";}).length;
+    if(!danger) out.unshift(["good","✓","확인이 필요한 위법 사항은 보이지 않습니다","입력하신 내용 기준입니다.",""]);
+
+    var v=document.getElementById("cverdict");
+    document.getElementById("c-kicker").textContent = danger?"확인 필요":"이상 없음";
+    document.getElementById("c-amount").textContent = danger? danger+"건" : "—";
+    document.getElementById("c-sub").textContent = danger
+      ? "아래 항목을 계약서와 다시 대조해 보시고, 필요하면 사장님께 확인을 요청해 보세요."
+      : "입력하신 내용에서는 확인이 필요한 항목이 보이지 않습니다.";
+    v.dataset.state = danger ? "diff" : "match";
+    document.getElementById("cflags").innerHTML=out.map(function(x){
+      return '<div class="flag '+x[0]+'"><span class="mark">'+x[1]+'</span><div><b>'+x[2]+'</b><p>'+x[3]+
+             (x[4]?' <span style="color:var(--ink-faint)">— '+x[4]+'</span>':'')+'</p></div></div>'; }).join("");
+
+    var nm=val("name"), L=[];
+    if(missing.length) L.push("· 계약서에 "+missing.join(", ")+" 항목이 보이지 않습니다");
+    if(wage>0&&minw>0&&wage<minw) L.push("· 시급이 올해 최저임금("+minw.toLocaleString("ko-KR")+"원)보다 낮게 적혀 있습니다");
+    if(cond("penalty")) L.push("· 지각·퇴사 관련 위약금 조항이 있습니다");
+    if(minor&&cond("night")) L.push("· 제가 만 18세 미만이라 밤 10시 이후 근무는 별도 절차가 필요합니다");
+    if(!cond("copy")) L.push("· 계약서 사본을 한 부 받을 수 있을까요");
+    var greet="안녕하세요 사장님, "+(nm?nm+"입니다.":"근로계약서 관련해서 문의드립니다.");
+    document.getElementById("cmsg").value = L.length
+      ? greet+"\n\n근로계약서를 다시 살펴보다가 확인하고 싶은 부분이 있어 연락드립니다.\n\n"+L.join("\n")+
+        "\n\n제가 잘못 이해한 부분이 있다면 알려 주시면 감사하겠습니다.\n\n감사합니다."
+      : greet+"\n\n근로계약서 잘 받았습니다. 내용도 확인했습니다. 앞으로 잘 부탁드리겠습니다.\n\n감사합니다.";
+  }
+
+  /* ══════════════ 사장님 문서 (확장) ══════════════ */
   function ageAt(birth, when){
     var b=new Date(birth+"T00:00:00"), d=new Date(when+"T00:00:00");
     if(isNaN(b)||isNaN(d)) return null;
-    var a=d.getFullYear()-b.getFullYear();
-    var m=d.getMonth()-b.getMonth();
-    if(m<0 || (m===0 && d.getDate()<b.getDate())) a--;
+    var a=d.getFullYear()-b.getFullYear(), m=d.getMonth()-b.getMonth();
+    if(m<0||(m===0&&d.getDate()<b.getDate())) a--;
     return a;
   }
   function today(){ return new Date().toISOString().slice(0,10); }
-  function kdate(iso){
-    var p=(iso||"").split("-");
-    return p.length===3 ? p[0]+"년 "+(+p[1])+"월 "+(+p[2])+"일" : "____년 __월 __일";
-  }
-  // 공식 양식 표기 보조
-  function hm(t){
-    var p=(t||"").split(":");
-    return p.length===2 ? (+p[0])+"시 "+(+p[1])+"분 " : "__시 __분 ";
-  }
-  function contractPeriod(){
-    var s=val("o-start"), e=val("o-end");
+  function kdate(iso){ var p=(iso||"").split("-");
+    return p.length===3 ? p[0]+"년 "+(+p[1])+"월 "+(+p[2])+"일" : "____년 __월 __일"; }
+  function hm(t){ var p=(t||"").split(":"); return p.length===2 ? (+p[0])+"시 "+(+p[1])+"분 " : "__시 __분 "; }
+  function contractPeriod(){ var s=val("o-start"), e=val("o-end");
     if(!s) return "____년 __월 __일부터";
-    return e ? kdate(s)+"부터 "+kdate(e)+"까지" : kdate(s)+"부터 (기간의 정함이 없음)";
-  }
-  function breakRange(){
-    var a=val("o-bfrom"), b=val("o-bto");
-    return (a&&b) ? hm(a)+"~ "+hm(b) : "__시 __분 ~ __시 __분";
-  }
-  function dayNames(){
-    var d=val("o-days");
-    return d ? "("+d+")" : "";
-  }
-
-  // ── 표준근로계약서 7종 중 어떤 것을 써야 하는지 판별 ──────────
-  function weeklyHours(){
-    var a=toMin(val("o-from")), z=toMin(val("o-to"));
-    if(z<=a) z+=1440;
+    return e ? kdate(s)+"부터 "+kdate(e)+"까지" : kdate(s)+"부터 (기간의 정함이 없음)"; }
+  function breakRange(){ var a=val("o-bfrom"), b=val("o-bto");
+    return (a&&b) ? hm(a)+"~ "+hm(b) : "__시 __분 ~ __시 __분"; }
+  function ownerWeekly(){
+    var a=toMin(val("o-from")), z=toMin(val("o-to")); if(z<=a) z+=1440;
     var b=0, ba=val("o-bfrom"), bz=val("o-bto");
     if(ba&&bz){ var x=toMin(ba), y=toMin(bz); if(y<=x) y+=1440; b=y-x; }
-    var day=Math.max(0,(z-a)-b)/60;
-    return day * (+val("o-dayn")||0);
+    return (Math.max(0,(z-a)-b)/60) * num("o-dayn");
   }
-
   function pickForm(){
     var age=ageAt(val("o-birth"), val("o-start")||today());
-    var minor=(age!==null && age<18);
+    var minor=(age!==null&&age<18);
     var nat=document.querySelector('input[name="nat"]:checked').value;
     var con=document.getElementById("con-yes").checked;
-    var wk=weeklyHours();
-    var part=(wk>0 && wk<40);
-    var fixed=!!val("o-end");
-
-    var f={minor:minor, age:age, nat:nat, con:con, wk:wk, part:part, fixed:fixed};
-    // 우선순위: 연소 > 건설일용 > 고용허가제 외국인 > 단시간 > 일반
-    if(minor){
-      f.form="연소근로자(18세 미만인 자) 표준근로계약서";
-      f.key="minor"; f.buildable=true;
-      f.why=["근로자가 만 "+age+"세로 18세 미만입니다"];
-      f.also=["친권자(후견인) 동의서", "가족관계기록사항에 관한 증명서"];
-    } else if(con){
-      f.form="건설일용근로자 표준근로계약서";
-      f.key="construct"; f.buildable=false;
-      f.why=["건설 현장 일용직입니다"];
-      f.also=[];
-    } else if(nat==="eps"){
-      f.form="외국인근로자 표준근로계약서 (Standard Labor Contract)";
-      f.key="eps"; f.buildable=false;
-      f.why=["고용허가제(E-9·H-2) 외국인 근로자입니다"];
-      f.also=[];
-    } else if(part){
-      f.form="단시간근로자 표준근로계약서";
-      f.key="part"; f.buildable=true;
-      f.why=["1주 소정근로시간이 "+(Math.round(wk*10)/10)+"시간으로 40시간 미만입니다"];
-      f.also=[];
-    } else {
-      f.form="표준근로계약서";
-      f.key="normal"; f.buildable=true;
-      f.why=["만 18세 이상 내국인, 1주 40시간 이상 근무입니다"];
-      f.also=[];
-    }
+    var wk=ownerWeekly(), part=(wk>0&&wk<40), fixed=!!val("o-end");
+    var f={minor:minor,age:age,nat:nat,con:con,wk:wk,part:part,fixed:fixed,warn:[]};
+    if(minor){ f.form="연소근로자(18세 미만인 자) 표준근로계약서"; f.key="minor"; f.buildable=true;
+      f.why=["근로자가 만 "+age+"세로 18세 미만입니다"]; f.also=["친권자(후견인) 동의서","가족관계기록사항에 관한 증명서"]; }
+    else if(con){ f.form="건설일용근로자 표준근로계약서"; f.key="construct"; f.buildable=false;
+      f.why=["건설 현장 일용직입니다"]; f.also=[]; }
+    else if(nat==="eps"){ f.form="외국인근로자 표준근로계약서 (Standard Labor Contract)"; f.key="eps"; f.buildable=false;
+      f.why=["고용허가제(E-9·H-2) 외국인 근로자입니다"]; f.also=[]; }
+    else if(part){ f.form="단시간근로자 표준근로계약서"; f.key="part"; f.buildable=true;
+      f.why=["1주 소정근로시간이 "+(Math.round(wk*10)/10)+"시간으로 40시간 미만입니다"]; f.also=[]; }
+    else { f.form="표준근로계약서"; f.key="normal"; f.buildable=true;
+      f.why=["만 18세 이상 내국인, 1주 40시간 이상 근무입니다"]; f.also=[]; }
     f.form += fixed ? " — 기간의 정함이 있는 경우" : " — 기간의 정함이 없는 경우";
-    if(f.fixed) f.why.push("근로계약 종료일이 정해져 있습니다");
-    else f.why.push("근로계약 종료일이 정해져 있지 않습니다");
-
-    // 주의사항
-    f.warn=[];
-    if(minor && nat!=="kr")
-      f.warn.push("만 18세 미만 외국인은 체류자격에 따라 취업이 제한될 수 있습니다. 출입국·외국인청에 먼저 확인하십시오.");
-    if(minor && age!==null && age<15)
-      f.warn.push("13세 이상 15세 미만은 고용노동부장관의 취직인허증을 먼저 받아야 합니다.");
-    if(part && !minor && !con && nat==="kr")
-      f.warn.push("단시간근로자는 연차유급휴가를 통상근로자의 근로시간에 비례해 부여하고, 초과근로 가산임금률을 계약서에 적어야 합니다.");
-    if(nat==="etc")
-      f.warn.push("고용허가제가 아닌 외국인은 체류자격에 취업활동이 허용되는지 먼저 확인해야 합니다. 유학생(D-2)은 시간제취업 허가가 별도로 필요합니다.");
+    f.why.push(fixed ? "근로계약 종료일이 정해져 있습니다" : "근로계약 종료일이 정해져 있지 않습니다");
+    if(minor&&nat!=="kr") f.warn.push("만 18세 미만 외국인은 체류자격에 따라 취업이 제한될 수 있습니다. 출입국·외국인청에 먼저 확인하십시오.");
+    if(minor&&age!==null&&age<15) f.warn.push("13세 이상 15세 미만은 고용노동부장관의 취직인허증을 먼저 받아야 합니다.");
+    if(f.key==="part") f.warn.push("단시간근로자는 연차유급휴가를 통상근로자에 비례해 부여하고, 초과근로 가산임금률을 계약서에 적게 되어 있습니다.");
+    if(nat==="etc") f.warn.push("고용허가제가 아닌 외국인은 체류자격에 취업활동이 허용되는지 먼저 확인해야 합니다. 유학생(D-2)은 시간제취업 허가가 별도로 필요합니다.");
     return f;
   }
-
   function renderWizard(){
-    var f=pickForm();
-    var el=document.getElementById("wizresult");
-    if(!el) return f;
-    var h='<div class="pickbox">'+
-      '<span class="picklabel">이 근로자에게 필요한 양식</span>'+
-      '<b class="pickname">'+f.form+'</b>'+
-      '<ul class="pickwhy">'+f.why.map(function(w){ return '<li>'+w+'</li>'; }).join("")+'</ul>';
-    if(f.also.length)
-      h+='<div class="pickalso"><b>함께 갖춰야 할 서류</b> — '+f.also.join(" · ")+'</div>';
+    var f=pickForm(), el=document.getElementById("wizresult");
+    var h='<div class="pickbox"><span class="picklabel">이 근로자에게 필요한 양식</span>'+
+      '<b class="pickname">'+esc(f.form)+'</b><ul class="pickwhy">'+
+      f.why.map(function(w){return '<li>'+esc(w)+'</li>';}).join("")+'</ul>';
+    if(f.also.length) h+='<div class="pickalso"><b>함께 갖춰야 할 서류</b> — '+f.also.join(" · ")+'</div>';
     h+='<div class="pickstate '+(f.buildable?"ok":"no")+'">'+
-       (f.buildable
-         ? "아래에서 이 양식으로 바로 만들어 인쇄할 수 있습니다."
+       (f.buildable ? "아래에서 이 양식으로 바로 만들어 인쇄할 수 있습니다."
          : "이 양식은 항목이 크게 달라 아래 자동 작성에서 다루지 않습니다. "+
-           (f.key==="eps"
-             ? "고용허가제 전용 양식이므로 EPS(www.eps.go.kr)에서 받으십시오."
-             : "고용노동부 표준근로계약서 모음에서 건설일용근로자용을 받으십시오."))+
-       '</div>';
-    if(f.warn.length)
-      h+='<div class="pickwarn">'+f.warn.map(function(w){ return '<p>'+w+'</p>'; }).join("")+'</div>';
-    h+='</div>';
-    el.innerHTML=h;
+           (f.key==="eps" ? "EPS(www.eps.go.kr)에서 받으십시오." : "고용노동부 표준근로계약서 모음에서 받으십시오."))+'</div>';
+    if(f.warn.length) h+='<div class="pickwarn">'+f.warn.map(function(w){return '<p>'+esc(w)+'</p>';}).join("")+'</div>';
+    el.innerHTML=h+'</div>';
     return f;
   }
+  function blank(v,w){ v=(v||"").trim(); return v?esc(v):'<span class="fill" style="min-width:'+(w||120)+'px">&nbsp;</span>'; }
+  function clause(k,v){ return '<li><span class="k">'+k+'</span><span class="v">'+v+'</span></li>'; }
+  function sigrow(l,v,m){ return '<div class="row"><span>'+l+'</span><b>'+blank(v,90)+
+    (m?'<span class="sigmark">'+m+'</span>':'')+'</b></div>'; }
 
   function renderDoc(){
-    var f=renderWizard();
-    var age = f.age;
-    var minor = f.minor;
-    var biz=pad(val("o-biz")), ceo=pad(val("o-ceo")), emp=pad(val("o-emp"));
-    var wage=+val("o-wage")||0;
-    var note=document.getElementById("minor-note");
+    var f=renderWizard(), age=f.age, minor=f.minor;
+    var biz=val("o-biz"), ceo=val("o-ceo"), emp=val("o-emp"), wage=num("o-wage");
+    var P=document.getElementById("paper"), h="", why="", t="";
 
-    if(age===null){ note.hidden=true; }
-    else{
-      note.hidden=false;
-      note.innerHTML = minor
-        ? '<b>만 '+age+'세 — 연소근로자입니다.</b><br>1일 7시간·주 35시간이 법정 한도이며, 밤 10시~오전 6시 근로와 휴일근로는 본인 동의와 고용노동부 인가가 필요합니다. 친권자 동의서와 가족관계증명서를 사업장에 비치해야 하므로, 아래 탭에서 동의서도 함께 만드십시오.'
-        : '<b>만 '+age+'세 — 일반 근로자입니다.</b><br>1일 8시간·주 40시간이 법정 한도입니다. 친권자 동의서는 필요하지 않습니다.';
-    }
-
-    var t, why;
     if(docTpl==="consent"){
-      why = minor
-        ? "만 18세 미만을 고용할 때는 친권자(후견인) 동의서와 가족관계증명서를 사업장에 갖춰 두어야 합니다."
-        : "만 18세 이상이므로 이 서류는 필요하지 않습니다. 참고용으로만 보십시오.";
-      t = "친권자(후견인) 동의서\n\n"+
-        "친권자(후견인) 인적사항\n"+
-        "  성       명 : ________________________\n"+
-        "  생 년 월 일 : ________________________\n"+
-        "  주       소 : ________________________\n"+
-        "  연 락 처 : ________________________\n"+
-        "  연소근로자와의 관계 : ________________________\n\n"+
-        "연소근로자 인적사항\n"+
-        "  성       명 : "+emp+"  (만 "+(age===null?"__":age)+"세)\n"+
-        "  생 년 월 일 : "+kdate(val("o-birth"))+"\n"+
-        "  주       소 : "+pad(val("o-eaddr"))+"\n"+
-        "  연 락 처 : "+pad(val("o-etel"))+"\n\n"+
-        "사업장 개요\n"+
-        "  회    사    명 : "+biz+"\n"+
-        "  회 사 주 소 : "+pad(val("o-addr"))+"\n"+
-        "  대  표  자 : "+ceo+"\n"+
-        "  회사전화 : "+pad(val("o-tel"))+"\n\n"+
-        "본인은 위 연소근로자 "+emp+"이(가) 위 사업장에서 근로하는 것에 대하여 동의합니다.\n\n"+
-        "                    "+kdate(today())+"\n\n"+
-        "                    친권자(후견인)                    (서명 또는 인)\n\n"+
-        "첨부 : 가족관계증명서 1부\n";
+      why = minor ? "만 18세 미만을 고용할 때는 친권자 동의서와 가족관계증명서를 사업장에 갖춰 두게 되어 있습니다."
+                  : "만 18세 이상이라 이 서류는 필요하지 않습니다. 참고용입니다.";
+      h+='<h4>친권자 동의서</h4><p class="psub">근로기준법 제66조 · 만 18세 미만 고용 시 비치 서류</p>';
+      h+='<table class="pt"><tr><th colspan="2">친권자(후견인) 인적사항</th></tr>'+
+         '<tr><td style="width:110px">성명</td><td>'+blank("",200)+'</td></tr>'+
+         '<tr><td>주민등록번호</td><td>'+blank("",200)+'</td></tr>'+
+         '<tr><td>주소</td><td>'+blank("",260)+'</td></tr>'+
+         '<tr><td>연락처</td><td>'+blank("",200)+'</td></tr>'+
+         '<tr><td>연소근로자와의 관계</td><td>'+blank("",200)+'</td></tr></table>';
+      h+='<table class="pt"><tr><th colspan="2">연소근로자 인적사항</th></tr>'+
+         '<tr><td style="width:110px">성명</td><td>'+blank(emp,200)+(age!==null?' <span style="color:#6B7580">(만 '+age+'세)</span>':'')+'</td></tr>'+
+         '<tr><td>생년월일</td><td>'+esc(kdate(val("o-birth")))+'</td></tr>'+
+         '<tr><td>주소</td><td>'+blank(val("o-eaddr"),260)+'</td></tr>'+
+         '<tr><td>연락처</td><td>'+blank(val("o-etel"),200)+'</td></tr></table>';
+      h+='<table class="pt"><tr><th colspan="2">사업장 개요</th></tr>'+
+         '<tr><td style="width:110px">회사명</td><td>'+blank(biz,200)+'</td></tr>'+
+         '<tr><td>회사주소</td><td>'+blank(val("o-addr"),260)+'</td></tr>'+
+         '<tr><td>대표자</td><td>'+blank(ceo,200)+'</td></tr>'+
+         '<tr><td>회사전화</td><td>'+blank(val("o-tel"),200)+'</td></tr></table>';
+      h+='<p class="pre" style="margin-top:16px">본인은 위 연소근로자 <b>'+blank(emp,70)+'</b>가 위 사업장에서 근로를 하는 것에 대하여 동의합니다.</p>';
+      h+='<div class="pdate">'+esc(kdate(today()))+'</div>';
+      h+='<div class="signs"><div class="sign">'+sigrow("친권자(후견인)","","인")+'</div><div class="sign"></div></div>';
+      h+='<p class="note2">첨부 : 가족관계증명서 1부</p>';
+      t="친권자(후견인) 동의서\n\n친권자 성명 : ____________  주민등록번호 : ____________\n주소 : ____________  연락처 : ____________\n연소근로자와의 관계 : ____________\n\n연소근로자 성명 : "+pad(emp)+"  생년월일 : "+kdate(val("o-birth"))+
+        "\n주소 : "+pad(val("o-eaddr"))+"  연락처 : "+pad(val("o-etel"))+
+        "\n\n회사명 : "+pad(biz)+"  회사주소 : "+pad(val("o-addr"))+"\n대표자 : "+pad(ceo)+"  회사전화 : "+pad(val("o-tel"))+
+        "\n\n본인은 위 연소근로자가 위 사업장에서 근로하는 것에 동의합니다.\n\n"+kdate(today())+"\n\n친권자(후견인)                    (인)\n\n첨부 : 가족관계증명서 1부\n";
     }
     else if(docTpl==="payslip"){
       var r=calc();
-      why = "근로기준법에 따라 임금을 지급할 때는 구성항목·계산방법·공제내역을 적은 명세서를 교부해야 합니다. 아래 금액은 알바생 탭의 근무 기록으로 계산된 세전 금액입니다.";
-      t = "임 금 명 세 서\n\n"+
-        "  성            명 : "+emp+"\n"+
-        "  임 금 지 급 일 : 매월 "+(val("o-payday")||"__")+"일\n"+
-        "  산  정  기  간 : "+(period(r)||"________")+"\n"+
-        "  총 근로시간 : "+hrs(r.total)+"\n\n"+
-        "1. 임금 지급 내역\n"+
-        "  기      본      급 : "+won(r.base)+"\n"+
-        "     └ 계산방법 : 실근로시간 "+hrs(r.total)+" × 시급 "+(r.wage||wage).toLocaleString("ko-KR")+"원\n"+
-        "  주   휴   수   당 : "+won(r.holiday)+"\n"+
-        "     └ 계산방법 : (1주 소정근로시간 ÷ 40) × 8 × 시급 · "+r.weeksQualified+"주치\n"+
-        (r.nightPay>0 ? "  야  간  가  산 : "+won(r.nightPay)+"\n     └ 계산방법 : 야간근로 "+hrs(r.night)+" × 시급 × 0.5\n" : "")+
-        (r.otPay>0 ? "  연  장  가  산 : "+won(r.otPay)+"\n     └ 계산방법 : 연장근로 "+hrs(r.ot)+" × 시급 × 0.5\n" : "")+
-        "  ─────────────────────────────\n"+
-        "  지  급  액  계 : "+won(r.due)+"\n\n"+
-        "2. 공제 내역\n"+
-        "  국  민  연  금 : ____________원\n"+
-        "  건  강  보  험 : ____________원\n"+
-        "  고  용  보  험 : ____________원\n"+
-        "  소       득       세 : ____________원\n"+
-        "  ─────────────────────────────\n"+
-        "  공  제  액  계 : ____________원\n\n"+
-        "3. 실 지급액 : ____________원\n\n"+
-        "                    "+biz+"   (직인)\n"+
-        "                    대표자 "+ceo+"\n\n"+
-        "※ 4대보험·소득세 공제액은 사업장 가입 여부에 따라 직접 기입하십시오.\n";
-    }
-    else{
-      why = minor
-        ? "고용노동부 「연소근로자(18세 미만인 자) 표준근로계약서」 양식입니다. 2부를 작성해 1부를 근로자에게 교부해야 합니다."
-        : "고용노동부 「표준근로계약서」 양식입니다. 2부를 작성해 1부를 근로자에게 교부해야 합니다.";
-      var no = 0;
-      var line = function(txt){ no++; return no+". "+txt+"\n"; };
-      t = (minor ? "연소근로자(18세 미만인 자) 표준근로계약서" : "표 준 근 로 계 약 서") + "\n\n"+
-        biz+"(이하 “사업주”라 함)과(와) "+emp+"(이하 “근로자”라 함)은\n"+
-        "다음과 같이 근로계약을 체결한다.\n\n"+
-        line("근로계약기간 : "+contractPeriod()+"\n"+
-             "   ※ 근로계약기간을 정하지 않는 경우에는 “근로개시일”만 기재")+
-        line("근 무 장 소 : "+pad(val("o-place")))+
-        line("업무의 내용 : "+pad(val("o-task")))+
-        line("소정근로시간 : "+hm(val("o-from"))+"부터 "+hm(val("o-to"))+"까지 (휴게시간 : "+breakRange()+")")+
-        line("근무일/휴일 : 매주 "+pad(val("o-dayn"))+"일"+dayNames()+"근무, 주휴일 매주 "+pad(val("o-holiday"))+"요일")+
-        line("임  금\n"+
-             "   - 월(일, 시간)급 : "+wage.toLocaleString("ko-KR")+"원 (시간급)\n"+
-             "   - 상여금 : 있음 (    )                원,  없음 ( ∨ )\n"+
-             "   - 기타급여(제수당 등) : 있음 ( ∨ ),   없음 (    )\n"+
-             "     · 주휴수당 등 법정수당\n"+
-             "   - 임금지급일 : 매월 "+(val("o-payday")||"__")+"일 (휴일의 경우는 전일 지급)\n"+
-             "   - 지급방법 : 근로자에게 직접지급(    ),  근로자 명의 예금통장에 입금( ∨ )")+
-        line("연차유급휴가\n"+
-             "   - 연차유급휴가는 근로기준법에서 정하는 바에 따라 부여함")+
-        (minor ? line("가족관계증명서 및 동의서\n"+
-             "   - 가족관계기록사항에 관한 증명서 제출 여부 : (    )\n"+
-             "   - 친권자 또는 후견인의 동의서 구비 여부 : (    )") : "")+
-        line("근로계약서 교부\n"+
-             "   - 사업주는 근로계약을 체결함과 동시에 본 계약서를 사본하여 근로자의\n"+
-             "     교부요구와 관계없이 근로자에게 교부함"+
-             (minor ? "(근로기준법 제17조, 제67조 이행)" : "(근로기준법 제17조 이행)"))+
-        line("기  타\n"+
-             (minor
-               ? "   - 13세 이상 15세 미만인 자에 대해서는 고용노동부장관으로부터 취직인허증을\n"+
-                 "     교부받아야 하며, 이 계약에 정함이 없는 사항은 근로기준법령에 의함"
-               : "   - 이 계약에 정함이 없는 사항은 근로기준법령에 의함"))+
-        "\n                    "+kdate(today())+"\n\n"+
-        "(사업주) 사업체명 : "+biz+"          (전화 : "+pad(val("o-tel"))+")\n"+
-        "         주    소 : "+pad(val("o-addr"))+"\n"+
-        "         대 표 자 : "+ceo+"                    (서명)\n\n"+
-        "(근로자) 주    소 : "+pad(val("o-eaddr"))+"\n"+
-        "         연 락 처 : "+pad(val("o-etel"))+"\n"+
-        "         성    명 : "+emp+"                    (서명)\n";
-    }
-    document.getElementById("doc").value=t;
-    document.getElementById("doc-why").textContent=why;
-    renderPaper(minor, age, f);
-  }
-
-  // ── 실제 서류 모양으로 렌더링 (인쇄·PDF 저장용) ──────────────
-  function esc(s){ return String(s).replace(/[&<>]/g, function(c){
-    return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
-  function blank(v, w){
-    v=(v||"").trim();
-    return v ? esc(v) : '<span class="fill" style="min-width:'+(w||120)+'px">&nbsp;</span>';
-  }
-  function clause(k, v){ return '<li><span class="k">'+k+'</span><span class="v">'+v+'</span></li>'; }
-  function sigrow(label, value, mark){
-    return '<div class="row"><span>'+label+'</span><b>'+blank(value, 90)+
-           (mark?'<span class="sigmark">'+mark+'</span>':'')+'</b></div>';
-  }
-
-  function renderPaper(minor, age, f){
-    var P=document.getElementById("paper");
-    var biz=val("o-biz"), ceo=val("o-ceo"), emp=val("o-emp"), wage=+val("o-wage")||0;
-    var h="";
-
-    if(docTpl==="consent"){
-      h += '<h3>친권자 동의서</h3>';
-      h += '<p class="psub">근로기준법 제66조 · 만 18세 미만 근로자 고용 시 사업장 비치 서류</p>';
-      h += '<table class="pt"><tr><th colspan="2">친권자(후견인) 인적사항</th></tr>'+
-           '<tr><td style="width:110px">성명</td><td>'+blank("",200)+'</td></tr>'+
-           '<tr><td>생년월일</td><td>'+blank("",200)+'</td></tr>'+
-           '<tr><td>주소</td><td>'+blank("",260)+'</td></tr>'+
-           '<tr><td>연락처</td><td>'+blank("",200)+'</td></tr>'+
-           '<tr><td>근로자와의 관계</td><td>'+blank("",200)+'</td></tr></table>';
-      h += '<table class="pt"><tr><th colspan="2">연소근로자 인적사항</th></tr>'+
-           '<tr><td style="width:110px">성명</td><td>'+blank(emp,200)+
-             (age!==null?' <span style="color:#6B7580">(만 '+age+'세)</span>':'')+'</td></tr>'+
-           '<tr><td>생년월일</td><td>'+esc(kdate(val("o-birth")))+'</td></tr>'+
-           '<tr><td>주소</td><td>'+blank(val("o-eaddr"),260)+'</td></tr>'+
-           '<tr><td>연락처</td><td>'+blank(val("o-etel"),200)+'</td></tr></table>';
-      h += '<table class="pt"><tr><th colspan="2">사업장 개요</th></tr>'+
-           '<tr><td style="width:110px">사업체명</td><td>'+blank(biz,200)+'</td></tr>'+
-           '<tr><td>사업장 주소</td><td>'+blank(val("o-addr"),260)+'</td></tr>'+
-           '<tr><td>대표자</td><td>'+blank(ceo,200)+'</td></tr>'+
-           '<tr><td>전화</td><td>'+blank(val("o-tel"),200)+'</td></tr></table>';
-      h += '<p class="pre" style="margin-top:16px">본인은 위 연소근로자 <b>'+blank(emp,70)+
-           '</b>이(가) 위 사업장에서 근로하는 것에 대하여 동의합니다.</p>';
-      h += '<div class="pdate">'+esc(kdate(today()))+'</div>';
-      h += '<div class="signs"><div class="sign">'+
-           sigrow("친권자","","서명 또는 인")+'</div><div class="sign"></div></div>';
-      h += '<p class="note">첨부 : 가족관계기록사항에 관한 증명서 1부</p>';
-    }
-    else if(docTpl==="payslip"){
-      var r=calc();
-      h += '<h3>임 금 명 세 서</h3>';
-      h += '<p class="psub">근로기준법 제48조 제2항</p>';
-      h += '<table class="pt">'+
-           '<tr><th style="width:110px">성명</th><td>'+blank(emp,160)+'</td>'+
-           '<th style="width:110px">임금 지급일</th><td>매월 '+blank(val("o-payday"),40)+'일</td></tr>'+
-           '<tr><th>산정 기간</th><td>'+blank(period(r),160)+'</td>'+
-           '<th>총 근로시간</th><td>'+esc(hrs(r.total))+'</td></tr></table>';
-
+      why="임금을 지급할 때는 구성항목·계산방법·공제내역을 적은 명세서를 교부하게 되어 있습니다. 아래 금액은 급여 계산 화면의 결과를 옮긴 세전 기준입니다.";
+      h+='<h4>임 금 명 세 서</h4><p class="psub">근로기준법 제48조 제2항</p>';
+      h+='<table class="pt"><tr><th style="width:110px">성명</th><td>'+blank(emp,160)+'</td>'+
+         '<th style="width:110px">임금 지급일</th><td>매월 '+blank(val("o-payday"),40)+'일</td></tr>'+
+         '<tr><th>산정 기간</th><td>'+blank(period(r),160)+'</td><th>총 근로시간</th><td>'+esc(hrs(r.total))+'</td></tr></table>';
       var pay='<table class="pt"><tr><th style="width:34%">지급 항목</th><th>계산 방법</th><th style="width:24%">금액</th></tr>';
-      pay+='<tr><td>기본급</td><td><small>실근로시간 '+esc(hrs(r.total))+' × 시급 '+
-           (r.wage||wage).toLocaleString("ko-KR")+'원</small></td><td class="num">'+esc(won(r.base))+'</td></tr>';
-      pay+='<tr><td>주휴수당</td><td><small>(1주 소정근로시간 ÷ 40) × 8 × 시급 · '+r.weeksQualified+
-           '주치</small></td><td class="num">'+esc(won(r.holiday))+'</td></tr>';
-      if(r.nightPay>0) pay+='<tr><td>야간근로 가산</td><td><small>야간근로 '+esc(hrs(r.night))+
-           ' × 시급 × 0.5</small></td><td class="num">'+esc(won(r.nightPay))+'</td></tr>';
-      if(r.otPay>0) pay+='<tr><td>연장근로 가산</td><td><small>연장근로 '+esc(hrs(r.ot))+
-           ' × 시급 × 0.5</small></td><td class="num">'+esc(won(r.otPay))+'</td></tr>';
+      pay+='<tr><td>기본급</td><td><small>실근로 '+esc(hrs(r.total))+' × 시급 '+(r.wage||wage).toLocaleString("ko-KR")+'원</small></td><td class="num">'+esc(won(r.base))+'</td></tr>';
+      pay+='<tr><td>주휴수당</td><td><small>'+(r.hs==="unknown"?"계약 조건 확인 필요":"(주 소정근로시간 ÷ 40) × 8 × 시급 · "+r.holidayWeeks+"주치")+'</small></td><td class="num">'+esc(won(r.holiday))+'</td></tr>';
+      if(r.nightPay>0) pay+='<tr><td>야간근로 가산</td><td><small>야간 '+esc(hrs(r.night))+' × 시급 × 0.5</small></td><td class="num">'+esc(won(r.nightPay))+'</td></tr>';
+      if(r.otPay>0) pay+='<tr><td>연장근로 가산</td><td><small>연장 '+esc(hrs(r.ot))+' × 시급 × 0.5</small></td><td class="num">'+esc(won(r.otPay))+'</td></tr>';
       pay+='<tr class="sum"><td colspan="2">지급액 계</td><td class="num">'+esc(won(r.due))+'</td></tr></table>';
-      h += pay;
-
-      h += '<table class="pt"><tr><th style="width:34%">공제 항목</th><th>계산 방법</th><th style="width:24%">금액</th></tr>'+
-           '<tr><td>국민연금</td><td><small>사업장 가입 시 기재</small></td><td class="num">'+blank("",70)+'</td></tr>'+
-           '<tr><td>건강보험</td><td><small>사업장 가입 시 기재</small></td><td class="num">'+blank("",70)+'</td></tr>'+
-           '<tr><td>고용보험</td><td><small>사업장 가입 시 기재</small></td><td class="num">'+blank("",70)+'</td></tr>'+
-           '<tr><td>소득세 · 지방소득세</td><td><small>간이세액표에 따름</small></td><td class="num">'+blank("",70)+'</td></tr>'+
-           '<tr class="sum"><td colspan="2">공제액 계</td><td class="num">'+blank("",70)+'</td></tr></table>';
-      h += '<table class="pt"><tr class="sum"><td>실 지급액</td><td class="num" style="width:24%">'+blank("",70)+'</td></tr></table>';
-      h += '<div class="seal">'+blank(biz,150)+'  <span class="sigmark">직인</span><br>대표자 '+blank(ceo,110)+'</div>';
-      h += '<p class="note">※ 4대보험·소득세 공제액은 사업장 가입 여부와 근로자 조건에 따라 달라지므로 직접 기입하십시오. 위 지급액은 세전 기준입니다.</p>';
+      h+=pay;
+      h+='<table class="pt"><tr><th style="width:34%">공제 항목</th><th>계산 방법</th><th style="width:24%">금액</th></tr>'+
+         '<tr><td>국민연금</td><td><small>사업장 가입 시 기재</small></td><td class="num">'+blank("",70)+'</td></tr>'+
+         '<tr><td>건강보험</td><td><small>사업장 가입 시 기재</small></td><td class="num">'+blank("",70)+'</td></tr>'+
+         '<tr><td>고용보험</td><td><small>사업장 가입 시 기재</small></td><td class="num">'+blank("",70)+'</td></tr>'+
+         '<tr><td>소득세 · 지방소득세</td><td><small>간이세액표에 따름</small></td><td class="num">'+blank("",70)+'</td></tr>'+
+         '<tr class="sum"><td colspan="2">공제액 계</td><td class="num">'+blank("",70)+'</td></tr></table>';
+      h+='<table class="pt"><tr class="sum"><td>실 지급액</td><td class="num" style="width:24%">'+blank("",70)+'</td></tr></table>';
+      h+='<div class="seal">'+blank(biz,150)+'  <span class="sigmark">직인</span><br>대표자 '+blank(ceo,110)+'</div>';
+      h+='<p class="note2">※ 4대보험·소득세 공제액은 사업장 가입 여부에 따라 달라지므로 직접 기입하십시오. 위 지급액은 세전 기준입니다.</p>';
+      t="임 금 명 세 서\n\n성명 : "+pad(emp)+"\n임금 지급일 : 매월 "+pad(val("o-payday"))+"일\n산정 기간 : "+pad(period(r))+
+        "\n총 근로시간 : "+hrs(r.total)+"\n\n기본급 : "+won(r.base)+"\n주휴수당 : "+won(r.holiday)+
+        (r.nightPay>0?"\n야간근로 가산 : "+won(r.nightPay):"")+(r.otPay>0?"\n연장근로 가산 : "+won(r.otPay):"")+
+        "\n지급액 계 : "+won(r.due)+"\n\n공제 내역 : 국민연금/건강보험/고용보험/소득세 ____________\n실 지급액 : ____________\n\n"+
+        pad(biz)+" (직인)   대표자 "+pad(ceo)+"\n";
     }
     else if(!f.buildable){
-      var where = (f.key==="eps")
-        ? ['고용허가제 전용 양식이라 항목 구성이 완전히 다릅니다. 한국어와 영어가 나란히 적혀 있고, '+
-           '수습기간·입국일 기산·숙식 제공 여부 같은 항목이 따로 있습니다.',
-           'EPS 고용허가제 홈페이지 (www.eps.go.kr)에서 받으실 수 있습니다.']
-        : ['건설일용근로자용은 시간외·야간·휴일근로수당을 각각 나누어 적게 되어 있어 '+
-           '일반 양식으로 대체할 수 없습니다.',
-           '고용노동부 「표준근로계약서 모음」에서 건설일용근로자용을 받으십시오.'];
-      h += '<h3>'+esc(f.form.split(" — ")[0])+'</h3>';
-      h += '<p class="psub">이 양식은 여기서 만들어 드리지 않습니다</p>';
-      h += '<div style="margin-top:26px;padding:20px;background:#F5F7F9;border-left:3px solid #B23A2E;border-radius:3px">';
-      where.forEach(function(t){ h += '<p style="margin:0 0 10px;font-size:12.5px;line-height:1.7;color:#39434F">'+esc(t)+'</p>'; });
-      h += '<p style="margin:0;font-size:12px;color:#6B7580;line-height:1.7">'+
-           '위 03번에서 조건을 바꾸시면 만들 수 있는 양식으로 다시 안내해 드립니다.</p>';
-      h += '</div>';
-      P.innerHTML = h;
-      document.getElementById("doc").value =
-        f.form + "\n\n이 양식은 항목 구성이 달라 자동 작성 대상이 아닙니다.\n\n" + where.join("\n");
-      document.getElementById("doc-why").textContent =
-        "이 근로자에게는 " + f.form.split(" — ")[0] + "가 필요합니다. 항목 구성이 크게 달라 자동 작성 대상이 아닙니다.";
-      return;
+      var W = (f.key==="eps")
+        ? ["고용허가제 전용 양식이라 항목 구성이 완전히 다릅니다. 한국어와 영어가 나란히 적혀 있고, 수습기간·입국일 기산 같은 항목이 따로 있습니다.",
+           "EPS 고용허가제 홈페이지 (www.eps.go.kr)에서 받으실 수 있습니다."]
+        : ["건설일용근로자용은 시간외·야간·휴일근로수당을 각각 나누어 적게 되어 있어 일반 양식으로 대체할 수 없습니다.",
+           "고용노동부 「표준근로계약서 모음」에서 건설일용근로자용을 받으십시오."];
+      h+='<h4>'+esc(f.form.split(" — ")[0])+'</h4><p class="psub">이 양식은 여기서 만들어 드리지 않습니다</p>';
+      h+='<div style="margin-top:24px;padding:20px;background:#F5F7F9;border-left:3px solid #9C2F24;border-radius:3px">';
+      W.forEach(function(x){ h+='<p style="margin:0 0 10px;font-size:12.5px;line-height:1.7;color:#39434F">'+esc(x)+'</p>'; });
+      h+='<p style="margin:0;font-size:12px;color:#6B7580;line-height:1.7">위 3번에서 조건을 바꾸시면 만들 수 있는 양식으로 다시 안내해 드립니다.</p></div>';
+      why="이 근로자에게는 "+f.form.split(" — ")[0]+"가 필요합니다. 항목 구성이 크게 달라 자동 작성 대상이 아닙니다.";
+      t=f.form+"\n\n"+W.join("\n");
     }
     else{
-      var ttl = minor ? "연소근로자 표준근로계약서"
-              : (f.key==="part" ? "단시간근로자 표준근로계약서" : "표준근로계약서");
-      var tsub = (minor ? "18세 미만인 자 · " : (f.key==="part" ? "1주 40시간 미만 · " : ""))
-               + (f.fixed ? "기간의 정함이 있는 경우" : "기간의 정함이 없는 경우")
-               + " · 고용노동부 표준양식";
-      h += '<h3>'+ttl+'</h3>';
-      h += '<p class="psub">'+tsub+'</p>';
-      h += '<p class="pre"><b>'+blank(biz,110)+'</b>(이하 “사업주”라 함)과(와) <b>'+blank(emp,80)+
-           '</b>(이하 “근로자”라 함)은 다음과 같이 근로계약을 체결한다.</p>';
-      h += '<ol class="cl">';
-      h += clause("근로계약기간", esc(contractPeriod())+
-             '<div style="font-size:10.5px;color:#6B7580;margin-top:2px">'+
-             '※ 근로계약기간을 정하지 않는 경우에는 “근로개시일”만 기재</div>');
-      h += clause("근 무 장 소", blank(val("o-place"),200));
-      h += clause("업무의 내용", blank(val("o-task"),200));
-      h += clause("소정근로시간", esc(hm(val("o-from")))+"부터 "+esc(hm(val("o-to")))+
-                  "까지 (휴게시간 : "+esc(breakRange())+")");
-      h += clause("근무일/휴일", "매주 "+blank(val("o-dayn"),30)+"일"+esc(dayNames())+
-                  " 근무, 주휴일 매주 "+blank(val("o-holiday"),40)+"요일");
-      h += clause("임　　금", '<ul class="sub">'+
-             '<li>'+(f.key==="part" ? "시간(일, 월)급" : "월(일, 시간)급")+
-                ' : <b>'+wage.toLocaleString("ko-KR")+'원</b> (시간급)</li>'+
-             '<li>상여금 : 있음 (　　)　　　　원,　없음 ( ∨ )</li>'+
-             '<li>기타급여(제수당 등) : 있음 ( ∨ ),　없음 (　　)　· 주휴수당 등 법정수당</li>'+
-             (f.key==="part" ? '<li>초과근로에 대한 가산임금률 : '+blank("",44)+'%</li>' : '')+
-             '<li>임금지급일 : 매월 '+blank(val("o-payday"),34)+'일 (휴일의 경우는 전일 지급)</li>'+
-             '<li>지급방법 : 근로자에게 직접지급(　　),　근로자 명의 예금통장에 입금( ∨ )</li></ul>');
-      if(f.key === "part")
-        h += clause("연차유급휴가", "통상근로자의 근로시간에 비례하여 연차유급휴가 부여");
-      else
-        h += clause("연차유급휴가", "연차유급휴가는 근로기준법에서 정하는 바에 따라 부여함");
-      if(minor)
-        h += clause("가족관계증명서<br>및 동의서", '<ul class="sub">'+
-             '<li>가족관계기록사항에 관한 증명서 제출 여부 : (　　)</li>'+
-             '<li>친권자 또는 후견인의 동의서 구비 여부 : (　　)</li></ul>');
-      h += clause("근로계약서 교부",
-             "사업주는 근로계약을 체결함과 동시에 본 계약서를 사본하여 근로자의 교부요구와 관계없이 근로자에게 교부함"+
-             (minor ? "(근로기준법 제17조, 제67조 이행)" : "(근로기준법 제17조 이행)"));
-      h += clause("기　　타", minor
-             ? "13세 이상 15세 미만인 자에 대해서는 고용노동부장관으로부터 취직인허증을 교부받아야 하며, 이 계약에 정함이 없는 사항은 근로기준법령에 의함"
-             : "이 계약에 정함이 없는 사항은 근로기준법령에 의함");
-      h += '</ol>';
-      h += '<div class="pdate">'+esc(kdate(today()))+'</div>';
-      h += '<div class="signs">'+
-           '<div class="sign"><h4>(사업주)</h4>'+
-             sigrow("사업체명", biz)+sigrow("주소", val("o-addr"))+
-             sigrow("전화", val("o-tel"))+sigrow("대표자", ceo, "서명")+'</div>'+
-           '<div class="sign"><h4>(근로자)</h4>'+
-             sigrow("주소", val("o-eaddr"))+sigrow("연락처", val("o-etel"))+
-             sigrow("성명", emp, "서명")+'</div></div>';
-      h += '<p class="note">※ 본 계약서는 2부를 작성하여 사업주와 근로자가 각 1부씩 보관합니다.</p>';
+      why = "고용노동부 「"+f.form.split(" — ")[0]+"」 양식입니다. 2부를 작성해 1부를 근로자에게 교부하게 되어 있습니다.";
+      var ttl = minor?"연소근로자 표준근로계약서":(f.key==="part"?"단시간근로자 표준근로계약서":"표준근로계약서");
+      var tsub = (minor?"18세 미만인 자 · ":(f.key==="part"?"1주 40시간 미만 · ":""))+
+                 (f.fixed?"기간의 정함이 있는 경우":"기간의 정함이 없는 경우")+" · 고용노동부 표준양식";
+      h+='<h4>'+ttl+'</h4><p class="psub">'+tsub+'</p>';
+      h+='<p class="pre"><b>'+blank(biz,110)+'</b>(이하 “사업주”라 함)과(와) <b>'+blank(emp,80)+
+         '</b>(이하 “근로자”라 함)은 다음과 같이 근로계약을 체결한다.</p><ol class="cl">';
+      h+=clause("근로계약기간", esc(contractPeriod())+
+         '<div style="font-size:10.5px;color:#6B7580;margin-top:2px">※ 근로계약기간을 정하지 않는 경우에는 “근로개시일”만 기재</div>');
+      h+=clause("근 무 장 소", blank(val("o-place"),200));
+      h+=clause("업무의 내용", blank(val("o-task"),200));
+      h+=clause("소정근로시간", esc(hm(val("o-from")))+"부터 "+esc(hm(val("o-to")))+"까지 (휴게시간 : "+esc(breakRange())+")");
+      h+=clause("근무일/휴일","매주 "+blank(val("o-dayn"),30)+"일"+(val("o-days")?"("+esc(val("o-days"))+")":"")+
+         " 근무, 주휴일 매주 "+blank(val("o-holiday"),40)+"요일");
+      h+=clause("임　　금",'<ul class="sub">'+
+         '<li>'+(f.key==="part"?"시간(일, 월)급":"월(일, 시간)급")+' : <b>'+wage.toLocaleString("ko-KR")+'원</b> (시간급)</li>'+
+         '<li>상여금 : 있음 (　　)　　　　원,　없음 ( ∨ )</li>'+
+         '<li>기타급여(제수당 등) : 있음 ( ∨ ),　없음 (　　)　· 주휴수당 등 법정수당</li>'+
+         (f.key==="part"?'<li>초과근로에 대한 가산임금률 : '+blank("",44)+'%</li>':'')+
+         '<li>임금지급일 : 매월 '+blank(val("o-payday"),34)+'일 (휴일의 경우는 전일 지급)</li>'+
+         '<li>지급방법 : 근로자에게 직접지급(　　),　근로자 명의 예금통장에 입금( ∨ )</li></ul>');
+      h+=clause("연차유급휴가", f.key==="part"
+         ? "통상근로자의 근로시간에 비례하여 연차유급휴가 부여"
+         : "연차유급휴가는 근로기준법에서 정하는 바에 따라 부여함");
+      if(minor) h+=clause("가족관계증명서<br>및 동의서",'<ul class="sub">'+
+         '<li>가족관계기록사항에 관한 증명서 제출 여부 : (　　)</li>'+
+         '<li>친권자 또는 후견인의 동의서 구비 여부 : (　　)</li></ul>');
+      h+=clause("근로계약서 교부","사업주는 근로계약을 체결함과 동시에 본 계약서를 사본하여 근로자의 교부요구와 관계없이 근로자에게 교부함"+
+         (minor?"(근로기준법 제17조, 제67조 이행)":"(근로기준법 제17조 이행)"));
+      h+=clause("기　　타", minor
+         ? "13세 이상 15세 미만인 자에 대해서는 고용노동부장관으로부터 취직인허증을 교부받아야 하며, 이 계약에 정함이 없는 사항은 근로기준법령에 의함"
+         : "이 계약에 정함이 없는 사항은 근로기준법령에 의함");
+      h+='</ol><div class="pdate">'+esc(kdate(today()))+'</div>';
+      h+='<div class="signs"><div class="sign"><h5>(사업주)</h5>'+
+         sigrow("사업체명",biz)+sigrow("주소",val("o-addr"))+sigrow("전화",val("o-tel"))+sigrow("대표자",ceo,"서명")+
+         '</div><div class="sign"><h5>(근로자)</h5>'+
+         sigrow("주소",val("o-eaddr"))+sigrow("연락처",val("o-etel"))+sigrow("성명",emp,"서명")+'</div></div>';
+      h+='<p class="note2">※ 본 계약서는 2부를 작성하여 사업주와 근로자가 각 1부씩 보관합니다.</p>';
+      t=ttl+"\n"+tsub+"\n\n"+pad(biz)+"(이하 “사업주”)과(와) "+pad(emp)+"(이하 “근로자”)은 다음과 같이 근로계약을 체결한다.\n\n"+
+        "1. 근로계약기간 : "+contractPeriod()+"\n2. 근무 장소 : "+pad(val("o-place"))+"\n3. 업무의 내용 : "+pad(val("o-task"))+
+        "\n4. 소정근로시간 : "+hm(val("o-from"))+"부터 "+hm(val("o-to"))+"까지 (휴게시간 : "+breakRange()+")"+
+        "\n5. 근무일/휴일 : 매주 "+pad(val("o-dayn"))+"일 근무, 주휴일 매주 "+pad(val("o-holiday"))+"요일"+
+        "\n6. 임금 : 시간급 "+wage.toLocaleString("ko-KR")+"원, 임금지급일 매월 "+pad(val("o-payday"))+"일"+
+        "\n7. 연차유급휴가"+(minor?"\n8. 가족관계증명서 및 동의서\n9. 근로계약서 교부\n10. 기타":"\n8. 근로계약서 교부\n9. 기타")+
+        "\n\n"+kdate(today())+"\n\n(사업주) "+pad(biz)+" 대표자 "+pad(ceo)+"    (서명)\n(근로자) "+pad(emp)+"    (서명)\n";
     }
     P.innerHTML=h;
+    document.getElementById("doc").value=t;
+    document.getElementById("doc-why").textContent=why;
   }
 
-  // ── 계약서 진단 ────────────────────────────────
-  var REQ = [
-    ["wage","임금","시급 또는 월급 액수와 계산·지급 방법",true],
-    ["hours","소정근로시간","몇 시부터 몇 시까지 일하는지",true],
-    ["holiday","휴일","주휴일이 무슨 요일인지",false],
-    ["annual","연차유급휴가","연차휴가에 관한 내용",false],
-    ["place","취업 장소","어디에서 일하는지",true],
-    ["task","업무 내용","무슨 일을 하는지",true]
-  ];
-  var CONDS = [
-    ["night","계약서에 밤 10시 이후 근무가 적혀 있다","예: 22:00~02:00, 마감조, 야간조",false,true],
-    ["penalty","지각·결근 시 벌금이나 중도 퇴사 시 위약금 조항이 있다","예: 지각 1회 5,000원, 3개월 못 채우면 ○○원",false,true],
-    ["copy","계약서를 한 부 받아서 가지고 있다","사본을 받지 못했다면 체크하지 마세요",false,false],
-    ["signed","사업주와 내가 모두 서명했다","한쪽만 서명된 계약서는 효력을 다투기 어렵습니다",true,false]
-  ];
-
-  function buildChecks(){
-    document.getElementById("req").innerHTML = REQ.map(function(x){
-      return '<label class="check"><input type="checkbox" class="c-req" data-k="'+x[0]+'"'+(x[3]?" checked":"")+
-             '><span><b>'+x[1]+'</b><span>'+x[2]+'</span></span></label>';
-    }).join("");
-    document.getElementById("conds").innerHTML = CONDS.map(function(x){
-      return '<label class="check'+(x[4]?" flagcheck":"")+'"><input type="checkbox" class="c-cond" data-k="'+x[0]+'"'+
-             (x[3]?" checked":"")+'><span><b>'+x[1]+'</b><span>'+x[2]+'</span></span></label>';
-    }).join("");
-  }
-  function req(k){ var e=document.querySelector('.c-req[data-k="'+k+'"]'); return e && e.checked; }
-  function cond(k){ var e=document.querySelector('.c-cond[data-k="'+k+'"]'); return e && e.checked; }
-
-  function diagnose(){
-    var wage=+val("c-wage")||0, minw=+val("c-min")||0;
-    var day=+val("c-day")||0, week=+val("c-week")||0, brk=+val("c-break")||0;
-    var minor=document.getElementById("cage-minor").checked;
-    var capDay=minor?7:8, capWeek=minor?35:40;
-    var out=[], missing=[];
-
-    REQ.forEach(function(x){ if(!req(x[0])) missing.push(x[1]); });
-    if(missing.length)
-      out.push(["warn","!","필수 기재사항 "+missing.length+"개가 빠졌습니다",
-        "빠진 항목: "+missing.join(", ")+". 근로계약서에는 임금·소정근로시간·휴일·연차유급휴가·취업 장소·업무 내용을 반드시 적어야 합니다.",
-        "근로기준법 제17조"]);
-
-    if(wage>0 && minw>0 && wage<minw)
-      out.push(["warn","!","시급이 최저임금보다 "+(minw-wage).toLocaleString("ko-KR")+"원 낮습니다",
-        "최저임금보다 낮게 정한 부분은 무효이고, 최저임금액으로 정한 것으로 봅니다. 즉 계약서에 "+
-        wage.toLocaleString("ko-KR")+"원이라고 적혀 있어도 "+minw.toLocaleString("ko-KR")+"원을 받아야 합니다.",
-        "최저임금법 제6조"]);
-
-    if(cond("penalty"))
-      out.push(["warn","!","위약금·손해배상 예정 조항은 법으로 금지되어 있습니다",
-        "지각 시 벌금, 중도 퇴사 시 위약금 같은 조항은 근로계약에 넣을 수 없습니다. 적혀 있어도 그 조항은 효력이 없습니다.",
-        "근로기준법 제20조"]);
-
-    if(minor && cond("night"))
-      out.push(["warn","!","만 18세 미만은 밤 10시 이후 근무를 계약서에 넣을 수 없습니다",
-        "오후 10시부터 오전 6시 사이의 근로와 휴일근로는 원칙적으로 금지되며, 본인 동의와 고용노동부 인가가 모두 있어야 가능합니다.",
-        "근로기준법 제70조"]);
-
-    if(day>capDay)
-      out.push(["warn","!","하루 근로시간이 법정 한도를 "+(Math.round((day-capDay)*10)/10)+"시간 넘습니다",
-        (minor?"만 18세 미만은 1일 7시간":"성인은 1일 8시간")+"이 한도입니다."+
-        (minor?" 당사자 합의가 있어도 1시간까지만 연장할 수 있습니다.":" 초과분은 당사자 합의가 필요합니다."),
-        minor?"근로기준법 제69조":"근로기준법 제50조"]);
-    if(week>capWeek)
-      out.push(["warn","!","주 근로시간이 법정 한도를 "+(Math.round((week-capWeek)*10)/10)+"시간 넘습니다",
-        (minor?"만 18세 미만은 주 35시간":"성인은 주 40시간")+"이 한도입니다.",
-        minor?"근로기준법 제69조":"근로기준법 제50조"]);
-
-    if(day>=8 && brk<60)
-      out.push(["warn","!","휴게시간이 부족합니다",
-        "8시간 이상 일하면 1시간 이상의 휴게시간을 근무 중에 주어야 합니다. 계약서에는 "+brk+"분으로 적혀 있습니다.",
-        "근로기준법 제54조"]);
-    else if(day>=4 && brk<30)
-      out.push(["warn","!","휴게시간이 부족합니다",
-        "4시간 이상 일하면 30분 이상의 휴게시간을 주어야 합니다. 계약서에는 "+brk+"분으로 적혀 있습니다.",
-        "근로기준법 제54조"]);
-
-    if(!cond("copy"))
-      out.push(["info","i","계약서를 한 부 받아 두세요",
-        "사업주는 근로자가 요구하지 않아도 계약서 사본을 교부해야 합니다. 나중에 급여를 확인할 때 가장 중요한 근거가 됩니다.",
-        "근로기준법 제17조 제2항"]);
-    if(!cond("signed"))
-      out.push(["info","i","양쪽 서명을 확인하세요",
-        "사업주와 근로자가 모두 서명 또는 날인해야 합니다. 한쪽만 서명된 계약서는 나중에 다투기 어렵습니다.", ""]);
-
-    if(minor)
-      out.push(["info","i","만 18세 미만이면 서류 두 가지가 더 필요합니다",
-        "가족관계기록사항 증명서와 친권자(후견인) 동의서를 사업장에 갖춰 두어야 합니다. 아직 내지 않았다면 사장님께 알려 주세요.",
-        "근로기준법 제66조"]);
-
-    if(week>=15 && !req("holiday"))
-      out.push(["info","i","주 15시간 이상이면 주휴수당이 발생합니다",
-        "그런데 계약서에 주휴일이 적혀 있지 않습니다. 주휴일을 명시해 두면 주휴수당을 놓칠 일이 없습니다.",
-        "근로기준법 제55조"]);
-
-    var danger = out.filter(function(x){ return x[0]==="warn"; }).length;
-    if(!danger)
-      out.unshift(["good","✓","법 위반으로 보이는 부분은 없습니다",
-        "필수 기재사항이 모두 들어 있고, 근로시간·휴게·임금 조건도 기준을 충족합니다.",""]);
-
-    return {items:out, danger:danger, missing:missing, wage:wage, minw:minw, minor:minor};
-  }
-
-  function renderChecker(){
-    var d=diagnose();
-    var v=document.getElementById("cverdict");
-    var k=document.getElementById("c-kicker"), a=document.getElementById("c-amount"), s=document.getElementById("c-sub");
-    if(d.danger>0){
-      v.dataset.state="short"; k.textContent="법에 어긋나는 부분이 있습니다";
-      a.textContent=d.danger+"건"; s.textContent="아래 빨간 항목을 확인하고, 04번 메시지로 사장님께 알려 주세요.";
-    }else{
-      v.dataset.state="ok"; k.textContent="진단 결과"; a.textContent="이상 없음";
-      s.textContent="확인이 필요한 안내 항목만 남아 있습니다.";
-    }
-    document.getElementById("cflags").innerHTML = d.items.map(function(x){
-      return '<div class="flag '+x[0]+'"><span class="mark">'+x[1]+'</span><div><b>'+x[2]+'</b><p>'+x[3]+
-             (x[4]?' <span style="color:var(--ink-faint)">— '+x[4]+'</span>':'')+'</p></div></div>';
-    }).join("");
-
-    // 메시지
-    var name=val("name")||"○○○", L=[];
-    if(d.missing.length) L.push("· 계약서에 "+d.missing.join(", ")+" 항목이 빠져 있는 것 같습니다");
-    if(d.wage>0 && d.minw>0 && d.wage<d.minw)
-      L.push("· 시급이 올해 최저임금("+d.minw.toLocaleString("ko-KR")+"원)보다 낮게 적혀 있는 것 같습니다");
-    if(cond("penalty")) L.push("· 지각·퇴사 관련 위약금 조항은 근로기준법상 넣을 수 없다고 합니다");
-    if(d.minor && cond("night")) L.push("· 제가 만 18세 미만이라 밤 10시 이후 근무는 별도 절차가 필요하다고 합니다");
-    if(!cond("copy")) L.push("· 계약서 사본을 한 부 받을 수 있을까요");
-
-    var t;
-    if(!L.length){
-      t="안녕하세요 사장님, "+name+"입니다.\n\n근로계약서 잘 받았습니다. 확인해 보니 내용에 문제가 없는 것 같습니다.\n"+
-        "앞으로 잘 부탁드리겠습니다. 감사합니다.";
-    }else{
-      t="안녕하세요 사장님, "+name+"입니다.\n\n"+
-        "근로계약서를 다시 살펴보다가 몇 가지 여쭤보고 싶은 게 생겨 조심스럽게 연락드립니다.\n"+
-        "제가 잘못 봤을 수도 있어서 확인만 부탁드리려고 합니다.\n\n"+
-        L.join("\n")+"\n\n"+
-        "혹시 제가 잘못 이해한 부분이 있다면 알려 주시면 감사하겠습니다.\n\n감사합니다.";
-    }
-    document.getElementById("cmsg").value=t;
-  }
-
-  // 사진 미리보기 (전송 없음)
-  var imgEl=document.getElementById("pvimg");
-  document.getElementById("file").addEventListener("change", function(e){
-    var f=e.target.files && e.target.files[0];
-    if(!f) return;
-    var fr=new FileReader();
-    fr.onload=function(){ imgEl.src=fr.result; document.getElementById("preview").hidden=false; };
-    fr.readAsDataURL(f);
-  });
-  document.getElementById("rotate").addEventListener("click", function(){
-    if(!imgEl.src) return;
-    var im=new Image();
-    im.onload=function(){
-      var c=document.createElement("canvas");
-      c.width=im.height; c.height=im.width;
-      var x=c.getContext("2d");
-      x.translate(c.width/2, c.height/2); x.rotate(Math.PI/2);
-      x.drawImage(im, -im.width/2, -im.height/2);
-      imgEl.src=c.toDataURL("image/jpeg", 0.9);
-    };
-    im.src=imgEl.src;
-  });
-  document.getElementById("clearimg").addEventListener("click", function(){
-    imgEl.removeAttribute("src");
-    document.getElementById("preview").hidden=true;
-    document.getElementById("file").value="";
-  });
-
-  // 끌어다 놓기
-  var drop=document.getElementById("drop");
-  ["dragenter","dragover"].forEach(function(ev){
-    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add("over"); });
-  });
-  ["dragleave","drop"].forEach(function(ev){
-    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove("over"); });
-  });
-  drop.addEventListener("drop", function(e){
-    var f=e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-    if(!f || !/^image\//.test(f.type)) return;
-    var fr=new FileReader();
-    fr.onload=function(){ imgEl.src=fr.result; document.getElementById("preview").hidden=false; };
-    fr.readAsDataURL(f);
-  });
-
-  // AI 자동 판독 — 개발 예정 기능의 시연(mock). 실제 판독은 하지 않는다.
-  document.getElementById("aiscan").addEventListener("click", function(){
-    var btn=this, bar=document.getElementById("aibar"), fill=bar.querySelector("i");
-    var log=document.getElementById("ailog"), res=document.getElementById("airesult");
-    var steps=["이미지 전처리 중…","글자 영역 찾는 중…","항목 대조 중…","진단 항목에 반영 중…"];
-    btn.disabled=true; res.hidden=true; bar.hidden=false; fill.style.width="0%";
-    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var i=0;
-    var tick=function(){
-      if(i<steps.length){
-        log.textContent=steps[i];
-        fill.style.width=Math.round((i+1)/steps.length*100)+"%";
-        i++;
-        setTimeout(tick, reduce?60:380);
-      }else{
-        log.textContent="판독 완료 — 5개 항목을 아래에 반영했습니다.";
-        res.hidden=false;
-        applyMockRead();
-        btn.disabled=false;
-        btn.textContent="다시 판독하기 (시연)";
-      }
-    };
-    tick();
-  });
-
-  function applyMockRead(){
-    var set=function(id,v){ var e=document.getElementById(id); if(e) e.value=v; };
-    set("c-wage",9860); set("c-day",9); set("c-week",27); set("c-break",30);
-    var chk=function(sel,v){ var e=document.querySelector(sel); if(e) e.checked=v; };
-    chk('.c-req[data-k="wage"]',true);   chk('.c-req[data-k="hours"]',true);
-    chk('.c-req[data-k="place"]',true);  chk('.c-req[data-k="task"]',true);
-    chk('.c-req[data-k="holiday"]',false); chk('.c-req[data-k="annual"]',false);
-    chk('.c-cond[data-k="penalty"]',true);
-    renderChecker();
-    var v=document.getElementById("cverdict");
-    if(v) v.scrollIntoView({behavior:"smooth", block:"start"});
-  }
-
+  /* ══════════════ 렌더 ══════════════ */
   function render(){
     var r=calc();
-    renderVerdict(r); renderLedger(r); renderFlags(r); renderMsg(r); renderDoc(); renderChecker();
+    renderVerdict(r); renderLedger(r); renderFlags(r); renderMsg(r); renderSticky(r);
+    renderChecker(); renderDoc();
   }
 
-  // ── 이벤트 ────────────────────────────────
-  document.getElementById("add").addEventListener("click", function(){
-    addRow({d:"",s:"17:00",e:"21:00",b:0}); render();
-  });
-  document.getElementById("adddep").addEventListener("click", function(){
-    addDep({d:"",v:0,m:""}); render();
-  });
+  /* ══════════════ 이벤트 ══════════════ */
+  document.getElementById("add").addEventListener("click", function(){ addRow({d:"",s:"17:00",e:"21:00",b:0}); render(); });
+  document.getElementById("adddep").addEventListener("click", function(){ addDep({d:"",v:0,m:""}); render(); });
   document.addEventListener("input", render);
   document.addEventListener("change", render);
 
-  document.querySelectorAll(".presets button").forEach(function(b){
+  document.querySelectorAll(".presets [data-preset]").forEach(function(b){
     b.addEventListener("click", function(){
-      rowsEl.innerHTML="";
-      var k=b.dataset.preset;
+      rowsEl.innerHTML=""; var k=b.dataset.preset;
       if(k!=="clear"){
         PRESETS[k].forEach(addRow);
-        document.getElementById("paid").value = PAID_HINT[k];
-        document.getElementById("size-big").checked = (k==="night");
-        document.getElementById("size-small").checked = (k!=="night");
+        var m=PRESET_META[k];
+        document.getElementById("cdays").value=m.c;
+        document.getElementById("chours").value=m.h;
+        depsEl.innerHTML=""; addDep({d:"2026-08-15",v:m.paid,m:"급여"});
+        document.getElementById("size-big").checked=(k==="night");
+        document.getElementById("size-small").checked=(k!=="night");
       }
       render();
     });
@@ -1632,49 +1441,95 @@
     });
   });
 
-  document.getElementById("printdoc").addEventListener("click", function(){
-    var raw=document.getElementById("doc");
-    if(!raw.hidden){                       // 텍스트 보기 상태면 서류 보기로 되돌리고 인쇄
-      raw.hidden=true;
-      document.getElementById("paperwrap").hidden=false;
-      document.getElementById("toggleraw").textContent="텍스트로 보기";
-    }
-    window.print();
-  });
-
-  document.getElementById("toggleraw").addEventListener("click", function(){
-    var raw=document.getElementById("doc"), pw=document.getElementById("paperwrap");
-    var showRaw=raw.hidden;
-    raw.hidden=!showRaw; pw.hidden=showRaw;
-    this.textContent = showRaw ? "서류로 보기" : "텍스트로 보기";
-  });
-
   document.querySelectorAll(".copy, .copy-plain").forEach(function(btn){
     btn.addEventListener("click", function(){
       var ta=document.getElementById(btn.dataset.copy);
       var tag=btn.parentNode.querySelector(".copied");
       ta.select(); ta.setSelectionRange(0, ta.value.length);
-      var done=function(){ tag.hidden=false; setTimeout(function(){ tag.hidden=true; },2200); };
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(ta.value).then(done, function(){
-          try{ document.execCommand("copy"); done(); }catch(e){}
-        });
-      }else{ try{ document.execCommand("copy"); done(); }catch(e){} }
+      var done=function(){ if(tag){ tag.hidden=false; setTimeout(function(){ tag.hidden=true; },2200); } };
+      if(navigator.clipboard&&navigator.clipboard.writeText)
+        navigator.clipboard.writeText(ta.value).then(done,function(){ try{document.execCommand("copy");done();}catch(e){} });
+      else { try{ document.execCommand("copy"); done(); }catch(e){} }
     });
   });
 
-  document.querySelectorAll('input[name="mode"]').forEach(function(el){
-    el.addEventListener("change", function(){
-      ["worker","checker","owner"].forEach(function(id){
-        document.getElementById(id).hidden = (el.value !== id);
-      });
-      window.scrollTo({top:0, behavior:"smooth"});
+  document.querySelectorAll(".secondary [data-mode]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var on = b.getAttribute("aria-pressed")==="true";
+      document.querySelectorAll(".secondary [data-mode]").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
+      document.getElementById("checker").hidden=true;
+      document.getElementById("owner").hidden=true;
+      document.getElementById("calc").hidden=false;
+      if(!on){
+        b.setAttribute("aria-pressed","true");
+        document.getElementById(b.dataset.mode).hidden=false;
+        document.getElementById("calc").hidden=true;
+      }
+      window.scrollTo({top:0,behavior:"smooth"});
     });
   });
 
-  buildChecks();
+  document.querySelectorAll("[data-lang]").forEach(function(b){
+    b.addEventListener("click", function(){
+      lang=b.dataset.lang;
+      document.querySelectorAll("[data-lang]").forEach(function(x){
+        x.setAttribute("aria-pressed", x.dataset.lang===lang ? "true":"false"); });
+      document.documentElement.lang = lang;
+      renderStatic(); renderLimits(); renderFaq();
+      var keep=[]; rowsEl.querySelectorAll(".row").forEach(function(el){
+        keep.push({d:el.querySelector(".c-d").value,s:el.querySelector(".c-s").value,
+                   e:el.querySelector(".c-e").value,b:el.querySelector(".c-b").value}); });
+      rowsEl.innerHTML=""; keep.forEach(addRow);
+      var kd=[]; depsEl.querySelectorAll(".row").forEach(function(el){
+        kd.push({d:el.querySelector(".d-d").value,v:el.querySelector(".d-v").value,m:el.querySelector(".d-m").value}); });
+      depsEl.innerHTML=""; kd.forEach(addDep);
+      render();
+    });
+  });
+
+  document.getElementById("sk-go").addEventListener("click", function(){
+    document.getElementById("verdict").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+
+  // 계약서 사진 (전송 없음)
+  var imgEl=document.getElementById("pvimg");
+  document.getElementById("file").addEventListener("change", function(e){
+    var f=e.target.files&&e.target.files[0]; if(!f) return;
+    var fr=new FileReader();
+    fr.onload=function(){ imgEl.src=fr.result; document.getElementById("preview").hidden=false; };
+    fr.readAsDataURL(f);
+  });
+  document.getElementById("rotate").addEventListener("click", function(){
+    if(!imgEl.src) return;
+    var im=new Image();
+    im.onload=function(){
+      var c=document.createElement("canvas"); c.width=im.height; c.height=im.width;
+      var x=c.getContext("2d"); x.translate(c.width/2,c.height/2); x.rotate(Math.PI/2);
+      x.drawImage(im,-im.width/2,-im.height/2); imgEl.src=c.toDataURL("image/jpeg",0.9);
+    };
+    im.src=imgEl.src;
+  });
+  document.getElementById("clearimg").addEventListener("click", function(){
+    imgEl.removeAttribute("src"); document.getElementById("preview").hidden=true;
+    document.getElementById("file").value="";
+  });
+
+  document.getElementById("printdoc").addEventListener("click", function(){
+    var raw=document.getElementById("doc");
+    if(!raw.hidden){ raw.hidden=true; document.getElementById("paperwrap").hidden=false;
+      document.getElementById("toggleraw").textContent="텍스트로 보기"; }
+    window.print();
+  });
+  document.getElementById("toggleraw").addEventListener("click", function(){
+    var raw=document.getElementById("doc"), pw=document.getElementById("paperwrap");
+    var showRaw=raw.hidden; raw.hidden=!showRaw; pw.hidden=showRaw;
+    this.textContent = showRaw ? "서류로 보기" : "텍스트로 보기";
+  });
+
+  /* ══════════════ 시작 ══════════════ */
+  buildChecks(); renderStatic(); renderLimits(); renderFaq();
   PRESETS.cvs.forEach(addRow);
-  addDep({d:"2026-08-10", v:320000, m:"8월 급여"});
+  addDep({d:"2026-08-15", v:320000, m:"급여"});
   render();
 })();
 </script>
